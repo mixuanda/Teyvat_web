@@ -1,6 +1,7 @@
 // 静态站点生成：content/ + src/ → dist/
 // 两层：玩家版「星图」（深色，首要入口）与「考据层」（浅色：原文库、专题、年表）。
 import fs from 'node:fs';
+import zlib from 'node:zlib';
 import path from 'node:path';
 import { diagrams } from './diagrams.mjs';
 import { TYPES } from './originals.mjs';
@@ -23,20 +24,40 @@ const chronology = readJSON('chronology.json');
 const relations = readJSON('relations.json');
 const plates = readJSON('plates.json');
 const partsDef = readJSON('parts.json');
-const sources = readJSON('sources.json');
+const sources = readJSON('sources.json'); // 研究引用过的原文（多语言、带引文定位）
+const citedCount = sources.length;
+// 全量语料（简体中文）：与已引用的原文同一篇的不重复收
+let corpusTerms = [];
+if (fs.existsSync(C('corpus/index.json'))) {
+  const idx = readJSON('corpus/index.json');
+  const gz = (f) => JSON.parse(zlib.gunzipSync(fs.readFileSync(C(`corpus/${f}`))).toString('utf8'));
+  const have = new Set(sources.map((s) => s.id));
+  const havePath = new Set(sources.map((s) => s.path).filter((p) => /^Readable\/|CodexQuest/.test(p)));
+  for (const part of idx.parts) for (const e of gz(part)) {
+    if (have.has(e.id) || havePath.has(e.path)) continue;
+    have.add(e.id);
+    sources.push({ id: e.id, type: e.type, title: e.title, heading: e.group, path: e.path, url: `https://github.com/DimbreathBot/AnimeGameData/tree/${readJSON('source.json').corpus_commit}/${e.path}`, langs: { CHS: e.lines }, first: e.first, evidence: [], corpus: true });
+  }
+  corpusTerms = gz('terms.json.gz');
+}
 const SRC = Object.fromEntries(sources.map((x) => [x.id, x]));
+const SRC2 = SRC;
 const star = readJSON('curated/star.json');
 const topics = readJSON('curated/topics.json');
 const gateRules = readJSON('curated/gates.json');
+const release = readJSON('curated/release.json');
 const VERSION = (source.corpus_version || '').replace(/\.0$/, ''); // 7.2
 const PREV = '7.1';
+const OPEN = release.confirmed.includes(VERSION); // 当前数据版本是否已确认开放
 const LANG_NAME = { CHS: '简体中文', EN: '英文', JP: '日文', KR: '韩文' };
 const LEVEL = { fact: '事实', inference: '推断', hypothesis: '假说' };
 
 // 原文的派生信息：状态、短链、锚点
 for (const s of sources) {
-  s.pending = s.first === 'new';
-  s.firstLabel = s.pending ? VERSION : `${PREV} 及更早`;
+  s.isNew = s.first === 'new';
+  // 本版本新增、且本版本还没确认开放时，才算待确认
+  s.pending = s.isNew && !OPEN;
+  s.firstLabel = s.isNew ? VERSION : `${PREV} 及更早`;
   s.typeName = TYPES[s.type];
   s.href = `t/${s.id}/`;
   s.short = `/t/${s.id}`;
@@ -48,6 +69,7 @@ for (const e of evidenceList) {
   const src = SRC[e.src];
   if (!src) continue;
   e.pending = src.pending;
+  e.isNew = src.isNew;
   e.href = src.href;
   e.short = src.short;
   const byLine = new Map();
@@ -75,7 +97,7 @@ const RULES = gateRules.rules.map(([g, pat]) => [g, new RegExp(pat)]);
 const evGate = (id) => {
   const e = EV[id];
   if (!e) return null;
-  if (e.pending) return LAST;
+  if (e.isNew) return LAST; // 本版本新增的出处，剧情上算最后一篇
   for (const [g, re] of RULES) if (re.test(e.title)) return g;
   return null;
 };
@@ -261,7 +283,7 @@ const stageAfter = (g) => `${star.stages[g]}篇后可看`;
 const STUDY_NAV = [['t/', '原文库'], ['topic/', '专题'], ['timeline/', '年表'], ['hypothesis/', '假说'], ['updates/', '更新'], ['about/', '关于']];
 const STAR_NAV = [['', '星图'], ['q/', '问题'], ['who/', '人物'], ['study/', '原文与证据']];
 // 哪些路径属于导航里的哪一项
-const NAV_OF = { t: 't/', evidence: 't/', topic: 'topic/', read: 'topic/', plates: 'topic/', timeline: 'timeline/', hypothesis: 'hypothesis/', updates: 'updates/', about: 'about/', q: 'q/', who: 'who/', gate: '', '': '' };
+const NAV_OF = { t: 't/', terms: 't/', evidence: 't/', topic: 'topic/', read: 'topic/', plates: 'topic/', timeline: 'timeline/', hypothesis: 'hypothesis/', updates: 'updates/', about: 'about/', q: 'q/', who: 'who/', gate: '', '': '' };
 
 function page({ url, title, desc, body, layer = 'study', cls = '', scripts = [], data = {}, bare = false }) {
   const depth = url.split('/').filter(Boolean).length;
@@ -558,17 +580,17 @@ const typeOrder = Object.keys(TYPES).filter((t) => sources.some((s) => s.type ==
   const body = `<div class="wrap stack">
 <section class="hero">
 <h1>每个论断，都能回到游戏内的原文</h1>
-<p>《原神》文本的研究与存档。原文库按类型收录研究引用过的文本；专题不贴全文，只引用原文短链并标出所引的那一句。</p>
+<p>《原神》文本的研究与存档。原文库按类型收录固定版本里的全部简体中文文本；专题不贴全文，只引用原文短链并标出所引的那一句。</p>
 <form class="bigsearch" onsubmit="return false">
 <label>搜索原文、专题或短链<input type="search" data-search placeholder="例如 日月前事，或 /t/book/333" autocomplete="off"></label>
 <button type="button" data-search-go>搜索</button>
 </form>
 </section>
 <section class="versionbar" aria-label="数据版本">
-${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${sources.length} 篇，${liveCount} 篇在 ${PREV} 及更早的版本里已经出现。</span><span class="muted">${VERSION} 新增的 ${sources.length - liveCount} 篇标为待确认，正文暂不显示。</span><a href="${base}about/#gate">上线规则</a>
+${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${fmt(sources.length)} 篇，${fmt(sources.filter((s) => !s.isNew).length)} 篇在 ${PREV} 及更早的版本里已经出现。</span><span class="muted">${OPEN ? `${VERSION} 已开放，新增的 ${fmt(sources.filter((s) => s.isNew).length)} 篇已收录。` : `${VERSION} 新增的 ${fmt(sources.length - liveCount)} 篇标为待确认，正文暂不显示。`}</span><a href="${base}about/#gate">上线规则</a>
 </section>
 <div class="grid3">
-<section class="card"><h2>原文库</h2><p>研究引用过的全部文本，按类型存放，每篇有固定短链。</p><ul class="twocol">${typeOrder.map((t) => `<li><a href="${base}t/#type=${t}">${TYPES[t]}</a></li>`).join('')}</ul></section>
+<section class="card"><h2>原文库</h2><p>${fmt(sources.length)} 篇文本，按类型存放，每篇有固定短链。另有<a href="${base}terms/">名词索引</a>。</p><ul class="twocol">${typeOrder.map((t) => `<li><a href="${base}t/#type=${t}">${TYPES[t]}</a></li>`).join('')}</ul></section>
 <section class="card"><h2>专题</h2><p>一页回答一个问题，事实、推断、假说分开标。</p><ul>${topics.map((t) => `<li><a href="${base}topic/${t.id}/">${esc(t.title)}</a></li>`).join('')}<li><a href="${base}topic/#full">研究全文 · ${stats.sections} 章</a></li></ul></section>
 <section class="card"><h2>年表</h2><p>文本自己写明的纪年、换算得到的年数、只知先后的次序，三者分开显示。</p><a href="${base}timeline/">打开年表</a></section>
 </div>
@@ -576,7 +598,7 @@ ${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${sources.length} 篇，
 <h2>可靠性靠什么保证</h2>
 <div class="grid3">
 <section class="card"><h3>逐条核验</h3><p>星图和专题里的每条引文，构建时与所挂的引证逐字比对，对不上就不发布。引证本身在同步时到固定版本的原文里定位到段落。</p></section>
-<section class="card"><h3>上线门</h3><p>当前版本新增的文本先标为待确认，不显示正文；在后一个版本的数据里仍然存在，才转为在线。</p></section>
+<section class="card"><h3>上线门</h3><p>新版本的文本先标为待确认，不显示正文；确认这个版本已在游戏内开放之后才显示。${OPEN ? `${VERSION} 已确认开放。` : ''}</p></section>
 <section class="card"><h3>分级标注</h3><p>每个论断标明是事实、推断还是假说，并写出什么证据会推翻它。</p></section>
 </div>
 </section></div>`;
@@ -588,29 +610,33 @@ ${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${sources.length} 篇，
   const base = '../';
   const langs = ['CHS', 'EN', 'JP', 'KR'];
   const check = (name, value, label, checked = true) => `<label><input type="checkbox" name="${name}" value="${value}"${checked ? ' checked' : ''}>${label}</label>`;
-  const rows = [...sources].sort((a, b) => typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type) || a.title.localeCompare(b.title, 'zh'));
+  const untitled = (s) => (/^（无题）|^？+$/.test(s.title) ? 1 : 0);
+  const rows = [...sources].sort((a, b) => typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type) || untitled(a) - untitled(b) || a.title.localeCompare(b.title, 'zh'));
+  const cnt = (t) => sources.filter((s) => s.type === t).length;
   const body = `<div class="wrap stack">
 <div class="pagehead">
 <h1>原文库</h1>
-<p>研究引用过的游戏内文本，按类型存放。状态说明：在线是这篇文本在 ${PREV} 及更早的版本里已经出现；待确认是 ${VERSION} 新增、尚未确认开放，正文暂不显示。限时活动结束后不能重读的“已下线”文本，目前还没有单独标出。<a href="${base}evidence/">按引证浏览 →</a></p>
+<p>固定版本（${VERSION}）里的简体中文文本，共 ${fmt(sources.length)} 篇，按类型存放。其中研究引用过的 ${citedCount} 篇另有多语言文本和引文定位。${OPEN ? `${VERSION} 已确认开放，这一版新增的 ${fmt(sources.filter((s) => s.isNew).length)} 篇也在其中，“首见版本”一列标着 ${VERSION}。` : `状态说明：在线是这篇文本在 ${PREV} 及更早的版本里已经出现；待确认是 ${VERSION} 新增、尚未确认开放，正文暂不显示。`}<a href="${base}terms/">名词索引 →</a>　<a href="${base}evidence/">按引证浏览 →</a></p>
 </div>
 <div class="library">
 <aside class="filters" aria-label="筛选" id="filters">
-<fieldset><legend>类型</legend>${typeOrder.map((t) => check('type', t, TYPES[t])).join('')}</fieldset>
-<fieldset><legend>状态</legend>${check('status', 'live', '在线')}${check('status', 'pending', '待确认')}</fieldset>
-<fieldset><legend>语言</legend>${langs.map((l) => check('lang', l, LANG_NAME[l], l === 'CHS')).join('')}</fieldset>
+<fieldset><legend>类型</legend>${typeOrder.map((t) => check('type', t, `${TYPES[t]} <small>${cnt(t)}</small>`)).join('')}</fieldset>
+<fieldset><legend>首见版本</legend>${check('first', 'old', `${PREV} 及更早`)}${check('first', 'new', VERSION)}</fieldset>
+<fieldset><legend>范围</legend>${check('cited', '1', '只看研究引用过的', false)}</fieldset>
+<fieldset><legend>还要有这些语言</legend>${langs.slice(1).map((l) => check('lang', l, LANG_NAME[l], false)).join('')}</fieldset>
 </aside>
 <div class="results">
-<label class="libsearch">按题名筛选<input type="search" id="lib-q" autocomplete="off"></label>
-<p class="count" id="lib-count">${sources.length} 篇</p>
+<label class="libsearch">按题名或短链筛选<input type="search" id="lib-q" autocomplete="off"></label>
+<p class="count" id="lib-count">正在载入…</p>
 <div class="tablebox"><table>
 <thead><tr><th scope="col">题名</th><th scope="col">类型</th><th scope="col">首见版本</th><th scope="col">状态</th><th scope="col">短链</th></tr></thead>
-<tbody id="lib-rows">
-${rows.map((s) => `<tr data-type="${s.type}" data-status="${s.pending ? 'pending' : 'live'}" data-langs="${Object.keys(s.langs).join(' ')}"><td><a class="serif" href="${base}${s.href}">${esc(s.title)}</a></td><td>${pill(s.typeName)}</td><td>${s.firstLabel}</td><td>${statusPill(s)}</td><td><code>${s.short}</code></td></tr>`).join('\n')}
-</tbody></table></div>
+<tbody id="lib-rows"></tbody></table></div>
+<div class="pagerow"><button type="button" class="btn" id="lib-prev">上一页</button><span class="count" id="lib-page"></span><button type="button" class="btn" id="lib-next">下一页</button></div>
 </div>
 </div></div>`;
-  page({ url: 't/', title: '原文库', body, cls: 'library-page', scripts: ['library.js'] });
+  page({ url: 't/', title: '原文库', body, cls: 'library-page', scripts: ['library.js'], data: { 'lib-meta': { types: TYPES, version: VERSION, prev: PREV } } });
+  // 每行：[id, 题名, 类型, 是否待确认, 语言, 是否被研究引用, 所属]
+  fs.writeFileSync(path.join(dist, 'data', 'library.json'), JSON.stringify(rows.map((s) => [s.id, s.title, s.type, (s.pending ? 1 : 0) + (s.isNew ? 2 : 0), Object.keys(s.langs).join(''), s.corpus ? 0 : 1, s.corpus ? s.heading || '' : ''])));
 }
 
 // ───────────────────────── 原文页 ─────────────────────────
@@ -659,19 +685,19 @@ ${sameLen ? `<div class="textbox parallel n${langs.length}" role="tabpanel" data
 </dl></section>
 <section class="card"><h2>核验</h2><dl>
 <div><dt>固定版本</dt><dd>${esc(source.corpus_version || '')} · ${esc((source.corpus_commit || '').slice(0, 8))}</dd></div>
-<div><dt>上线门</dt><dd>${s.pending ? `${VERSION} 新增，待确认` : `已在 ${PREV} 的数据里出现`}</dd></div>
-<div><dt>引文定位</dt><dd>${evs.length} 条引证取自此篇，其中 ${evs.filter((e) => (HITS[e.id] || []).length).length} 条已在原文中定位到段落</dd></div>
+<div><dt>上线门</dt><dd>${s.pending ? `${VERSION} 新增，待确认` : s.isNew ? `${VERSION} 新增，${VERSION} 已确认开放` : `已在 ${PREV} 的数据里出现`}</dd></div>
+${evs.length ? `<div><dt>引文定位</dt><dd>${evs.length} 条引证取自此篇，其中 ${evs.filter((e) => (HITS[e.id] || []).length).length} 条已在原文中定位到段落</dd></div>` : ''}
 <div><dt>最近核验</dt><dd>${esc(stats.revision_date)}</dd></div>
 </dl></section>
-<section class="card"><h2>被引用于</h2>
+${evs.length ? `<section class="card"><h2>被引用于</h2>
 ${[...usedTopics].map((t) => `<a href="${base}topic/${t.id}/">${esc(t.title)}</a>`).join('')}
 ${[...usedQs].map((q) => `<a href="${base}q/${q.id}/">星图问题（含剧情）</a>`).slice(0, 1).join('')}
 ${refs.length ? `<ul class="reflist">${refs.slice(0, 12).map(([no, sec, title]) => `<li><a href="${base}read/${pad(no)}/#${sec}"><b>${pad(no)}</b>${esc(title)}</a></li>`).join('')}</ul>${refs.length > 12 ? `<p class="muted small">另有 ${refs.length - 12} 处</p>` : ''}` : ''}
 ${usedEvents.size ? `<p class="muted small">年表：${[...usedEvents].map((x) => `<a href="${base}timeline/#${x}">${x}</a>`).join('、')}</p>` : ''}
-</section>
+</section>` : ''}
 </aside>
 </div></div>`;
-  page({ url: s.href, title: s.title, desc: s.pending ? '' : s.langs[langs[0]].slice(0, 3).map((l) => l[1]).join(' ').slice(0, 110), body, cls: 'source-page', scripts: ['source.js'], data: s.pending ? {} : { 'ev-data': Object.fromEntries(evs.map((e) => [e.id, e])) } });
+  page({ url: s.href, title: s.title, desc: s.pending ? '' : s.langs[langs[0]].slice(0, 3).map((l) => l[1]).join(' ').slice(0, 110), body, cls: 'source-page', scripts: ['source.js'], data: s.pending || !evs.length ? {} : { 'ev-data': Object.fromEntries(evs.map((e) => [e.id, e])) } });
 }
 
 // ───────────────────────── 专题 ─────────────────────────
@@ -868,10 +894,10 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
 <article class="card longtext">
 <h2>两种读法</h2>
 <p><a href="${base}">星图</a>给想弄明白剧情的玩家：先选主线进度，之后的内容藏在迷雾里；从一个问题出发，一步步看到相关的人物、事件和它们之间的关系。</p>
-<p>考据层给想核对的人：<a href="${base}t/">原文库</a>收录研究引用过的 ${sources.length} 篇文本，<a href="${base}topic/">专题</a>一页回答一个问题，<a href="${base}timeline/">年表</a>有 ${stats.chronology_events} 项事件。专题取自一份 ${fmt(stats.body_han_characters)} 字的长稿，全文也在专题页里。</p>
+<p>考据层给想核对的人：<a href="${base}t/">原文库</a>收录固定版本里的 ${fmt(sources.length)} 篇简体中文文本（书籍、任务对白、角色故事与语音、物品说明等），另有<a href="${base}terms/">名词索引</a>；<a href="${base}topic/">专题</a>一页回答一个问题，<a href="${base}timeline/">年表</a>有 ${stats.chronology_events} 项事件。专题取自一份 ${fmt(stats.body_han_characters)} 字的长稿，全文也在专题页里。</p>
 <h2 id="gate">上线规则</h2>
-<p>全部文本固定于同一份语料快照（${esc(source.corpus_version || '')}，提交 <code>${esc((source.corpus_commit || '').slice(0, 12))}</code>）。一篇文本如果在上一版本（${PREV}）的快照里不存在，就算作 ${VERSION} 新增，标为“待确认”：原文页不显示正文，引用它的论述标明“部分证据待确认”。</p>
-<p>目前这道门只做了“是否已过一个版本”这一项检查。是否能追溯到已开放的任务或物品、是否带测试标记，还没有逐条核对；限时活动的“已下线”状态也还没有标出。</p>
+<p>全部文本固定于同一份语料快照（${esc(source.corpus_version || '')}，提交 <code>${esc((source.corpus_commit || '').slice(0, 12))}</code>）。一篇文本如果在上一版本（${PREV}）的快照里不存在，就算作 ${VERSION} 新增。新版本的文本在确认开放之前标为“待确认”：原文页不显示正文，引用它的论述标明“部分证据待确认”。${OPEN ? `${VERSION} 已经确认开放，所以这一版新增的文本现在正常显示。` : ''}</p>
+<p>目前这道门做了两项检查：是否已过一个版本；是否带测试或未上线的标记（带标记的不收）。是否能追溯到已开放的任务或物品，还没有逐条核对，所以库里可能混有游戏内实际读不到的文本；限时活动的“已下线”状态也还没有标出。</p>
 <h2>核验</h2>
 <p>星图和专题里的每条引文，构建时都要与所挂引证的原文片段逐字比对，对不上构建就失败。研究全文的 ${stats.evidence} 条短引中，绝大多数已定位到原文的具体段落，可以从引证卡直接跳到那一段。</p>
 <h2>声明</h2>
@@ -884,7 +910,7 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
 {
   const idx = [];
   for (const t of topics) idx.push(['专', t.title, `topic/${t.id}/`, `结论：${t.conclusion}${t.summary}`]);
-  for (const s of sources) idx.push(['文', s.title, s.href, `${s.short} ${s.typeName}${s.pending ? '' : ` ${Object.values(s.langs)[0].slice(0, 3).map((l) => l[1]).join(' ').slice(0, 140)}`}`]);
+  for (const s of sources) idx.push(['文', s.title, s.href, `${s.short} ${s.typeName}${s.corpus && s.heading ? ` · ${s.heading}` : ''}${s.pending || s.corpus ? '' : ` ${Object.values(s.langs)[0].slice(0, 3).map((l) => l[1]).join(' ').slice(0, 140)}`}`]);
   for (const c of chapters) {
     idx.push(['章', c.title, chapterURL(c), `${c.part.label} · 第 ${c.no} 章`]);
     for (const s of c.sections) idx.push(['节', s.title || c.title, `${chapterURL(c)}#${s.id}`, s.text.join(' ')]);
@@ -892,6 +918,42 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
   for (const e of chronology) if (e.event_id) idx.push(['年', `${e.date} · ${e.region}`, `timeline/#${e.event_id}`, e.event]);
   for (const e of evidenceList) idx.push(['证', e.title, `evidence/#${e.id}`, e.quotes.join(' / ')]);
   fs.writeFileSync(path.join(dist, 'data', 'search.json'), JSON.stringify(idx));
+}
+
+// ───────────────────────── 全文检索分片与名词索引 ─────────────────────────
+{
+  // 全文：每片约 1.5MB，搜索时按需逐片下载；待确认的原文不进全文
+  const dir = path.join(dist, 'data', 'ft');
+  fs.mkdirSync(dir, { recursive: true });
+  let cur = [], size = 0, n = 0;
+  const flush = () => { if (cur.length) { fs.writeFileSync(path.join(dir, `${n++}.json`), JSON.stringify(cur)); cur = []; size = 0; } };
+  for (const s of sources) {
+    if (s.pending) continue;
+    const text = (s.langs.CHS || Object.values(s.langs)[0]).map((l) => l[1]).join('\n');
+    if (size + text.length > 500000) flush();
+    cur.push([s.id, s.title, text]);
+    size += text.length;
+  }
+  flush();
+  fs.writeFileSync(path.join(dist, 'data', 'ft.json'), JSON.stringify({ shards: n }));
+
+  // 名词：只留指向已收录、正文可见的原文的
+  const termRows = corpusTerms.filter((t) => SRC2[t[2]] && !SRC2[t[2]].pending).map((t) => [t[0], t[1], t[2], t[3]]);
+  for (const n2 of star.nodes) termRows.push([n2.name, '星图', `who:${n2.id}`, null]);
+  termRows.sort((a, b) => a[0].localeCompare(b[0], 'zh'));
+  fs.writeFileSync(path.join(dist, 'data', 'terms.json'), JSON.stringify(termRows));
+  const kinds = [...new Set(termRows.map((t) => t[1]))];
+  const body = `<div class="wrap stack">
+<div class="pagehead"><h1>名词索引</h1><p>游戏文本里有名字的东西：角色、人物、任务、书籍、武器、圣遗物、物品、魔物、地点等，共 ${fmt(termRows.length)} 个。每个名词连到写着它的那篇原文；星图上的星连到它的档案。<a href="../t/">回原文库 →</a></p></div>
+<div class="ev-controls">
+<label class="libsearch">查一个名字<input type="search" id="term-q" autocomplete="off"></label>
+<select id="term-kind" aria-label="类别"><option value="">全部类别</option>${kinds.map((k) => `<option>${k}</option>`).join('')}</select>
+<span class="count" id="term-count">正在载入…</span>
+</div>
+<ul class="termlist" id="term-list"></ul>
+<div class="pagerow"><button type="button" class="btn" id="term-prev">上一页</button><span class="count" id="term-page"></span><button type="button" class="btn" id="term-next">下一页</button></div>
+</div>`;
+  page({ url: 'terms/', title: '名词索引', body, cls: 'terms-page', scripts: ['terms.js'] });
 }
 
 fs.writeFileSync(path.join(dist, '.nojekyll'), '');
@@ -902,4 +964,5 @@ fs.writeFileSync(path.join(dist, '404.html'), `<!doctype html><html lang="zh-CN"
 <script>(function(){var seg=location.pathname.split('/')[1];if(/github\\.io$/.test(location.hostname)&&seg)document.getElementById('home').href='/'+seg+'/'})()</script></body></html>
 `);
 const count = (d) => fs.readdirSync(d, { withFileTypes: true }).reduce((a, f) => a + (f.isDirectory() ? count(path.join(d, f.name)) : 1), 0);
+console.log(`原文 ${sources.length} 篇（研究引用 ${citedCount} 篇）`);
 console.log(`已生成：${star.questions.length} 个问题、${star.nodes.length} 颗星、${allEdges.length} 条关系（其中 ${autoEdges.length} 条由年表自动连出）、${topics.length} 篇专题、${sources.length} 篇原文、${chapters.length} 章，共 ${count(dist)} 个文件 → dist/`);

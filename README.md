@@ -40,11 +40,27 @@ npm run build
 ## 两条规则，都在构建时执行
 
 - **逐条核验**：手写内容里的每条引文，必须是所挂引证的原文片段。对不上，`npm run build` 直接失败。
-- **上线门**：`sync` 把每篇原文与上一版本（7.1）的语料快照对比。上一版本里没有的算作本版本新增，标为“待确认”，原文页不显示正文。
+- **上线门**：导入时把每篇原文与上一版本（7.1）的语料快照对比，上一版本里没有的算作本版本新增。本版本还没确认开放时，这些文本标为“待确认”、不显示正文；确认开放后把版本号写进 `content/curated/release.json` 的 `confirmed`，它们就正常显示。7.2 已确认开放。
 
 ## 发布
 
 `.github/workflows/site.yml` 在每个 PR 和每次推送到 `main` 时构建并检查。要发布到 GitHub Pages：在仓库 Settings → Pages 把 Source 设为 GitHub Actions，再把仓库变量 `DEPLOY_PAGES` 设为 `true`（或手动运行一次该工作流）。站内链接全部是相对路径，放在子目录下也能用。
+
+## 全量语料
+
+原文库收的是固定版本里的全部简体中文文本（约 9,700 篇、1,200 万字）：书籍与文书、圣遗物和武器故事、任务（有旅行日志的用日志，没有的用对白文件拼）、其余对白（按说话的 NPC 归拢）、角色故事与语音、物品与图鉴说明。压缩后的快照在 `content/corpus/`，构建只读它。
+
+重新导入要先取一份语料的本地副本，再运行导入脚本：
+
+```bash
+git clone --filter=blob:none --no-checkout --depth 1 https://github.com/DimbreathBot/AnimeGameData .cache/agd-work
+# 在 .cache/agd-work 里按 scripts/corpus.mjs 开头列出的目录做 sparse-checkout
+node scripts/corpus.mjs
+```
+
+导入时丢掉带测试、未上线标记的条目；本版本新增的文本是否显示，由上面的上线门开关决定。研究引用过的 507 篇保留多语言文本和引文定位，不被全量语料覆盖。
+
+全文检索的数据按约 1.5 MB 一片放在 `dist/data/ft/`，只有访问者点“搜全文”时才逐片下载。
 
 ## 星图的内容是怎么来的
 

@@ -116,6 +116,7 @@ ${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d
     const run = () => {
       const q = input.value.trim().toLowerCase();
       sel = -1;
+      deepRun++;
       if (!q) { results.innerHTML = '<p class="search-tip">输入关键词开始搜索。</p>'; return; }
       if (!index) { results.innerHTML = '<p class="search-tip">正在载入索引…</p>'; return; }
       const order = { 专: 0, 文: 1, 章: 2, 节: 3, 年: 4, 证: 5 };
@@ -129,13 +130,47 @@ ${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d
       hits.sort((a, b) => a.score - b.score);
       const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
       const mark = (s) => esc(s).replace(re, (m) => `<mark>${m}</mark>`);
-      results.innerHTML = hits.length
+      const deep = `<div class="deep"><span>没找到想要的？可以在全部原文的正文里搜（要下载全文，约二十多兆）。</span><button type="button" data-deep>搜全文</button></div>`;
+      results.innerHTML = (hits.length
         ? hits.slice(0, 60).map((h) => {
           const from = h.xi > 24 ? h.xi - 24 : 0;
           return `<a href="${base}${h.url}"><i class="k">${h.k}</i><b>${mark(h.title)}</b><span>${mark((from ? '…' : '') + h.text.slice(from, from + 110))}</span></a>`;
         }).join('') + (hits.length > 60 ? `<p class="search-tip">共 ${hits.length} 处，只显示前 60 处。</p>` : '')
-        : '<p class="search-tip">没有找到。换个说法试试。</p>';
+        : '<p class="search-tip">题名、研究全文和引证里没有找到。</p>') + deep;
     };
+    // 全文检索：逐片下载原文正文，边下边找
+    let deepRun = 0;
+    const deepSearch = async () => {
+      const q = input.value.trim();
+      if (!q) return;
+      const my = ++deepRun;
+      const { shards } = await fetch(`${base}data/ft.json`).then((r) => r.json());
+      const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+      const mark = (s) => esc(s).replace(new RegExp(esc(q).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g'), (m) => `<mark>${m}</mark>`);
+      results.innerHTML = '<p class="search-tip" id="deep-status">正在搜全文…</p><div id="deep-hits"></div>';
+      const status = results.querySelector('#deep-status'), box = results.querySelector('#deep-hits');
+      let found = 0;
+      for (let i = 0; i < shards && my === deepRun && searchEl; i++) {
+        const part = await fetch(`${base}data/ft/${i}.json`).then((r) => r.json());
+        let html = '';
+        for (const [id, title, text] of part) {
+          if (found >= 300) break;
+          re.lastIndex = 0;
+          const m = re.exec(text);
+          if (!m) continue;
+          const line = text.slice(0, m.index).split('\n').length;
+          const from = Math.max(0, m.index - 30);
+          html += `<a href="${base}t/${id}/#p${line}"><i class="k">文</i><b>${esc(title)}</b><span>${mark((from ? '…' : '') + text.slice(from, m.index + q.length + 80).replace(/\n/g, ' '))}</span></a>`;
+          found++;
+        }
+        if (my !== deepRun || !searchEl) return;
+        box.insertAdjacentHTML('beforeend', html);
+        status.textContent = found >= 300 ? '命中很多，只列出前 300 篇。' : `已搜 ${i + 1} / ${shards} 片，找到 ${found} 篇…`;
+        if (found >= 300) break;
+      }
+      if (my === deepRun && searchEl && found < 300) status.textContent = `全文搜索完成：${found} 篇原文里有“${q}”。`;
+    };
+    results.addEventListener('click', (e) => { if (e.target.closest('[data-deep]')) deepSearch(); });
     let t;
     input.addEventListener('input', () => { clearTimeout(t); t = setTimeout(run, 90); });
     searchEl.addEventListener('keydown', (e) => {
