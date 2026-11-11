@@ -1,7 +1,7 @@
 // 玩家版：主线进度与迷雾、进度选择页、星图、问题页的手机分步
-(() => {
+(async () => {
   const { base, esc } = window.Site;
-  const data = JSON.parse(document.getElementById('star-data')?.textContent || '{}');
+  let data = JSON.parse(document.getElementById('star-data')?.textContent || '{}');
   const stages = data.stages || [];
   const $ = (s, el = document) => el.querySelector(s);
   const store = {
@@ -73,6 +73,7 @@
   const svg = $('#sky-svg');
   if (!svg) return;
   if (progress < 0) { location.replace(`${base}gate/`); return; }
+  data = await fetch(`${base}data/star.json`).then((r) => r.json()); // 星图数据较大，只在这一页取
   const { nodes, edges, questions, kinds } = data;
   const N = Object.fromEntries(nodes.map((n) => [n.id, n]));
   const visible = (id) => N[id].gate <= progress;
@@ -110,23 +111,61 @@
 
     const shown = [...revealed].filter(visible);
     const inQ = new Set(q ? q.nodes : []);
-    // 先算出要画的线和迷雾里的星，再让画面刚好框住它们
+    // 两种排法：手写的问题用星图上的固定位置；其余情况以选中的星为中心，把它的关系绕成几圈
+    const mine = sel ? neighbors(sel).filter(({ e, other }) => !e.auto && e.gate <= progress && visible(other)) : [];
+    const mineIds = [...new Set(mine.map((x) => x.other))];
+    const ego = !showAll && sel && (!inQ.has(sel) || mineIds.length > 10);
+    const pos = {};
+    const P = (id) => pos[id] || N[id];
+    let display = shown;
     const fogNodes = new Map();
+    if (ego) {
+      const fogIds = [...new Set(neighbors(sel).filter(({ e }) => !e.auto && e.gate > progress).map((x) => x.other))];
+      const ring = [...mineIds.sort((a, b) => (N[a].kind + N[a].name).localeCompare(N[b].kind + N[b].name, 'zh')), ...fogIds.map((id) => `?${id}`)];
+      pos[sel] = { x: 0, y: 0 };
+      const caps = [12, 20, 28, 36, 48, 400];
+      let k = 0;
+      caps.forEach((cap, ri) => {
+        const part = ring.slice(k, k + cap);
+        part.forEach((id, i) => { const a = -Math.PI / 2 + (2 * Math.PI * (i + (ri % 2) / 2)) / part.length; const R = 250 + ri * 175; pos[id] = { x: Math.cos(a) * R * 1.25, y: Math.sin(a) * R }; });
+        k += cap;
+      });
+      fogIds.forEach((id) => fogNodes.set(id, { id, ...pos[`?${id}`] }));
+      display = [sel, ...mineIds];
+    }
+    // 全部展开且星很多时：按地区分成八团，不画连线，点一颗星再看它的关系
+    const atlas = showAll && shown.length > 120;
+    const heads = [];
+    if (atlas) {
+      stages.forEach((name, g) => {
+        const ids = shown.filter((id) => N[id].gate === g).sort((x, y) => (N[x].kind + N[x].name).localeCompare(N[y].kind + N[y].name, 'zh'));
+        if (!ids.length) return;
+        const cx = (g % 4) * 760, cy = Math.floor(g / 4) * 800;
+        ids.forEach((id, i) => { const r = 30 * Math.sqrt(i + 0.6), t = i * 2.39996; pos[id] = { x: cx + Math.cos(t) * r, y: cy + Math.sin(t) * r }; });
+        heads.push({ name: `${name} · ${ids.length}`, x: cx, y: cy - 30 * Math.sqrt(ids.length) - 50 });
+      });
+    }
     const drawn = [];
-    for (const e of edges) {
-      const A = N[e.a], B = N[e.b];
+    for (const e of atlas ? [] : edges) {
       const open = e.gate <= progress;
-      if (open && revealed.has(e.a) && revealed.has(e.b)) drawn.push({ e, A, B, hot: !e.auto && ((inQ.has(e.a) && inQ.has(e.b)) || e.a === sel || e.b === sel) });
+      if (ego) {
+        if (e.auto || (e.a !== sel && e.b !== sel)) continue;
+        const other = e.a === sel ? e.b : e.a;
+        if (open && visible(other)) drawn.push({ e, A: P(sel), B: P(other), hot: true });
+        else if (!open && fogNodes.has(other)) drawn.push({ e, A: P(sel), B: fogNodes.get(other), fogged: true });
+        continue;
+      }
+      if (open && revealed.has(e.a) && revealed.has(e.b)) drawn.push({ e, A: P(e.a), B: P(e.b), hot: !e.auto && ((inQ.has(e.a) && inQ.has(e.b)) || e.a === sel || e.b === sel) });
       else if (!open && !e.auto) {
-        const [near, far] = revealed.has(e.a) && visible(e.a) ? [A, B] : revealed.has(e.b) && visible(e.b) ? [B, A] : [null, null];
+        const [near, far] = revealed.has(e.a) && visible(e.a) ? [N[e.a], N[e.b]] : revealed.has(e.b) && visible(e.b) ? [N[e.b], N[e.a]] : [null, null];
         if (near && !(visible(far.id) && revealed.has(far.id))) { fogNodes.set(far.id, far); drawn.push({ e, A: near, B: far, fogged: true }); }
       }
     }
-    // 画面框住的范围：展开全部时是所有星；否则是选中的星和它已长出的关系，选中的星属于当前问题时再加上问题里的星
+    // 画面框住的范围
     const nb = sel ? new Set([sel, ...neighbors(sel).map((x) => x.other)]) : null;
-    const focus = showAll || !sel ? shown : shown.filter((id) => nb.has(id) || (inQ.has(sel) && inQ.has(id)));
-    const fogFocus = [...fogNodes.values()].filter((fg) => showAll || !sel || nb.has(fg.id));
-    const pts = [...focus.map((id) => N[id]), ...fogFocus];
+    const focus = ego || showAll || !sel ? display : display.filter((id) => nb.has(id) || (inQ.has(sel) && inQ.has(id)));
+    const fogFocus = [...fogNodes.values()].filter((fg) => ego || showAll || !sel || nb.has(fg.id));
+    const pts = [...focus.map(P), ...fogFocus, ...heads];
     const box = svg.getBoundingClientRect();
     const ratio = box.width && box.height ? box.width / box.height : 900 / 680;
     let x0 = Math.min(...pts.map((p) => p.x), Infinity), x1 = Math.max(...pts.map((p) => p.x), -Infinity);
@@ -138,6 +177,7 @@
     svg.setAttribute('viewBox', `${vx.toFixed(0)} ${vy.toFixed(0)} ${vw.toFixed(0)} ${vh.toFixed(0)}`);
     const f = vw / Math.max(box.width, 320); // 每个屏幕像素对应多少画布单位：字号和星的大小保持不变
     const crowded = focus.length > 22;
+    const mute = focus.length > 70; // 星太多时不写名字，悬停可见
 
     let out = `<defs><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#E6C06A" stop-opacity="0.45"></stop><stop offset="100%" stop-color="#E6C06A" stop-opacity="0"></stop></radialGradient><radialGradient id="skybg" cx="50%" cy="45%" r="60%"><stop offset="0%" stop-color="#17243F"></stop><stop offset="100%" stop-color="#0D1424"></stop></radialGradient></defs><rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="url(#skybg)"></rect>`;
     let seed = 11;
@@ -145,23 +185,27 @@
     for (let i = 0; i < 70; i++) out += `<circle cx="${(vx + rnd() * vw).toFixed(0)}" cy="${(vy + rnd() * vh).toFixed(0)}" r="${([0.6, 0.8, 1.1][i % 3] * f).toFixed(2)}" fill="#fff" fill-opacity="${[0.15, 0.25, 0.35][(i * 7) % 3]}"></circle>`;
 
     let lines = '', labels = '';
+    const pills = ego ? mineIds.length <= 12 : true;
     for (const { e, A, B, hot, fogged } of drawn) {
-      lines += `<line class="edge${hot ? ' hot' : ''}${fogged ? ' fogged' : ''}${e.auto ? ' auto' : ''}${e.level === 'hypothesis' ? ' hyp' : ''}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke-width="${((hot ? 3 : e.auto ? 1 : 1.6) * f).toFixed(2)}"${e.level === 'hypothesis' ? ` stroke-dasharray="${6 * f} ${5 * f}"` : ''}></line>`;
-      if (hot && e.label && (!crowded || e.a === sel || e.b === sel)) {
-        const w = (e.label.length * 14 + 22) * f, h = 26 * f, mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
+      const thin = ego && mineIds.length > 12;
+      lines += `<line class="edge${hot ? ' hot' : ''}${fogged ? ' fogged' : ''}${e.auto ? ' auto' : ''}${e.level === 'hypothesis' ? ' hyp' : ''}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke-width="${((hot ? (thin ? 1.4 : 3) : e.auto ? 1 : 1.6) * f).toFixed(2)}"${thin ? ' stroke-opacity=".55"' : ''}${e.level === 'hypothesis' ? ` stroke-dasharray="${6 * f} ${5 * f}"` : ''}></line>`;
+      if (hot && e.label && pills && (!crowded || e.a === sel || e.b === sel)) {
+        const w = (e.label.length * 14 + 22) * f, h = 26 * f, t = ego ? 0.58 : 0.5, mx = A.x + (B.x - A.x) * t, my = A.y + (B.y - A.y) * t;
         labels += `<g class="elabel"><rect x="${mx - w / 2}" y="${my - h / 2}" width="${w}" height="${h}" rx="${h / 2}" stroke-width="${f}"></rect><text x="${mx}" y="${my + 5 * f}" font-size="${13 * f}">${esc(e.label)}</text></g>`;
       }
     }
     out += lines + labels;
-    for (const id of shown) {
-      const n = N[id];
+    for (const h of heads) out += `<text class="head" x="${h.x}" y="${h.y}" font-size="${15 * f}" text-anchor="middle" fill="#E6C06A">${esc(h.name)}</text>`;
+    for (const id of display) {
+      const n = N[id], p = P(id);
       const isSel = id === sel;
-      const r = (isSel ? 24 : crowded ? 9 : 15) * f;
-      const more = neighbors(id).some(({ e, other }) => !e.auto && e.gate <= progress && visible(other) && !revealed.has(other));
-      out += `<g class="node${isSel ? ' sel' : ''}" data-node="${id}" tabindex="0" role="button" aria-label="${esc(n.name)}，${kinds[n.kind]}">`
-        + ((inQ.has(id) || isSel) ? `<circle cx="${n.x}" cy="${n.y}" r="${r * 2.6}" fill="url(#glow)"></circle>` : '')
-        + (isSel ? `<circle class="ring" cx="${n.x}" cy="${n.y}" r="${r + 9 * f}" stroke-width="${2 * f}"></circle>` : more ? `<circle class="ring" cx="${n.x}" cy="${n.y}" r="${r + 6 * f}" stroke-width="${1.5 * f}" stroke-dasharray="${2 * f} ${5 * f}" stroke-opacity=".5"></circle>` : '')
-        + `<circle class="body k-${n.kind}" cx="${n.x}" cy="${n.y}" r="${r}"></circle><text x="${n.x}" y="${n.y + r + 20 * f}" font-size="${(isSel ? 16 : crowded ? 12 : 14) * f}" stroke-width="${4 * f}">${esc(n.name)}</text></g>`;
+      const r = atlas ? (isSel ? 20 : 11) : (isSel ? 24 : crowded ? 9 : 15) * f;
+      const more = !ego && neighbors(id).some(({ e, other }) => !e.auto && e.gate <= progress && visible(other) && !revealed.has(other));
+      const name = n.name.length > 12 && !isSel ? `${n.name.slice(0, 11)}…` : n.name;
+      out += `<g class="node${isSel ? ' sel' : ''}" data-node="${id}" tabindex="0" role="button" aria-label="${esc(n.name)}，${kinds[n.kind]}"><title>${esc(n.name)}</title>`
+        + ((inQ.has(id) || isSel) ? `<circle cx="${p.x}" cy="${p.y}" r="${r * 2.6}" fill="url(#glow)"></circle>` : '')
+        + (isSel ? `<circle class="ring" cx="${p.x}" cy="${p.y}" r="${r + 9 * f}" stroke-width="${2 * f}"></circle>` : more ? `<circle class="ring" cx="${p.x}" cy="${p.y}" r="${r + 6 * f}" stroke-width="${1.5 * f}" stroke-dasharray="${2 * f} ${5 * f}" stroke-opacity=".5"></circle>` : '')
+        + `<circle class="body k-${n.kind}" cx="${p.x}" cy="${p.y}" r="${r}"></circle>${mute && !isSel ? '' : `<text x="${p.x}" y="${p.y + r + 20 * f}" font-size="${(isSel ? 16 : crowded ? 12 : 14) * f}" stroke-width="${4 * f}">${esc(name)}</text>`}</g>`;
     }
     for (const fg of fogNodes.values()) out += `<g class="fognode"><circle cx="${fg.x}" cy="${fg.y}" r="${12 * f}" stroke-width="${f}" stroke-dasharray="${3 * f} ${3 * f}"></circle><text x="${fg.x}" y="${fg.y + 5 * f}" font-size="${14 * f}">?</text></g>`;
     svg.innerHTML = out;

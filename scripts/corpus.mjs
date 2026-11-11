@@ -240,6 +240,15 @@ let cur = [], size = 0;
 const flush = () => { if (!cur.length) return; const name = `part-${String(parts.length + 1).padStart(2, '0')}.json.gz`; fs.writeFileSync(path.join(outDir, name), zlib.gzipSync(JSON.stringify(cur), { level: 9 })); parts.push(name); cur = []; size = 0; };
 for (const e of entries) { const s = JSON.stringify(e).length; if (size + s > 14e6) flush(); cur.push(e); size += s; }
 flush();
+// 星图用的元数据：角色的所属地区、地理志条目所在的城市
+{
+  const info = Object.fromEntries(X('FetterInfoExcelConfigData').map((i) => [i.avatarId, i.avatarAssocType.replace('ASSOC_TYPE_', '')]));
+  const meta = {
+    avatars: avatars.filter((a) => info[a.id]).map((a) => ({ id: a.id, name: avatarName[a.id], assoc: info[a.id] })),
+    places: X('ViewCodexExcelConfigData').map((v) => ({ name: T(v.nameTextMapHash), city: v.cityId })).filter((v) => v.name),
+  };
+  fs.writeFileSync(path.join(outDir, 'starmeta.json'), `${JSON.stringify(meta)}\n`);
+}
 const uniq = new Map();
 for (const t of terms) { const k = `${t[0]}|${t[1]}`; if (!uniq.has(k) && t[2]) uniq.set(k, t); }
 fs.writeFileSync(path.join(outDir, 'terms.json.gz'), zlib.gzipSync(JSON.stringify([...uniq.values()]), { level: 9 }));

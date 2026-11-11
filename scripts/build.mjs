@@ -97,6 +97,7 @@ const RULES = gateRules.rules.map(([g, pat]) => [g, new RegExp(pat)]);
 const evGate = (id) => {
   const e = EV[id];
   if (!e) return null;
+  if (id.startsWith('@')) return null; // 自动关系自带进度
   if (e.isNew) return LAST; // 本版本新增的出处，剧情上算最后一篇
   for (const [g, re] of RULES) if (re.test(e.title)) return g;
   return null;
@@ -366,6 +367,120 @@ const questionRefs = {};
 star.questions.forEach((q) => q.steps.forEach((s) => (questionRefs[s.ev] ||= new Set()).add(q)));
 
 // ───────────────────────── 玩家版：星图 ─────────────────────────
+// ───────────────────────── 星图的自动部分 ─────────────────────────
+// 手写的星之外，从全量语料里长出其余的：全部可玩角色、地理志的地点、魔神任务的每一幕、主线里台词多的人物。
+// 每条自动关系都指向原文里的某一行（角色语音“关于某某”、角色资料的“所属”、地理志条目、任务里的第一句台词）。
+if (fs.existsSync(C('corpus/starmeta.json'))) {
+  const meta = readJSON('corpus/starmeta.json');
+  const NATION = ['蒙德', '璃月', '稻妻', '须弥', '枫丹', '纳塔', '挪德卡莱', '至冬'];
+  const ASSOC = { MONDSTADT: 0, LIYUE: 1, INAZUMA: 2, SUMERU: 3, FONTAINE: 4, NATLAN: 5, NODKRAI: 6, NODKRAI_ZIBAI: 1, HVISION: 6, SNEZHNAYA: 7, SNEZHNAYA_STAR: 7, RANGER: 0, OMNI_SCOURGE: 5 };
+  const CITY = { 1: 0, 2: 1, 3: 2, 4: 3, 5: 4, 6: 5, 7: 6, 8: 7 };
+  // 对白里用称号出现的人
+  const TITLE = { '「公子」': '达达利亚', '「仆人」': '阿蕾奇诺', '「木偶」': '桑多涅', '「少女」': '哥伦比娅', '「散兵」': '流浪者', '「博士」': '博士', '「队长」': '队长', '雷电将军': '雷电影', '影': '雷电影', '温迪': '巴巴托斯', '钟离': '摩拉克斯', '多托雷': '博士' };
+  const SKIP = new Set(['荧', '空', '参赛者', '纯水精灵？', '众人', '士兵', '愚人众士兵']);
+  const byName = new Map();
+  for (const n of star.nodes) { byName.set(n.name, n); (n.aliases || []).forEach((a) => { if (!byName.has(a)) byName.set(a, n); }); }
+  const find = (name) => byName.get(name) || byName.get(TITLE[name]) || null;
+  const slots = {}; // 每个簇里已经放了几颗
+  const place = (cluster, cx, cy) => { const i = (slots[cluster] = (slots[cluster] || 0) + 1); const r = 62 * Math.sqrt(i), a = i * 2.39996; return [Math.round(cx + Math.cos(a) * r), Math.round(cy + Math.sin(a) * r)]; };
+  const addNode = (n) => { n.auto = true; n.aliases ||= n.name.length >= 2 ? [n.name] : []; // 单字的名字不拿去匹配年表
+    star.nodes.push(n); byName.set(n.name, n); return n; };
+  let refN = 0;
+  // 把“原文的某一行”登记成一条内部引证，后面的引文块、链接、档案页都照常用
+  const ref = (src, line, quote) => {
+    const id = `@${++refN}`;
+    EV[id] = { id, n: '', title: src.title, quotes: [quote], src: src.id, href: src.href, short: src.short, pending: src.pending, isNew: src.isNew, anchors: [anchorOf('CHS', line)] };
+    HITS[id] = [['CHS', line, quote]];
+    return id;
+  };
+  const clip = (t, n = 46) => (t.length > n ? t.slice(0, n) : t);
+  const addEdge = (a, b, label, text, src, line, gate, level = 'fact') => {
+    if (!a || !b || a === b || src.pending) return;
+    const quote = clip(src.langs.CHS[line][1]);
+    star.edges.push({ a: a.id, b: b.id, label, level, text, ev: ref(src, line, quote), quote, gate, gen: true });
+  };
+
+  // 八个地区各一颗星，作为归属的落点
+  const nation = NATION.map((name, g) => find(name) || addNode({ id: `nation${g}`, name, kind: 'place', gate: g, x: 3400 + (g % 4) * 1300, y: -300 + Math.floor(g / 4) * 1500, blurb: `${name}。地理志和角色资料里归在这里的地方与人物，都连到这颗星。`, hub: true }));
+  const center = (g) => [3400 + (g % 4) * 1300, -300 + Math.floor(g / 4) * 1500];
+
+  // 可玩角色
+  const charOf = new Map();
+  for (const a of meta.avatars) {
+    if (a.assoc === 'MAINACTOR' || a.name === '旅行者') continue;
+    const prof = SRC[`misc/avatar-${a.id}`];
+    const voice = SRC[`voice/a${a.id}`];
+    let gate = ASSOC[a.assoc];
+    if (gate == null) gate = { 达达利亚: 1, 阿蕾奇诺: 4 }[a.name] ?? 6;
+    let n = find(a.name);
+    if (!n) {
+      const intro = prof?.langs.CHS.find((l) => l[0] === '简介')?.[1] || '';
+      const title = prof?.langs.CHS.find((l) => l[0] === '称号')?.[1] || '';
+      const [x, y] = place(`c${gate}`, ...center(gate));
+      n = addNode({ id: `a${a.id}`, name: a.name, kind: 'being', gate, x, y, blurb: [title && `「${title}」。`, intro].filter(Boolean).join('') || `${NATION[gate]}的角色。` });
+    }
+    n.profile = prof?.href; n.voice = voice?.href;
+    charOf.set(a.name, { node: n, prof, voice, gate });
+  }
+  for (const { node, prof, voice, gate } of charOf.values()) {
+    // 所属
+    const li = prof ? prof.langs.CHS.findIndex((l) => l[0] === '所属') : -1;
+    if (li >= 0 && nation[gate] !== node) addEdge(node, nation[gate], '所属', `角色资料里，${node.name}的所属写的是「${prof.langs.CHS[li][1]}」`, prof, li, Math.max(node.gate, gate));
+    // 语音“关于某某”：一个角色怎么说另一个
+    if (!voice) continue;
+    voice.langs.CHS.forEach(([title, text], i) => {
+      const m = title.match(/^关于(.+?)(…|·.*)?$/);
+      const other = m && find(m[1].replace(/[「」]/g, ''));
+      if (!other || other === node || other.hub) return;
+      if (star.edges.some((e) => e.gen && e.label === '谈起' && e.a === node.id && e.b === other.id)) return;
+      addEdge(node, other, '谈起', `${node.name}的语音「${title.replace(/…$/, '')}」`, voice, i, Math.max(node.gate, other.gate));
+    });
+  }
+
+  // 魔神任务的每一幕，以及在里面说话的人
+  const chapGate = (g) => { const m = g.match(/^(序章|第一章|第二章|第三章|第四章|第五章|第六章|第七章|空月之歌|间章 第一幕|间章 第二幕|间章 第三幕|间章 第四幕)/); return m ? { 序章: 0, 第一章: 1, 第二章: 2, 第三章: 3, 第四章: 4, 第五章: 5, 第六章: 6, 空月之歌: 6, 第七章: 7, '间章 第一幕': 2, '间章 第二幕': 2, '间章 第三幕': 3, '间章 第四幕': 4 }[m[1]] : null; };
+  const chapters2 = new Map();
+  for (const s of sources) { if (s.type !== 'aq' || !s.corpus || s.pending) continue; const g = chapGate(s.heading || ''); if (g == null) continue; (chapters2.get(s.heading) || chapters2.set(s.heading, { gate: g, quests: [] }).get(s.heading)).quests.push(s); }
+  const order = [...chapters2].sort((a, b) => a[1].gate - b[1].gate || a[0].localeCompare(b[0], 'zh'));
+  const speakers = new Map(); // 名字 → {lines, chapters:Set, first:{src,line}, gate}
+  order.forEach(([title, c], ci) => {
+    const name = title.replace(/^(\S+ \S+) /, '$1 · ');
+    const first = c.quests[0];
+    const node = addNode({ id: `ch${ci + 1}`, name, kind: 'event', gate: c.gate, x: 3000 + (ci % 13) * 420, y: -1500 - Math.floor(ci / 13) * 260 + (ci % 2) * 90, blurb: `魔神任务的一幕，共 ${c.quests.length} 个任务。${first.langs.CHS[0][0] ? '' : first.langs.CHS[0][1]}`, quests: c.quests.map((q) => [q.title, q.href]) });
+    c.node = node;
+    const seen = new Set();
+    for (const q of c.quests) q.langs.CHS.forEach(([who, text], i) => {
+      if (!who || /^[？?]+$/.test(who) || who.startsWith('{') || who === '旅行者' || who === '派蒙') return;
+      const sp = speakers.get(who) || speakers.set(who, { lines: 0, chapters: new Set(), gate: c.gate }).get(who);
+      sp.lines++; sp.chapters.add(name); sp.gate = Math.min(sp.gate, c.gate);
+      if (!seen.has(who)) { seen.add(who); (c.firsts ||= []).push([who, q, i]); }
+    });
+  });
+  // 主线里台词多、又还不是星的人物
+  for (const [who, sp] of [...speakers].sort((a, b) => b[1].lines - a[1].lines)) {
+    if (find(who) || sp.lines < 40 || SKIP.has(who)) continue;
+    const [x, y] = place(`c${sp.gate}`, ...center(sp.gate));
+    addNode({ id: `p${byName.size}`, name: who.replace(/[「」]/g, ''), kind: 'being', gate: sp.gate, x, y, blurb: `魔神任务里的人物，在「${[...sp.chapters][0]}」等 ${sp.chapters.size} 幕出场，共 ${sp.lines} 句对白。`, aliases: [who, who.replace(/[「」]/g, '')] });
+    byName.set(who, byName.get(who.replace(/[「」]/g, '')));
+  }
+  for (const [, c] of order) for (const [who, q, i] of c.firsts || []) {
+    const n = find(who);
+    if (n && !n.hub) addEdge(n, c.node, '出场', `${n.name}在这一幕的第一句话，出自任务「${q.title}」`, q, i, Math.max(n.gate, c.gate));
+  }
+
+  // 地理志的地点
+  const vc = SRC['misc/viewcodex'];
+  if (vc) for (const p of meta.places) {
+    const li = vc.langs.CHS.findIndex((l) => l[0] === p.name);
+    const gate = CITY[p.city];
+    if (li < 0 || gate == null || find(p.name)) continue;
+    const [x, y] = place(`v${gate}`, center(gate)[0], center(gate)[1] + 3300);
+    const n = addNode({ id: `v${byName.size}`, name: p.name, kind: 'place', gate, x, y, blurb: vc.langs.CHS[li][1] });
+    addEdge(n, nation[gate], '位于', `地理志把「${p.name}」记在${NATION[gate]}`, vc, li, gate);
+  }
+  console.log(`星图自动部分：共 ${star.nodes.length} 颗星、${star.edges.length} 条关系`);
+}
+
 const nodeById = Object.fromEntries(star.nodes.map((n) => [n.id, n]));
 // 关系的进度 = 两端的星、关系自身、所挂出处，四者中最晚的
 const edgeGate = (x) => Math.max(nodeById[x.a].gate, nodeById[x.b].gate, x.gate || 0, evGate(x.ev) ?? 0);
@@ -448,7 +563,8 @@ const quoteBlock = (evId, quote, base, level) => {
 <aside class="detail" id="detail" aria-label="节点详情"></aside>
 </div>
 <noscript><p class="noscript">星图需要启用 JavaScript。也可以直接进入<a href="study/">原文与证据</a>。</p></noscript>`;
-  page({ url: '', title: '星图', layer: 'star', cls: 'explore-page', body, scripts: ['star.js'], data: { 'star-data': starData } });
+  page({ url: '', title: '星图', layer: 'star', cls: 'explore-page', body, scripts: ['star.js'], data: { 'star-data': { stages: star.stages } } });
+  fs.writeFileSync(path.join(dist, 'data', 'star.json'), JSON.stringify(starData));
 }
 // 进度选择
 {
@@ -563,7 +679,8 @@ for (const n of star.nodes) {
 <div class="fogbox big" data-fog="${n.gate}">${LOCK}<div><strong>这颗星还在迷雾里</strong><p>${stageAfter(n.gate)}。<a href="${base}gate/">修改进度</a></p></div></div>
 <div class="profile-in" data-gate="${n.gate}">
 <header class="profile-head"><span class="kind"><i class="dot k-${n.kind}"></i>${star.kinds[n.kind]}</span><h1>${esc(n.name)}</h1><p class="lede">${esc(n.blurb)}</p>
-<p class="meta">${hand.length + auto.length} 条关系 · ${evs.length} 件相关的事 · <a href="${base}#n=${n.id}">在星图里看 →</a></p></header>
+<p class="meta">${hand.length + auto.length} 条关系 · ${evs.length} 件相关的事 · <a href="${base}#n=${n.id}">在星图里看 →</a></p>
+${n.profile || n.voice ? `<p class="plinks">${n.profile ? `<a href="${base}${n.profile}">角色资料</a>` : ''}${n.voice ? `<a href="${base}${n.voice}">全部语音</a>` : ''}<a href="${base}t/#type=story">角色故事在原文库</a></p>` : ''}${n.quests ? `<p class="plinks">${n.quests.map(([t, h]) => `<a href="${base}${h}">${esc(t)}</a>`).join('')}</p>` : ''}</header>
 ${hand.length ? `<section class="pblock"><h2>关系</h2>${hand.map(relHTML).join('\n')}</section>` : ''}
 ${evs.length ? `<section class="pblock"><h2>经历</h2><p class="hint">年表里提到${esc(n.name)}的事，按年表的次序排列。</p><ol class="life">${evs.map((e) => { const g = Math.max(e.gate, n.gate); return `<li><div class="fogbox" data-fog="${g}">${LOCK} 一件事在迷雾里，${stageAfter(g)}。</div><div data-gate="${g}"><p class="era">${esc(e.date)}<span>${esc(e.basis || '')}</span></p><p>${esc(e.text)}</p>${e.evs[0] ? quoteBlock(e.evs[0], EV[e.evs[0]].quotes[0], base) : ''}<a class="tl" href="${base}timeline/#${e.id}">年表 ${e.id}</a></div></li>`; }).join('\n')}</ol></section>` : ''}
 ${auto.length ? `<section class="pblock"><h2>也一起出现在</h2><p class="hint">同一件事里一起被提到的星。</p>${auto.map(relHTML).join('\n')}</section>` : ''}
