@@ -27,6 +27,7 @@ const sources = readJSON('sources.json');
 const SRC = Object.fromEntries(sources.map((x) => [x.id, x]));
 const star = readJSON('curated/star.json');
 const topics = readJSON('curated/topics.json');
+const gateRules = readJSON('curated/gates.json');
 const VERSION = (source.corpus_version || '').replace(/\.0$/, ''); // 7.2
 const PREV = '7.1';
 const LANG_NAME = { CHS: '简体中文', EN: '英文', JP: '日文', KR: '韩文' };
@@ -67,6 +68,30 @@ for (const e of evidenceList) {
   HITS[e.id] = e.quotes.map((q, i) => (e.hits?.[i] ? [...e.hits[i], q] : null)).filter(Boolean);
   delete e.hits;
 }
+
+// 主线进度：按出处的任务名和地区判定（规则在 content/curated/gates.json）
+const LAST = star.stages.length - 1;
+const RULES = gateRules.rules.map(([g, pat]) => [g, new RegExp(pat)]);
+const evGate = (id) => {
+  const e = EV[id];
+  if (!e) return null;
+  if (e.pending) return LAST;
+  for (const [g, re] of RULES) if (re.test(e.title)) return g;
+  return null;
+};
+// 引文所在的原文那一行（对白带说话人和上下各一句）；待确认的原文不给
+const quoteCtx = (id, quote) => {
+  const e = EV[id];
+  const src = e && SRC[e.src];
+  if (!src || src.pending) return null;
+  const hit = (HITS[id] || []).find((h) => h[2] === quote) || null;
+  if (!hit) return null;
+  const [L, l] = hit;
+  const lines = src.langs[L];
+  const pick = (i) => (lines[i] && !lines[i][1].startsWith('＊') ? { who: lines[i][0], text: lines[i][1] } : null);
+  const dialog = lines.some((x) => x[0]);
+  return { anchor: anchorOf(L, l), line: pick(l), before: dialog ? pick(l - 1) : null, after: dialog ? pick(l + 1) : null };
+};
 
 // 核验：手写内容里的每条引文，必须是所挂引证的原文片段，否则不发布
 {
@@ -212,6 +237,12 @@ const chapters = md.split(/^## /m).slice(1).map((raw, ci) => {
 figureIndex.forEach((f) => f.chapter.figures.push(f));
 
 // ───────────────────────── 通用片段 ─────────────────────────
+const markFrags = (text, qs) => {
+  let h = esc(text);
+  for (const q of [...new Set(qs)].sort((a, b) => b.length - a.length)) { const eq = esc(q); if (eq) h = h.split(eq).join(`\u0001${eq}\u0002`); }
+  return h.replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>');
+};
+
 const SITE = '提瓦特考据';
 const pill = (text, tone = 'blue') => `<span class="pill ${tone}">${esc(text)}</span>`;
 const statusPill = (s) => (s.pending ? pill('待确认', 'amber') : pill('在线', 'green'));
@@ -309,16 +340,69 @@ star.questions.forEach((q) => q.steps.forEach((s) => (questionRefs[s.ev] ||= new
 
 // ───────────────────────── 玩家版：星图 ─────────────────────────
 const nodeById = Object.fromEntries(star.nodes.map((n) => [n.id, n]));
-const edgeGate = (x) => Math.max(nodeById[x.a].gate, nodeById[x.b].gate, x.gate || 0);
+// 关系的进度 = 两端的星、关系自身、所挂出处，四者中最晚的
+const edgeGate = (x) => Math.max(nodeById[x.a].gate, nodeById[x.b].gate, x.gate || 0, evGate(x.ev) ?? 0);
+// 一步的进度 = 所挂出处按规则得到的篇章；规则没覆盖到时用手写值，再没有就跟问题走
+const stepGate = (q, s) => { const g = evGate(s.ev); return Math.max(s.gate ?? (g == null ? q.gate : 0), g ?? 0); };
+
+// 年表里的每件事，挂到提到它的星上：这是每颗星的“经历”
+const groupGate = (title) => { for (const [k, g] of Object.entries(gateRules.groups)) if (title.startsWith(k)) return g; return LAST; };
+const starEvents = Object.fromEntries(star.nodes.map((n) => [n.id, []]));
+const autoEdges = [];
+{
+  const linked = new Set(star.edges.flatMap((x) => [`${x.a}|${x.b}`, `${x.b}|${x.a}`]));
+  let group = '';
+  for (const row of chronology) {
+    if (row.group) { group = row.group; continue; }
+    const evs = (row.sources || []).filter((id) => EV[id]);
+    const gs = evs.map(evGate);
+    const gate = gs.length && gs.every((g) => g != null) ? Math.max(...gs) : Math.max(groupGate(group), ...gs.filter((g) => g != null));
+    const hay = `${row.date} ${row.region} ${row.event}`;
+    const hit = star.nodes.filter((n) => (n.aliases || [n.name]).some((a) => hay.includes(a)));
+    const item = { id: row.event_id, date: row.date, text: row.event, basis: row.time_basis, gate, evs: evs.slice(0, 2) };
+    hit.forEach((n) => starEvents[n.id].push(item));
+    // 同一件事里一起出现、又没有手写关系的两颗星，自动连一条线
+    // 只在事件正文里恰好提到两颗星时才连，三颗以上的关系太松
+    const pair = star.nodes.filter((n) => !n.hub && (n.aliases || [n.name]).some((al) => row.event.includes(al)));
+    if (pair.length === 2 && evs.length) {
+      for (let i = 0; i < pair.length; i++) for (let j = i + 1; j < pair.length; j++) {
+        const k = `${pair[i].id}|${pair[j].id}`;
+        if (linked.has(k)) continue;
+        linked.add(k); linked.add(`${pair[j].id}|${pair[i].id}`);
+        autoEdges.push({ a: pair[i].id, b: pair[j].id, label: '', level: 'fact', text: row.event, ev: evs[0], quote: EV[evs[0]].quotes[0], gate, auto: true, event: row.event_id });
+      }
+    }
+  }
+}
+const allEdges = [...star.edges, ...autoEdges];
+const shortLine = (c, quote) => {
+  if (!c?.line) return null;
+  const full = c.line.text;
+  const i = full.indexOf(quote);
+  let t = full;
+  if (full.length > 150 && i >= 0) { const from = Math.max(0, i - 50), to = Math.min(full.length, i + quote.length + 60); t = (from ? '…' : '') + full.slice(from, to) + (to < full.length ? '…' : ''); }
+  else if (full.length > 150) t = `${full.slice(0, 150)}…`;
+  return { w: c.line.who, t };
+};
 const starData = {
   stages: star.stages,
   kinds: star.kinds,
-  nodes: star.nodes,
-  edges: star.edges.map((x) => {
+  nodes: star.nodes.map((n) => ({
+    id: n.id, name: n.name, kind: n.kind, gate: n.gate, x: n.x, y: n.y, blurb: n.blurb,
+    events: starEvents[n.id].map((e) => ({ id: e.id, d: e.date, t: e.text, g: Math.max(e.gate, n.gate) })),
+  })),
+  edges: allEdges.map((x) => {
     const e = EV[x.ev];
-    return { a: x.a, b: x.b, label: x.label, level: x.level, gate: edgeGate(x), text: x.text, quote: x.quote, src: e.title, href: evLink(e, ''), pending: !!e.pending };
+    return { a: x.a, b: x.b, label: x.label, level: x.level, gate: edgeGate(x), text: x.text, quote: x.quote, ctx: shortLine(quoteCtx(x.ev, x.quote), x.quote), src: e.title, href: evLink(e, ''), pending: !!e.pending, auto: x.auto ? 1 : undefined };
   }),
   questions: star.questions.map((q) => ({ id: q.id, title: q.title, short: q.short, group: q.group, gate: q.gate, nodes: q.nodes, start: q.start, teaser: q.teaser || q.answer })),
+};
+// 引文块：原文那一行（引用的片段标出），对白带上一句和下一句
+const quoteBlock = (evId, quote, base, level) => {
+  const e = EV[evId];
+  const c = quoteCtx(evId, quote);
+  const line = (x, cls) => (x ? `<p class="${cls}">${x.who ? `<i>${esc(x.who)}</i>` : ''}${cls === 'hitline' ? markFrags(x.text, [quote]) : esc(x.text.length > 120 ? `${x.text.slice(0, 120)}…` : x.text)}</p>` : '');
+  return `<div class="quote${c?.line ? ' full' : ''}">${level ? levelTag(level) : ''}${c?.line ? `<blockquote>${line(c.before, 'ctxline')}${line(c.line, 'hitline')}${line(c.after, 'ctxline')}</blockquote>` : `<span class="q">“${esc(quote)}”</span>`}<span class="from"><a href="${evLink(e, base)}">${esc(e.title)}</a>${e.short ? `<code>${e.short}</code>` : ''}${e.pending ? pill('待确认', 'amber') : ''}</span></div>`;
 };
 {
   const body = `
@@ -362,21 +446,19 @@ const starData = {
 }
 // 问题页
 const miniMap = (q) => {
-  const ns = q.nodes.map((id) => nodeById[id]);
+  // 小图不用星图上的坐标（跨地区的问题会被拉得很扁），起点居中，其余绕一圈
   const set = new Set(q.nodes);
+  const others = q.nodes.filter((id) => id !== q.start);
+  const pos = { [q.start]: [300, 200] };
+  others.forEach((id, i) => { const a = -Math.PI / 2 + (2 * Math.PI * i) / others.length; pos[id] = [300 + Math.cos(a) * 210, 200 + Math.sin(a) * 140]; });
   const es = star.edges.filter((x) => set.has(x.a) && set.has(x.b));
-  const xs = ns.map((n) => n.x), ys = ns.map((n) => n.y);
-  const x0 = Math.min(...xs) - 70, y0 = Math.min(...ys) - 40, w = Math.max(...xs) - x0 + 70, h = Math.max(...ys) - y0 + 60;
-  return `<svg viewBox="${x0} ${y0} ${w} ${h}" role="img" aria-label="${esc(q.title)} 的关系图">${es.map((x) => `<line data-gate="${edgeGate(x)}" x1="${nodeById[x.a].x}" y1="${nodeById[x.a].y}" x2="${nodeById[x.b].x}" y2="${nodeById[x.b].y}" class="${x.level === 'hypothesis' ? 'hyp' : ''}"/>`).join('')}${ns.map((n) => `<g data-gate="${n.gate}"><circle cx="${n.x}" cy="${n.y}" r="13" class="k-${n.kind}"/><text x="${n.x}" y="${n.y + 34}">${esc(n.name)}</text></g>`).join('')}</svg>`;
+  return `<svg viewBox="0 0 600 420" role="img" aria-label="${esc(q.title)} 的关系图">${es.map((x) => `<line data-gate="${edgeGate(x)}" x1="${pos[x.a][0].toFixed(0)}" y1="${pos[x.a][1].toFixed(0)}" x2="${pos[x.b][0].toFixed(0)}" y2="${pos[x.b][1].toFixed(0)}" class="${x.level === 'hypothesis' ? 'hyp' : ''}"/>`).join('')}${q.nodes.map((id) => { const n = nodeById[id]; const [x, y] = pos[id]; return `<g data-gate="${n.gate}"><circle cx="${x.toFixed(0)}" cy="${y.toFixed(0)}" r="${id === q.start ? 16 : 11}" class="k-${n.kind}"/><text x="${x.toFixed(0)}" y="${(y + 36).toFixed(0)}">${esc(n.name)}</text></g>`; }).join('')}</svg>`;
 };
 star.questions.forEach((q, qi) => {
   const base = '../../';
   const next = star.questions[(qi + 1) % star.questions.length];
-  const maxGate = Math.max(q.gate, ...q.steps.map((s) => s.gate || 0));
-  const quoteBox = (s) => {
-    const e = EV[s.ev];
-    return `<div class="quote">${levelTag(s.level)}<span class="q">“${esc(s.quote)}”</span><a href="${evLink(e, base)}">${esc(e.title)}</a>${e.pending ? pill('待确认', 'amber') : ''}</div>`;
-  };
+  const maxGate = Math.max(q.gate, ...q.steps.map((s) => stepGate(q, s)));
+  const quoteBox = (s) => quoteBlock(s.ev, s.quote, base, s.level);
   const body = `
 <div class="answer wrap">
 <article>
@@ -393,8 +475,8 @@ star.questions.forEach((q, qi) => {
 ${q.steps.map((s, i) => `<li class="step">
 <div class="rail" aria-hidden="true"><span class="n">${i + 1}</span><span class="line"></span></div>
 <section>
-<div class="fogbox" data-fog="${s.gate ?? q.gate}">${LOCK} 这一步在迷雾里，${stageAfter(s.gate ?? q.gate)}。</div>
-<div data-gate="${s.gate ?? q.gate}">
+<div class="fogbox" data-fog="${stepGate(q, s)}">${LOCK} 这一步在迷雾里，${stageAfter(stepGate(q, s))}。</div>
+<div data-gate="${stepGate(q, s)}">
 <p class="era" data-n="${i + 1}">${esc(s.era)}</p>
 <h2>${esc(s.title)}</h2>
 <p>${esc(s.text)}</p>
@@ -435,8 +517,32 @@ ${groups.map((g) => `<section><h2>${esc(g)}</h2><div class="cards">${star.questi
   page({
     url: 'who/', title: '人物', layer: 'star', cls: 'list-page', scripts: ['star.js'], data: { 'star-data': { stages: star.stages } },
     body: `<div class="wrap listing"><h1>人物</h1><p class="lede">星图上的每一颗星。还没到的剧情只显示为迷雾。</p>
-${Object.entries(star.kinds).map(([k, name]) => `<section><h2><i class="dot k-${k}"></i>${name}</h2><div class="cards">${star.nodes.filter((n) => n.kind === k).map((n) => `<a class="card" href="${base}#n=${n.id}"><strong data-gate="${n.gate}">${esc(n.name)}</strong><span data-gate="${n.gate}">${esc(n.blurb)}</span><strong class="locknote" data-fog="${n.gate}">？</strong><span class="locknote" data-fog="${n.gate}">${LOCK} ${stageAfter(n.gate)}</span></a>`).join('')}</div></section>`).join('\n')}</div>`,
+${Object.entries(star.kinds).map(([k, name]) => `<section><h2><i class="dot k-${k}"></i>${name}</h2><div class="cards">${star.nodes.filter((n) => n.kind === k).map((n) => `<a class="card" href="${base}who/${n.id}/"><strong data-gate="${n.gate}">${esc(n.name)}</strong><span data-gate="${n.gate}">${esc(n.blurb)}</span><strong class="locknote" data-fog="${n.gate}">？</strong><span class="locknote" data-fog="${n.gate}">${LOCK} ${stageAfter(n.gate)}</span></a>`).join('')}</div></section>`).join('\n')}</div>`,
   });
+}
+
+// 每颗星一页：关系、经历、相关问题
+for (const n of star.nodes) {
+  const base = '../../';
+  const rels = allEdges.filter((x) => x.a === n.id || x.b === n.id).map((x) => ({ x, other: nodeById[x.a === n.id ? x.b : x.a], gate: edgeGate(x) }));
+  const hand = rels.filter((r) => !r.x.auto);
+  const auto = rels.filter((r) => r.x.auto);
+  const evs = starEvents[n.id];
+  const qs = star.questions.filter((q) => q.nodes.includes(n.id));
+  const relHTML = ({ x, other, gate }) => `<div class="fogbox" data-fog="${gate}">${LOCK} 一条关系在迷雾里，${stageAfter(gate)}。</div>
+<section class="relrow" data-gate="${gate}"><div class="who2">${levelTag(x.level)}<a href="${base}who/${other.id}/">${esc(other.name)}</a>${x.label ? `<span class="rlabel">${esc(x.label)}</span>` : ''}</div><p>${esc(x.text)}</p>${quoteBlock(x.ev, x.quote, base)}</section>`;
+  const body = `<div class="wrap profile">
+<nav class="crumbs" aria-label="位置"><a href="${base}who/">人物</a> / ${star.kinds[n.kind]}</nav>
+<div class="fogbox big" data-fog="${n.gate}">${LOCK}<div><strong>这颗星还在迷雾里</strong><p>${stageAfter(n.gate)}。<a href="${base}gate/">修改进度</a></p></div></div>
+<div class="profile-in" data-gate="${n.gate}">
+<header class="profile-head"><span class="kind"><i class="dot k-${n.kind}"></i>${star.kinds[n.kind]}</span><h1>${esc(n.name)}</h1><p class="lede">${esc(n.blurb)}</p>
+<p class="meta">${hand.length + auto.length} 条关系 · ${evs.length} 件相关的事 · <a href="${base}#n=${n.id}">在星图里看 →</a></p></header>
+${hand.length ? `<section class="pblock"><h2>关系</h2>${hand.map(relHTML).join('\n')}</section>` : ''}
+${evs.length ? `<section class="pblock"><h2>经历</h2><p class="hint">年表里提到${esc(n.name)}的事，按年表的次序排列。</p><ol class="life">${evs.map((e) => { const g = Math.max(e.gate, n.gate); return `<li><div class="fogbox" data-fog="${g}">${LOCK} 一件事在迷雾里，${stageAfter(g)}。</div><div data-gate="${g}"><p class="era">${esc(e.date)}<span>${esc(e.basis || '')}</span></p><p>${esc(e.text)}</p>${e.evs[0] ? quoteBlock(e.evs[0], EV[e.evs[0]].quotes[0], base) : ''}<a class="tl" href="${base}timeline/#${e.id}">年表 ${e.id}</a></div></li>`; }).join('\n')}</ol></section>` : ''}
+${auto.length ? `<section class="pblock"><h2>也一起出现在</h2><p class="hint">同一件事里一起被提到的星。</p>${auto.map(relHTML).join('\n')}</section>` : ''}
+${qs.length ? `<section class="pblock"><h2>相关的问题</h2><div class="cards">${qs.map((q) => `<a class="card" href="${base}q/${q.id}/"><strong>${esc(q.title)}</strong><span data-gate="${q.gate}">${esc(q.teaser || q.answer)}</span><span class="locknote" data-fog="${q.gate}">${LOCK} ${stageAfter(q.gate)}</span></a>`).join('')}</div></section>` : ''}
+</div></div>`;
+  page({ url: `who/${n.id}/`, title: n.name, layer: 'star', cls: 'profile-page', body, scripts: ['star.js'], data: { 'star-data': { stages: star.stages } } });
 }
 
 // ───────────────────────── 考据层：首页 ─────────────────────────
@@ -503,11 +609,6 @@ ${rows.map((s) => `<tr data-type="${s.type}" data-status="${s.pending ? 'pending
 }
 
 // ───────────────────────── 原文页 ─────────────────────────
-const markFrags = (text, qs) => {
-  let h = esc(text);
-  for (const q of [...new Set(qs)].sort((a, b) => b.length - a.length)) { const eq = esc(q); if (eq) h = h.split(eq).join(`\u0001${eq}\u0002`); }
-  return h.replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>');
-};
 for (const s of sources) {
   const depth = s.href.split('/').filter(Boolean).length;
   const base = '../'.repeat(depth);
@@ -796,4 +897,4 @@ fs.writeFileSync(path.join(dist, '404.html'), `<!doctype html><html lang="zh-CN"
 <script>(function(){var seg=location.pathname.split('/')[1];if(/github\\.io$/.test(location.hostname)&&seg)document.getElementById('home').href='/'+seg+'/'})()</script></body></html>
 `);
 const count = (d) => fs.readdirSync(d, { withFileTypes: true }).reduce((a, f) => a + (f.isDirectory() ? count(path.join(d, f.name)) : 1), 0);
-console.log(`已生成：${star.questions.length} 个问题、${star.nodes.length} 颗星、${topics.length} 篇专题、${sources.length} 篇原文、${chapters.length} 章，共 ${count(dist)} 个文件 → dist/`);
+console.log(`已生成：${star.questions.length} 个问题、${star.nodes.length} 颗星、${allEdges.length} 条关系（其中 ${autoEdges.length} 条由年表自动连出）、${topics.length} 篇专题、${sources.length} 篇原文、${chapters.length} 章，共 ${count(dist)} 个文件 → dist/`);

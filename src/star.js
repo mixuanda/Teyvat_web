@@ -80,17 +80,21 @@
   let q = null;        // 当前问题
   let sel = null;      // 选中的星
   let revealed = new Set();
+  let showAll = false;
   const qlist = $('#qlist'), teaser = $('#qteaser'), detail = $('#detail');
 
   const startFrom = (question) => {
     q = question;
+    showAll = false;
     revealed = new Set((q ? q.nodes : nodes.filter((n) => n.gate === 0).map((n) => n.id)).filter(visible));
     sel = q && visible(q.start) ? q.start : [...revealed][0] || null;
     if (q) store.set('q', q.id);
   };
   const select = (id) => {
     sel = id;
-    neighbors(id).forEach(({ e, other }) => { if (e.gate <= progress && visible(other)) revealed.add(other); });
+    showAll = false;
+    revealed.add(id);
+    neighbors(id).forEach(({ e, other }) => { if (!e.auto && e.gate <= progress && visible(other)) revealed.add(other); });
     render();
   };
 
@@ -112,13 +116,17 @@
     for (const e of edges) {
       const A = N[e.a], B = N[e.b];
       const open = e.gate <= progress;
-      if (open && revealed.has(e.a) && revealed.has(e.b)) drawn.push({ e, A, B, hot: (inQ.has(e.a) && inQ.has(e.b)) || e.a === sel || e.b === sel });
-      else if (!open) {
+      if (open && revealed.has(e.a) && revealed.has(e.b)) drawn.push({ e, A, B, hot: !e.auto && ((inQ.has(e.a) && inQ.has(e.b)) || e.a === sel || e.b === sel) });
+      else if (!open && !e.auto) {
         const [near, far] = revealed.has(e.a) && visible(e.a) ? [A, B] : revealed.has(e.b) && visible(e.b) ? [B, A] : [null, null];
         if (near && !(visible(far.id) && revealed.has(far.id))) { fogNodes.set(far.id, far); drawn.push({ e, A: near, B: far, fogged: true }); }
       }
     }
-    const pts = [...shown.map((id) => N[id]), ...fogNodes.values()];
+    // 画面框住的范围：展开全部时是所有星；否则是选中的星和它已长出的关系，选中的星属于当前问题时再加上问题里的星
+    const nb = sel ? new Set([sel, ...neighbors(sel).map((x) => x.other)]) : null;
+    const focus = showAll || !sel ? shown : shown.filter((id) => nb.has(id) || (inQ.has(sel) && inQ.has(id)));
+    const fogFocus = [...fogNodes.values()].filter((fg) => showAll || !sel || nb.has(fg.id));
+    const pts = [...focus.map((id) => N[id]), ...fogFocus];
     const box = svg.getBoundingClientRect();
     const ratio = box.width && box.height ? box.width / box.height : 900 / 680;
     let x0 = Math.min(...pts.map((p) => p.x), Infinity), x1 = Math.max(...pts.map((p) => p.x), -Infinity);
@@ -129,7 +137,7 @@
     const vx = (x0 + x1) / 2 - vw / 2, vy = (y0 + y1) / 2 - vh / 2 + 10;
     svg.setAttribute('viewBox', `${vx.toFixed(0)} ${vy.toFixed(0)} ${vw.toFixed(0)} ${vh.toFixed(0)}`);
     const f = vw / Math.max(box.width, 320); // 每个屏幕像素对应多少画布单位：字号和星的大小保持不变
-    const crowded = shown.length > 22;
+    const crowded = focus.length > 22;
 
     let out = `<defs><radialGradient id="glow" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#E6C06A" stop-opacity="0.45"></stop><stop offset="100%" stop-color="#E6C06A" stop-opacity="0"></stop></radialGradient><radialGradient id="skybg" cx="50%" cy="45%" r="60%"><stop offset="0%" stop-color="#17243F"></stop><stop offset="100%" stop-color="#0D1424"></stop></radialGradient></defs><rect x="${vx}" y="${vy}" width="${vw}" height="${vh}" fill="url(#skybg)"></rect>`;
     let seed = 11;
@@ -138,8 +146,8 @@
 
     let lines = '', labels = '';
     for (const { e, A, B, hot, fogged } of drawn) {
-      lines += `<line class="edge${hot ? ' hot' : ''}${fogged ? ' fogged' : ''}${e.level === 'hypothesis' ? ' hyp' : ''}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke-width="${((hot ? 3 : 1.6) * f).toFixed(2)}"${e.level === 'hypothesis' ? ` stroke-dasharray="${6 * f} ${5 * f}"` : ''}></line>`;
-      if (hot && (!crowded || e.a === sel || e.b === sel)) {
+      lines += `<line class="edge${hot ? ' hot' : ''}${fogged ? ' fogged' : ''}${e.auto ? ' auto' : ''}${e.level === 'hypothesis' ? ' hyp' : ''}" x1="${A.x}" y1="${A.y}" x2="${B.x}" y2="${B.y}" stroke-width="${((hot ? 3 : e.auto ? 1 : 1.6) * f).toFixed(2)}"${e.level === 'hypothesis' ? ` stroke-dasharray="${6 * f} ${5 * f}"` : ''}></line>`;
+      if (hot && e.label && (!crowded || e.a === sel || e.b === sel)) {
         const w = (e.label.length * 14 + 22) * f, h = 26 * f, mx = (A.x + B.x) / 2, my = (A.y + B.y) / 2;
         labels += `<g class="elabel"><rect x="${mx - w / 2}" y="${my - h / 2}" width="${w}" height="${h}" rx="${h / 2}" stroke-width="${f}"></rect><text x="${mx}" y="${my + 5 * f}" font-size="${13 * f}">${esc(e.label)}</text></g>`;
       }
@@ -149,7 +157,7 @@
       const n = N[id];
       const isSel = id === sel;
       const r = (isSel ? 24 : crowded ? 9 : 15) * f;
-      const more = neighbors(id).some(({ e, other }) => e.gate <= progress && visible(other) && !revealed.has(other));
+      const more = neighbors(id).some(({ e, other }) => !e.auto && e.gate <= progress && visible(other) && !revealed.has(other));
       out += `<g class="node${isSel ? ' sel' : ''}" data-node="${id}" tabindex="0" role="button" aria-label="${esc(n.name)}，${kinds[n.kind]}">`
         + ((inQ.has(id) || isSel) ? `<circle cx="${n.x}" cy="${n.y}" r="${r * 2.6}" fill="url(#glow)"></circle>` : '')
         + (isSel ? `<circle class="ring" cx="${n.x}" cy="${n.y}" r="${r + 9 * f}" stroke-width="${2 * f}"></circle>` : more ? `<circle class="ring" cx="${n.x}" cy="${n.y}" r="${r + 6 * f}" stroke-width="${1.5 * f}" stroke-dasharray="${2 * f} ${5 * f}" stroke-opacity=".5"></circle>` : '')
@@ -163,16 +171,25 @@
     const n = N[sel];
     const rels = neighbors(sel);
     const open = rels.filter(({ e, other }) => e.gate <= progress && visible(other));
-    const fogged = rels.filter(({ e }) => e.gate > progress);
+    const hand = open.filter(({ e }) => !e.auto), auto = open.filter(({ e }) => e.auto);
+    const fogged = rels.filter(({ e }) => e.gate > progress && !e.auto);
+    const life = n.events.filter((x) => x.g <= progress), lifeFog = n.events.length - life.length;
+    const LV = { fact: '事实', inference: '推断', hypothesis: '假说' };
+    const quoteHTML = (e) => (e.ctx
+      ? `<p class="q ctxq">${e.ctx.w ? `<i>${esc(e.ctx.w)}</i>` : ''}${esc(e.ctx.t).split(esc(e.quote)).join(`<mark>${esc(e.quote)}</mark>`)}</p>`
+      : `<p class="q">“${esc(e.quote)}”</p>`);
+    const card = ({ e, other }) => `<div class="relcard">
+<div class="who2"><span class="lv lv-${e.level}">${LV[e.level]}</span><button type="button" data-node="${other}">${esc(N[other].name)}</button>${e.label ? `<span class="rlabel">${esc(e.label)}</span>` : ''}</div>
+<p>${esc(e.text)}</p>${quoteHTML(e)}
+<p class="srcline"><a href="${base}${e.href}">${esc(e.src)}</a>${e.pending ? ' · 待确认' : ''}</p>
+</div>`;
     detail.innerHTML = `<div><span class="kind">${kinds[n.kind]}</span><h2>${esc(n.name)}</h2></div>
 <p class="blurb">${esc(n.blurb)}</p>
-${open.map(({ e, other }) => `<div class="relcard">
-<div class="who2"><span class="lv lv-${e.level}">${{ fact: '事实', inference: '推断', hypothesis: '假说' }[e.level]}</span><button type="button" data-node="${other}">${esc(N[other].name)}</button></div>
-<p>${esc(e.text)}</p><p class="q">“${esc(e.quote)}”</p>
-<p class="srcline"><a href="${base}${e.href}">${esc(e.src)}</a>${e.pending ? ' · 待确认' : ''}</p>
-</div>`).join('')}
+<a class="more" href="${base}who/${n.id}/">完整档案：${hand.length + auto.length} 条关系、${life.length} 件事 →</a>
+${hand.map(card).join('')}
 ${fogged.length ? `<div class="fognote">${LOCK} 还有 ${fogged.length} 条关系在迷雾里，${stages[Math.min(...fogged.map(({ e }) => e.gate))]}篇后显示。</div>` : ''}
-<a class="more" href="${base}evidence/#q=${encodeURIComponent(n.name)}">查看${esc(n.name)}相关的引证 →</a>`;
+${life.length ? `<div class="lifebox"><h3>经历</h3><ol>${life.slice(0, 6).map((x) => `<li><span>${esc(x.d)}</span>${esc(x.t)}</li>`).join('')}</ol>${life.length > 6 ? `<a class="more" href="${base}who/${n.id}/">另外 ${life.length - 6} 件事 →</a>` : ''}${lifeFog ? `<p class="fogline">${LOCK} ${lifeFog} 件事还在迷雾里</p>` : ''}</div>` : ''}
+${auto.length ? `<div class="lifebox"><h3>也一起出现在</h3><ul class="also">${auto.map(({ other }) => `<li><button type="button" data-node="${other}">${esc(N[other].name)}</button></li>`).join('')}</ul></div>` : ''}`;
   };
 
   qlist.addEventListener('click', (e) => { const b = e.target.closest('[data-q]'); if (b) { startFrom(questions.find((x) => x.id === b.dataset.q)); render(); } });
@@ -180,7 +197,7 @@ ${fogged.length ? `<div class="fognote">${LOCK} 还有 ${fogged.length} 条关�
   svg.addEventListener('click', (e) => { const g = e.target.closest('[data-node]'); if (g) select(g.dataset.node); });
   svg.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { const g = e.target.closest('[data-node]'); if (g) { e.preventDefault(); select(g.dataset.node); svg.querySelector(`[data-node="${g.dataset.node}"]`)?.focus(); } } });
   detail.addEventListener('click', (e) => { const b = e.target.closest('[data-node]'); if (b) select(b.dataset.node); });
-  $('#sky-all').addEventListener('click', () => { revealed = new Set(nodes.filter((n) => visible(n.id)).map((n) => n.id)); render(); });
+  $('#sky-all').addEventListener('click', () => { showAll = true; revealed = new Set(nodes.filter((n) => visible(n.id)).map((n) => n.id)); render(); });
   $('#sky-reset').addEventListener('click', () => { startFrom(q); render(); });
 
   // 起点：链接指定的问题或星，否则上次看的问题，否则第一个已解锁的
@@ -189,6 +206,6 @@ ${fogged.length ? `<div class="fognote">${LOCK} 还有 ${fogged.length} 条关�
   const wanted = unlocked.find((x) => x.id === hash.get('q')) || unlocked.find((x) => x.id === store.get('q')) || [...unlocked].sort((a, b) => b.gate - a.gate)[0] || null;
   startFrom(wanted);
   const hn = hash.get('n');
-  if (hn && N[hn] && visible(hn)) { revealed.add(hn); sel = hn; neighbors(hn).forEach(({ e, other }) => { if (e.gate <= progress && visible(other)) revealed.add(other); }); }
+  if (hn && N[hn] && visible(hn)) { q = null; revealed = new Set([hn]); sel = hn; neighbors(hn).forEach(({ e, other }) => { if (!e.auto && e.gate <= progress && visible(other)) revealed.add(other); }); }
   render();
 })();

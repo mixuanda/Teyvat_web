@@ -455,7 +455,7 @@ figcaption strong { color: var(--ink); margin-right: 8px; }
 .mini line { stroke: var(--gold); stroke-width: 3; }
 .mini line.hyp { stroke-dasharray: 8 6; }
 .mini circle.k-being { fill: var(--being); } .mini circle.k-event { fill: var(--event); } .mini circle.k-place { fill: var(--place); }
-.mini text { font-size: 22px; fill: var(--ink); text-anchor: middle; font-family: var(--sans); stroke: #0D1424; stroke-width: 5px; paint-order: stroke; }
+.mini text { font-size: 20px; fill: var(--ink); text-anchor: middle; font-family: var(--sans); stroke: #0D1424; stroke-width: 5px; paint-order: stroke; }
 .mini [data-gate]:not(.clear) { display: none; }
 .answer aside a { font-size: 14px; }
 .stepbar, .stepnav { display: none; }
@@ -585,3 +585,53 @@ figcaption strong { color: var(--ink); margin-right: 8px; }
 @media (max-width: 720px) { .sky { height: 46vh; } }
 .detail { min-height: calc(100vh - 73px); }
 @media (max-width: 1100px) { .detail { min-height: 0; } }
+
+/* 引文块：原文那一行，引用的片段标出 */
+.star mark { background: none; color: var(--gold); font-weight: 700; padding: 0; border-bottom: 1px solid var(--gold); }
+.quote.full { flex-direction: column; align-items: stretch; gap: 10px; }
+.quote blockquote { font-family: var(--serif); font-weight: 500; display: flex; flex-direction: column; gap: 4px; }
+.quote .hitline { font-size: 17px; line-height: 30px; color: var(--ink); }
+.quote .ctxline { font-size: 14px; line-height: 24px; color: var(--muted); }
+.quote blockquote i { font-style: normal; font-family: var(--sans); font-size: 13px; color: var(--muted); margin-right: 8px; }
+.quote blockquote i::after { content: '：'; }
+.quote .from { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: center; font-size: 14px; }
+.star .quote code { color: var(--muted); font-size: 13px; }
+.quote > .lv { align-self: flex-start; }
+.rlabel { font-size: 12px; line-height: 20px; padding: 0 8px; border: 1px solid var(--line-strong); border-radius: 999px; color: var(--muted); }
+#sky-svg .edge.auto { stroke: #2E3B57; }
+.relcard .ctxq { font-size: 15px; line-height: 26px; color: var(--ink); }
+.relcard .ctxq i { font-style: normal; font-family: var(--sans); font-size: 12px; color: var(--muted); margin-right: 6px; }
+.relcard .ctxq i::after { content: '：'; }
+.lifebox { border-top: 1px solid var(--line); padding-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+.lifebox h3 { font-size: 13px; font-weight: 500; color: var(--muted); margin: 0; }
+.lifebox ol { display: flex; flex-direction: column; gap: 10px; }
+.lifebox li { font-size: 14px; line-height: 23px; }
+.lifebox li span { display: block; font-size: 12px; line-height: 18px; color: var(--gold); }
+.lifebox .also { display: flex; flex-wrap: wrap; gap: 6px; }
+.lifebox .also button { height: 32px; padding: 0 12px; border-radius: 999px; border: 1px solid var(--line); background: none; color: var(--accent); font-size: 13px; }
+.lifebox .also button:hover { border-color: var(--gold); }
+.fogline { font-size: 13px; color: var(--muted); }
+/* 人物档案 */
+.profile { max-width: 860px; display: flex; flex-direction: column; gap: 24px; }
+.profile-in { display: flex; flex-direction: column; gap: 36px; }
+.profile-head { display: flex; flex-direction: column; gap: 12px; }
+.profile-head .kind { display: flex; gap: 8px; align-items: center; font-size: 13px; color: var(--muted); }
+.profile-head h1 { font-size: 46px; line-height: 62px; }
+.profile-head .lede { font-size: 19px; line-height: 33px; }
+.profile-head .meta { color: var(--muted); }
+.pblock { display: flex; flex-direction: column; gap: 14px; }
+.pblock > h2 { font-size: 24px; line-height: 34px; padding-bottom: 10px; border-bottom: 1px solid var(--line); }
+.pblock .hint { font-size: 14px; color: var(--muted); }
+.relrow { display: flex; flex-direction: column; gap: 8px; padding: 6px 0 14px; }
+.relrow .who2 { display: flex; gap: 10px; align-items: center; flex-wrap: wrap; }
+.relrow .who2 a { font-family: var(--serif); font-weight: 700; font-size: 19px; }
+.relrow > p { font-size: 16px; line-height: 28px; }
+.life { display: flex; flex-direction: column; gap: 6px; border-left: 2px solid var(--line); padding-left: 22px; }
+.life > li { position: relative; padding: 4px 0 18px; }
+.life > li::before { content: ''; position: absolute; left: -29px; top: 12px; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); border: 2px solid var(--bg); }
+.life > li > [data-gate] { display: flex; flex-direction: column; gap: 8px; }
+.life .era { font-family: var(--serif); font-weight: 700; color: var(--gold); font-size: 15px; line-height: 24px; }
+.life .era span { font-family: var(--sans); font-weight: 400; font-size: 12px; color: var(--muted); margin-left: 10px; }
+.life p { font-size: 16px; line-height: 28px; }
+.life .tl { font-size: 13px; color: var(--muted); }
+@media (max-width: 720px) { .profile-head h1 { font-size: 32px; line-height: 44px; } }
