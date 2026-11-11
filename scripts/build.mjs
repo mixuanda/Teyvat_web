@@ -84,7 +84,10 @@ const quoteCtx = (id, quote) => {
   const e = EV[id];
   const src = e && SRC[e.src];
   if (!src || src.pending) return null;
-  const hit = (HITS[id] || []).find((h) => h[2] === quote) || null;
+  let hit = (HITS[id] || []).find((h) => h[2] === quote) || null;
+  if (!hit) { // 手写时直接摘的原文句子：到原文里找它所在的那一行
+    for (const L of Object.keys(src.langs)) { const i = src.langs[L].findIndex((x) => x[1].includes(quote)); if (i >= 0) { hit = [L, i]; break; } }
+  }
   if (!hit) return null;
   const [L, l] = hit;
   const lines = src.langs[L];
@@ -104,7 +107,9 @@ const quoteCtx = (id, quote) => {
   const ids = new Set(star.nodes.map((n) => n.id));
   star.edges.forEach((x) => { if (!ids.has(x.a) || !ids.has(x.b)) bad.push(`关系指向不存在的星：${x.a}→${x.b}`); });
   star.questions.forEach((q) => [q.start, ...q.nodes].forEach((id) => { if (!ids.has(id)) bad.push(`问题 ${q.id} 指向不存在的星：${id}`); }));
-  const check = (where, ev, quote) => { if (!EV[ev] || !EV[ev].quotes.includes(quote)) bad.push(`${where}: ${ev} “${quote}”`); };
+  // 引文要么是该引证登记的片段，要么是它所在原文里逐字出现的一句
+  const inSource = (ev, quote) => { const s = SRC[EV[ev]?.src]; return !!s && Object.values(s.langs).some((ls) => ls.some((l) => l[1].includes(quote))); };
+  const check = (where, ev, quote) => { if (!EV[ev] || !(EV[ev].quotes.includes(quote) || inSource(ev, quote))) bad.push(`${where}: ${ev} “${quote}”`); };
   star.edges.forEach((x) => check(`关系 ${x.a}→${x.b}`, x.ev, x.quote));
   star.questions.forEach((q) => { q.steps.forEach((s, i) => check(`问题 ${q.id} 第 ${i + 1} 步`, s.ev, s.quote)); if (q.open?.ev) check(`问题 ${q.id} 未解部分`, q.open.ev, q.open.quote); });
   topics.forEach((t) => t.claims.forEach((c) => (c.cites || []).forEach((ci) => check(`专题 ${t.id}`, ci.ev, ci.quote))));

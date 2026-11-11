@@ -635,3 +635,8 @@ figcaption strong { color: var(--ink); margin-right: 8px; }
 .life p { font-size: 16px; line-height: 28px; }
 .life .tl { font-size: 13px; color: var(--muted); }
 @media (max-width: 720px) { .profile-head h1 { font-size: 32px; line-height: 44px; } }
+/* 长串不换行的内容（省略号、网址、英文长词）不撑破版面 */
+body { overflow-wrap: break-word; }
+.para, .evcard, .quote, .relcard, .event-text, .prose, .citerow, dd { overflow-wrap: anywhere; }
+.event-meta .pill { white-space: normal; }
+@media (max-width: 720px) { .event { grid-template-columns: minmax(0, 1fr); } }
