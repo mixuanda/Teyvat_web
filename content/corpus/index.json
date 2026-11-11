@@ -1,0 +1,26 @@
+{
+ "parts": [
+  "part-01.json.gz",
+  "part-02.json.gz"
+ ],
+ "entries": 9457,
+ "new": 247,
+ "chars": 12132003,
+ "terms": 20231,
+ "byType": {
+  "item": 124,
+  "book": 1143,
+  "relic": 299,
+  "weapon": 265,
+  "aq": 229,
+  "lq": 346,
+  "wq": 1329,
+  "iq": 254,
+  "eq": 193,
+  "npc": 3791,
+  "event": 234,
+  "story": 989,
+  "voice": 124,
+  "misc": 137
+ }
+}

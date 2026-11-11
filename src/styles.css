@@ -640,3 +640,14 @@ body { overflow-wrap: break-word; }
 .para, .evcard, .quote, .relcard, .event-text, .prose, .citerow, dd { overflow-wrap: anywhere; }
 .event-meta .pill { white-space: normal; }
 @media (max-width: 720px) { .event { grid-template-columns: minmax(0, 1fr); } }
+/* 全量原文库与名词索引 */
+.filters small { color: var(--muted); font-size: 12px; margin-left: 4px; }
+.rowgroup { display: block; font-size: 13px; line-height: 20px; color: var(--muted); }
+td .pill { margin-left: 8px; }
+.pagerow { display: flex; gap: 16px; align-items: center; justify-content: center; }
+.btn:disabled { opacity: .4; cursor: default; }
+.termlist { columns: 4 220px; column-gap: 24px; }
+.termlist li { break-inside: avoid; display: flex; justify-content: space-between; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: 15px; line-height: 24px; }
+.termlist li span { font-size: 12px; color: var(--muted); white-space: nowrap; }
+.deep { margin: 4px 8px 8px; padding: 12px; border: 1px dashed var(--line-strong); border-radius: 6px; font-size: 14px; color: var(--muted); display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.deep button { height: 36px; padding: 0 14px; border: 1px solid var(--accent); border-radius: 6px; background: var(--surface); color: var(--accent); font-size: 14px; }
