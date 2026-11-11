@@ -1,0 +1,1547 @@
+{
+ "groups": [
+  {
+   "id": "visual_space_paintings",
+   "tex": "visual_space_paintings.tex",
+   "title": "图像与空间：封存复原及心像再现",
+   "caption": "《画中天》三页教程与炽空绘卷物品图。",
+   "panels": [
+    "SPACE1",
+    "SPACE2",
+    "SPACE3",
+    "SCROLL1"
+   ],
+   "evidence": [
+    "Q001",
+    "Q006"
+   ]
+  },
+  {
+   "id": "visual_moons",
+   "tex": "visual_moons.tex",
+   "title": "三月壁画的龙形、圆体与人形席位",
+   "caption": "实机裁图由 Fiona Spear 上传于 HoYoLAB。人物与战争关系由《名于何处？》中的尼可说明。",
+   "panels": [
+    "MOON1",
+    "MOON2"
+   ],
+   "evidence": [
+    "A006"
+   ]
+  },
+  {
+   "id": "visual_dragonspine",
+   "tex": "visual_dragonspine.tex",
+   "title": "龙脊雪山授予场景",
+   "caption": "实机图由ハルヴァタット学院の劣等生上传。图中人物大小、姿态与中心圆体构成授予关系；三匣与石碑提供画作委托及未完成的文字背景。",
+   "panels": [
+    "SNOW1"
+   ],
+   "evidence": [
+    "V004",
+    "V005",
+    "V006"
+   ]
+  },
+  {
+   "id": "visual_tsurumi_rite",
+   "tex": "visual_tsurumi_rite.tex",
+   "title": "鹤观仪式壁画的场景与平面图",
+   "caption": "上为 X-Law86 的实机截图，下为 HoYoWiki 托管的同图平面图。两者用于核对天象、人物与植物围合的对应位置。",
+   "panels": [
+    "TSU5",
+    "TSU6"
+   ],
+   "evidence": [
+    "V001",
+    "B022"
+   ]
+  },
+  {
+   "id": "visual_tsurumi_astral",
+   "tex": "visual_tsurumi_astral.tex",
+   "title": "鹤观圆体、星形及其场景位置",
+   "caption": "上为 X-Law86 实机截图，下为 Sportskeeda 所载遗迹高处截图。保留原有场景光照与前景遮挡。",
+   "panels": [
+    "TSU1",
+    "TSU7"
+   ],
+   "evidence": [
+    "V001",
+    "V002"
+   ]
+  },
+  {
+   "id": "visual_tsurumi_mountains",
+   "tex": "visual_tsurumi_mountains.tex",
+   "title": "鹤观山岳壁画的地貌差异与星标",
+   "caption": "三图均出自 X-Law86 的同一组实机照片。派蒙把山形和星标同鹤观实际地点联系起来。",
+   "panels": [
+    "TSU2",
+    "TSU3",
+    "TSU4"
+   ],
+   "evidence": [
+    "V003",
+    "V019"
+   ]
+  },
+  {
+   "id": "visual_chenyu",
+   "tex": "visual_chenyu.tex",
+   "title": "沉玉谷古壁画中的人物、水土与天象",
+   "caption": "Stardustine 上传的实机截图。较早壁画与后来投珑仪式的关系，见小茂依据浮锦旧事所作说明。",
+   "panels": [
+    "CHEN1"
+   ],
+   "evidence": [
+    "V007"
+   ]
+  },
+  {
+   "id": "visual_gurabad",
+   "tex": "visual_gurabad.tex",
+   "title": "居尔城双人壁画的中心媒介与层级",
+   "caption": "Aether Ezriel 上传的实机截图。正文将其构图与另一幅壁画引起的解释争论并读；两者的场景分别保留。",
+   "panels": [
+    "GUR1"
+   ],
+   "evidence": [
+    "V009"
+   ]
+  },
+  {
+   "id": "visual_remuria",
+   "tex": "visual_remuria.tex",
+   "title": "雷穆利亚的航海曲谱壁画",
+   "caption": "sanda888 上传的实机截图。《水下夜想曲》将此类会动图像明确称为壁画形式的曲谱。",
+   "panels": [
+    "REM1"
+   ],
+   "evidence": [
+    "V010",
+    "V011"
+   ]
+  },
+  {
+   "id": "visual_natlan_layers",
+   "tex": "visual_natlan_layers.tex",
+   "title": "纳塔图层的覆盖、显露与力量构图",
+   "caption": "前两图为 HoYoWiki 托管的奥奇卡纳塔画面，第三图为纳塔大黑龙壁画。只裁去前两图原文件的空白外缘，原像素内容完整保留。",
+   "panels": [
+    "NAT1",
+    "NAT2",
+    "NAT4"
+   ],
+   "evidence": [
+    "V014"
+   ]
+  },
+  {
+   "id": "visual_natlan_evolution",
+   "tex": "visual_natlan_evolution.tex",
+   "title": "奥奇卡纳塔演化壁画的上升序列",
+   "caption": "HoYoWiki 托管的游戏图像；仅裁空白外缘。台阶、形体和最后的人形，与遗迹铭文中关于终点和持续演化的争论并读。",
+   "panels": [
+    "NAT3"
+   ],
+   "evidence": [
+    "V015",
+    "V016"
+   ]
+  },
+  {
+   "id": "visual_aranara",
+   "tex": "visual_aranara.tex",
+   "title": "往昔的桓那兰那壁画的后续状态",
+   "caption": "Fiona Spear 上传的实机截图，可见两位身体呈金色的兰那罗。前后变化由调查文本直接记录。",
+   "panels": [
+    "ARA1"
+   ],
+   "evidence": [
+    "V018"
+   ]
+  },
+  {
+   "id": "visual_vennessa",
+   "tex": "visual_vennessa.tex",
+   "title": "温妮莎升天段落中的进入与飞出",
+   "caption": "取官方漫画序章《风之歌》两个直接相关画格。左取官方阅读器第71张图的上部，右取第72张图中部；裁切坐标及未裁原图网址列于图像目录。",
+   "panels": [
+    "MANGA1",
+    "MANGA2"
+   ],
+   "evidence": [
+    "D044",
+    "D045"
+   ]
+  },
+  {
+   "id": "visual_root_cycle",
+   "tex": "visual_root_cycle.tex",
+   "title": "根源之轮的三个弧形零件",
+   "caption": "游戏道具图标由 HoYoWiki 托管；三圈半及各阶段名称由三件物品的说明给出。图示保持分件状态。",
+   "panels": [
+    "ROOT1",
+    "ROOT2",
+    "ROOT3"
+   ],
+   "evidence": [
+    "Y012",
+    "Y013",
+    "Y014"
+   ]
+  },
+  {
+   "id": "visual_chymical_seal",
+   "tex": "visual_chymical_seal.tex",
+   "title": "密合之约印与十神名之流溢体系图的关系结构",
+   "caption": "比较上下分层、节点与连接线的表达方式。",
+   "panels": [
+    "SEAL1",
+    "KIR1"
+   ],
+   "evidence": [
+    "H007",
+    "H009",
+    "H012"
+   ]
+  },
+  {
+   "id": "visual_key_sigils",
+   "tex": "visual_key_sigils.tex",
+   "title": "五种键纹与探索知识中的场景位置",
+   "caption": "五种道具图标及探索知识配图。五类图形与相应封锁的匹配关系由探索知识明确说明。",
+   "panels": [
+    "KEY1",
+    "KEY2",
+    "KEY3",
+    "KEY4",
+    "KEY5",
+    "KEY6"
+   ],
+   "evidence": [
+    "H001",
+    "H002",
+    "H003",
+    "H006"
+   ]
+  },
+  {
+   "id": "visual_element_glyphs",
+   "tex": "visual_element_glyphs.tex",
+   "title": "七元素的界面徽记",
+   "caption": "七种界面徽记保留各自形状；原图为白色透明图标，置于统一深灰底。",
+   "panels": [
+    "ELM1",
+    "ELM2",
+    "ELM3",
+    "ELM4",
+    "ELM5",
+    "ELM6",
+    "ELM7"
+   ],
+   "evidence": [
+    "Z001"
+   ]
+  },
+  {
+   "id": "visual_crisis_markers",
+   "tex": "visual_crisis_markers.tex",
+   "title": "当代危机中的标记数量与光线构形",
+   "caption": "上图保留六个具有内部纹样的标记，下图展示重叠星形与射线。六项试炼的计数由剧情对白给出。",
+   "panels": [
+    "PV7B",
+    "PV7E"
+   ],
+   "evidence": [
+    "D040",
+    "D041"
+   ]
+  },
+  {
+   "id": "visual_crisis_devices",
+   "tex": "visual_crisis_devices.tex",
+   "title": "发光纹样在城市天空与构件中的不同位置",
+   "caption": "城市天空、浮游构件与断裂柱体分别显示环境、设施及物质载体的尺度。",
+   "panels": [
+    "PV7A",
+    "PV7C",
+    "PV7D"
+   ],
+   "evidence": [
+    "D040",
+    "D041"
+   ]
+  },
+  {
+   "id": "visual_kory_scores",
+   "tex": "visual_kory_scores.tex",
+   "title": "五种俱利鼓谱：元素、构架与乐符",
+   "caption": "五份鼓谱并列比较元素标识与演奏符号。",
+   "panels": [
+    "DRUM1",
+    "DRUM2",
+    "DRUM3",
+    "DRUM4",
+    "DRUM5"
+   ],
+   "evidence": [
+    "J002"
+   ]
+  },
+  {
+   "id": "visual_workshop_map",
+   "tex": "visual_workshop_map.tex",
+   "title": "两份调查文献中的工坊示意图",
+   "caption": "工坊空间、图上标注与后继研究者的知识组织。",
+   "panels": [
+    "WORK1",
+    "WORK2"
+   ],
+   "evidence": [
+    "J003",
+    "C037"
+   ]
+  },
+  {
+   "id": "v6_family_crests",
+   "tex": "v6_family_crests.tex",
+   "title": "希穆兰卡的三组家纹",
+   "caption": "希穆兰卡的三组家纹及其连点状态。塔楼、钥匙与星形窗格保存了群体标识；右侧同幅旗帜以发光节点和线段显示可复原的几何结构。《旁白的注脚》明确将魔法阵的原始构型与传承下来的家纹相连，使此图成为局部时间回溯、创世手稿与空间操作之间的直接图像证据。图源为官方5.5资源包中的三幅内容纹理，均为380\\,\\texttimes\\,548像素；按资源名精确提取。",
+   "panels": [
+    "AS6_01",
+    "AS6_02",
+    "AS6_03"
+   ],
+   "evidence": [
+    "V600",
+    "V601",
+    "V602"
+   ]
+  },
+  {
+   "id": "v6_fairytale",
+   "tex": "v6_fairytale.tex",
+   "title": "《「邪龙」绘卷》的六页顺序",
+   "caption": "《「邪龙」绘卷》的六页顺序。垂头、仰望、武装冲突、平和动物、惊惧遭遇与重新仰望星光依次展开。固定中文、英文、日文与韩文正文均以同一顺序调用这六幅图；物品说明将其主体明确为希穆兰卡的杜林。图源为官方5.5包内内容纹理，每幅640\\,\\texttimes\\,360像素。",
+   "panels": [
+    "AS6_04",
+    "AS6_05",
+    "AS6_06",
+    "AS6_07",
+    "AS6_08",
+    "AS6_09"
+   ],
+   "evidence": [
+    "V603"
+   ]
+  },
+  {
+   "id": "v6_route_engineering",
+   "tex": "v6_route_engineering.tex",
+   "title": "仪式路线与工程草图",
+   "caption": "上：《回火之路》的九个圈记与有向路线，文字将行迹与悬木人图腾相连。下：《特帕尔的残缺手记》的浮空装置草图，包含整体结构、构件、测量线及动力标记。两图分别把仪式与工程组织为可以执行和检验的程序。均取自官方5.5资源块07711961，原件整幅保留。\\qrepeat{K004}\\citecomma{}\\qrepeat{V610}",
+   "panels": [
+    "AS6_10",
+    "AS6_11"
+   ],
+   "evidence": [
+    "K004",
+    "V610"
+   ]
+  },
+  {
+   "id": "v6_modern_images",
+   "tex": "v6_modern_images.tex",
+   "title": "当代音乐委托图与家庭画像",
+   "caption": "上：多位控碟乐师共同出资设计的希诺宁纪念图，几何纹样和星形进入当代音乐传播。下：玛梅赫在桑多涅茶会上绘制的家庭画像，手牵手的人物、四只杯子与蜡笔式笔触共同组织家庭关系。上图为官方5.5包内纹理，下图为BWIKI保存的游戏内容图；两图均整幅展示。\\qrepeat{V611}\\citecomma{}\\qrepeat{V612}",
+   "panels": [
+    "AS6_12",
+    "AS6_14"
+   ],
+   "evidence": [
+    "V611",
+    "V612",
+    "V615"
+   ]
+  },
+  {
+   "id": "v6_tequ",
+   "tex": "v6_tequ.tex",
+   "title": "《勇敢的特奎》配图",
+   "caption": "《勇敢的特奎》配图。巨大的蓝紫色怪物与小比例的人物构成对峙，缠绕的线条与眼状纹样强化压迫感。正文则以添火、守卫、血转为火及保存兄弟姓名，把个人牺牲与部族存续连接起来。取自官方5.5资源块07711961，原件640\\,\\texttimes\\,360像素。\\qrepeat{V614}",
+   "panels": [
+    "AS6_13"
+   ],
+   "evidence": [
+    "V614"
+   ]
+  },
+  {
+   "id": "v8_element_runes",
+   "tex": "v8_element_runes.tex",
+   "title": "七元素符文的灰阶形态",
+   "caption": "同一资源族的七幅原图按风、岩、雷、草、水、火、冰排列，完整保留灰阶和表面细节。",
+   "panels": [
+    "RUNE1",
+    "RUNE2",
+    "RUNE3",
+    "RUNE4",
+    "RUNE5",
+    "RUNE6",
+    "RUNE7"
+   ],
+   "evidence": [
+    "A700",
+    "A701"
+   ]
+  },
+  {
+   "id": "v9_circle_comparison",
+   "tex": "v9_circle_comparison.tex",
+   "title": "圆形母题的结构比较",
+   "caption": "鹤观嵌套圆轮与三月、纳塔分立圆体的构图比较。",
+   "panels": [
+    "TSU6",
+    "MOON1",
+    "NAT2"
+   ],
+   "evidence": [
+    "A006",
+    "V002"
+   ]
+  },
+  {
+   "id": "v9_chasm",
+   "tex": "v9_chasm.tex",
+   "title": "层岩巨渊的颠倒古城",
+   "caption": "倒悬古建筑及后来的占用。",
+   "panels": [
+    "CHASM2"
+   ],
+   "evidence": [
+    "B019",
+    "I9204"
+   ]
+  }
+ ],
+ "images": {
+  "SPACE1": {
+   "file": "world_in_painting_1.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《画中天》教程第1页",
+   "observation": "教程图由两个场景画面组成。左侧旅行者站在水边，右下有金色手形操作图标；右侧金色长方形画框内的山石、树木和带月洞门的建筑与框外景物相接，画框边缘发光。可直接观察到图景投射与现实场景对位的展示。",
+   "credit": "BWIKI《原神》社区档案",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.biligame.com/ys/教程：画中天",
+   "original": "https://patchwiki.biligame.com/images/ys/a/a2/5g06sxs78sizc0v5sz6ow8fcs9r1o2n.png",
+   "evidence": [
+    "Q001"
+   ]
+  },
+  "SPACE2": {
+   "file": "world_in_painting_2.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《画中天》教程第2页",
+   "observation": "左右对比图：左侧悬浮画框暗淡，框内山石及建筑与画框外山石的轮廓未充分接合；右侧同一画框呈明亮金色，与背景山石及建筑对应。它为文字所述贴合程度影响画框亮度提供直接视觉例证。",
+   "credit": "BWIKI《原神》社区档案",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.biligame.com/ys/教程：画中天",
+   "original": "https://patchwiki.biligame.com/images/ys/3/3f/fq9h3h9ljbef3j17qbxiekb5fql3unh.png",
+   "evidence": [
+    "Q001"
+   ]
+  },
+  "SPACE3": {
+   "file": "world_in_painting_3.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《画中天》教程第3页",
+   "observation": "旅行者面对小右，小右头上方收持一幅缩小的横向画作，画中仍见山石和月洞门；右下显示蓝色圆形卷轴操作图标。画作成为可携带、可再操作对象的状态在图中可见，取回或重新投出的动作语义由对应教程原文确定。",
+   "credit": "BWIKI《原神》社区档案",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.biligame.com/ys/教程：画中天",
+   "original": "https://patchwiki.biligame.com/images/ys/d/d4/0wcf0wqz3z4fspj50u02nhlugvq5z38.png",
+   "evidence": [
+    "Q001"
+   ]
+  },
+  "SCROLL1": {
+   "file": "scroll_fiery_firmament.webp",
+   "w": 220,
+   "h": 220,
+   "scene": "《「炽空的绘卷」》物品展示图",
+   "observation": "橙红色卷轴由金色卷杆展开，织面有折线、火焰状或山形的橙金图案，中央有浅蓝白色景象；上下端垂着金框几何吊饰，底缘有绿、紫、蓝小块。紫色背景是展示图的一部分。",
+   "credit": "BWIKI《原神》社区档案",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.biligame.com/ys/「炽空的绘卷」",
+   "original": "https://patchwiki.biligame.com/images/ys/9/93/726em6pi7wzejpyzken4ecf2nya9l3a.png",
+   "evidence": [
+    "Q006"
+   ]
+  },
+  "MOON1": {
+   "file": "moon_mural_0.webp",
+   "w": 953,
+   "h": 524,
+   "scene": "《名于何处？》三月壁画",
+   "observation": "灰蓝龙首与三个大小不同的金色圆体叠置，长条结构向右伸出。",
+   "credit": "Fiona Spear",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/43895024",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2026/02/22/43486162/083a53bce57c6b213bee8d81b6a63109_8453401854467906569.png",
+   "evidence": [
+    "A006"
+   ]
+  },
+  "MOON2": {
+   "file": "moon_mural_1.webp",
+   "w": 425,
+   "h": 177,
+   "scene": "《名于何处？》三月壁画",
+   "observation": "三个金色人形分别坐落在并列龛位中；中间正面，两侧朝向中央。",
+   "credit": "Fiona Spear",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/43895024",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2026/02/22/43486162/52d66a78dd0f3ca1ad4910ea1d9faec0_1085285094205559530.png",
+   "evidence": [
+    "A006"
+   ]
+  },
+  "SNOW1": {
+   "file": "dragonspine_offering.webp",
+   "w": 1600,
+   "h": 941,
+   "scene": "龙脊雪山古城壁画",
+   "observation": "左侧大人物伸手至中央金色圆体；右侧两位较小站立者，下方三位屈身者。",
+   "credit": "ハルヴァタット学院の劣等生",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/28138483",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2024/05/03/7859162/3c2f2fc3b039d660751552ee44c925db_6883501523729468392.jpg",
+   "evidence": [
+    "V004",
+    "V005",
+    "V006"
+   ]
+  },
+  "TSU5": {
+   "file": "tsurumi_original_5.webp",
+   "w": 1600,
+   "h": 900,
+   "scene": "鹤观知比山地下遗迹壁画",
+   "observation": "上方星形和圆形天象，下方仪式人物与三个植物围合，人物姿态有屈身、站立及举臂。",
+   "credit": "X-Law86（截图署名 Lexa）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/1213063",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/1c3c90b90ac98b847a78ca6463331922_1286106089974566537.png",
+   "evidence": [
+    "V001",
+    "V002"
+   ]
+  },
+  "TSU6": {
+   "file": "tsurumi_replica.webp",
+   "w": 868,
+   "h": 610,
+   "scene": "鹤观仪式壁画平面图",
+   "observation": "与实机仪式截图相同的星形、弧带、人物与植物围合；供图案位置互校。",
+   "credit": "HoYoWiki 上传者 237301566",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.hoyolab.com/pc/genshin/entry/7625?lang=en-us",
+   "original": "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/04/07/237301566/18fd7bca4fe23e07356d57303a6a6284_6096084426888266003.png",
+   "evidence": [
+    "B022",
+    "V001"
+   ]
+  },
+  "TSU1": {
+   "file": "tsurumi_original_1.webp",
+   "w": 1600,
+   "h": 900,
+   "scene": "鹤观知比山地下遗迹壁画",
+   "observation": "中央圆体内有重叠弧带，周围四角星明暗不同，下方为云纹。",
+   "credit": "X-Law86（截图署名 Lexa）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/1213063",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/91eb3347d5766ebee1f738145fad65cf_5304879189811642467.png",
+   "evidence": [
+    "V001",
+    "V002"
+   ]
+  },
+  "TSU7": {
+   "file": "tsurumi_ceiling.webp",
+   "w": 1600,
+   "h": 1000,
+   "scene": "鹤观遗迹高处壁画",
+   "observation": "仰视可见中央圆体及弧带，周边星形，下方尖角图案；部分场景被前景遗迹遮挡。",
+   "credit": "Sportskeeda 文章所载实机图",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.sportskeeda.com/esports/take-photo-ruin-murals-quest-genshin-impact-all-6-locations-revealed",
+   "original": "https://staticg.sportskeeda.com/editor/2021/10/e690a-16344211296164-1920.jpg",
+   "evidence": [
+    "V001",
+    "V002"
+   ]
+  },
+  "TSU2": {
+   "file": "tsurumi_original_2.webp",
+   "w": 1600,
+   "h": 900,
+   "scene": "鹤观知比山地下遗迹壁画",
+   "observation": "右侧高峰与前景山脊相接，星形位于连接处。",
+   "credit": "X-Law86（截图署名 Lexa）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/1213063",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/cf027bbd000dc711a7e59a572d6a0289_1754053671078240406.png",
+   "evidence": [
+    "V003",
+    "V019"
+   ]
+  },
+  "TSU3": {
+   "file": "tsurumi_original_3.webp",
+   "w": 1600,
+   "h": 900,
+   "scene": "鹤观知比山地下遗迹壁画",
+   "observation": "宽山体与附属山峰，星形位于山体凹处；左上圆框中有悬空地块形图案。",
+   "credit": "X-Law86（截图署名 Lexa）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/1213063",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/3c03ca255a3668c0cb46dd73cd67f05c_2124354285679240032.png",
+   "evidence": [
+    "V003",
+    "V019"
+   ]
+  },
+  "TSU4": {
+   "file": "tsurumi_original_4.webp",
+   "w": 1600,
+   "h": 900,
+   "scene": "鹤观知比山地下遗迹壁画",
+   "observation": "陡三角山体及顶端小峰，星形位于右侧山肩。",
+   "credit": "X-Law86（截图署名 Lexa）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/1213063",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/758ce32971ecc7fbda150e630223fc70_6896080753814540418.png",
+   "evidence": [
+    "V003",
+    "V019"
+   ]
+  },
+  "CHEN1": {
+   "file": "chenyu_mural.webp",
+   "w": 1600,
+   "h": 1051,
+   "scene": "沉玉谷古壁画",
+   "observation": "中央金色大圆与高大人形，左侧小人物行列，山体、水纹、红色流动线条、月牙及斜向条形。",
+   "credit": "Stardustine",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/24793295",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2024/02/02/246516657/df9ed16863a8422c4eb731a537d29a27_7579729952487275409.jpg",
+   "evidence": [
+    "V007",
+    "V008"
+   ]
+  },
+  "GUR1": {
+   "file": "gurabad_figures.webp",
+   "w": 1600,
+   "h": 900,
+   "scene": "居尔城遗迹双人壁画",
+   "observation": "左右各一高大人形，中间花状物，右人物背后圆形光轮，边框及竖向文字。",
+   "credit": "Aether Ezriel（截图署名 Ezriel）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/28057071",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2024/05/03/20619958/c913dc62d77cc65c73985f717b6ea8a5_7049215120839754078.png",
+   "evidence": [
+    "V009"
+   ]
+  },
+  "REM1": {
+   "file": "remuria_voyage.webp",
+   "w": 1457,
+   "h": 820,
+   "scene": "褪色城堡航海曲谱壁画",
+   "observation": "帆船在左、浪纹在下、鸟形在上，远处岛屿与建筑，金色框架旁有发光音乐符号。",
+   "credit": "sanda888",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/27918137",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2024/04/30/161005147/f09bb9aaaacb7c8b10fa6a24ee6b0901_3853367284720970226.jpeg",
+   "evidence": [
+    "V010",
+    "V011",
+    "V012",
+    "V013"
+   ]
+  },
+  "NAT1": {
+   "file": "natlan_overpaint_crop.webp",
+   "w": 1600,
+   "h": 616,
+   "scene": "奥奇卡纳塔：人形覆盖层",
+   "observation": "人形王者双臂向外，冠饰、胸饰及背后圆形强化中心轴。",
+   "credit": "HoYoWiki 上传者 237301566",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.hoyolab.com/pc/genshin/entry/7288?lang=en-us",
+   "original": "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/04/11/237301566/4c3b65f258e8510e957ae0e66a315751_1225196187870442325.png",
+   "evidence": [
+    "V014"
+   ]
+  },
+  "NAT2": {
+   "file": "natlan_revealed_dragon_crop.webp",
+   "w": 1600,
+   "h": 616,
+   "scene": "奥奇卡纳塔：显露的龙形旧层",
+   "observation": "上方龙首与展开轮廓，三个圆形饰件，中央盘旋动物符号。",
+   "credit": "HoYoWiki 上传者 237301566",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.hoyolab.com/pc/genshin/entry/7288?lang=en-us",
+   "original": "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/04/11/237301566/f6ba6a3e7bdbfa5edb50df930a07d9a0_8777173053661942926.png",
+   "evidence": [
+    "V014"
+   ]
+  },
+  "NAT4": {
+   "file": "natlan_dragon.webp",
+   "w": 1600,
+   "h": 906,
+   "scene": "纳塔大黑龙壁画",
+   "observation": "龙形居上，口部向下接金色带状区域；中间有拱形与分枝结构，下方两侧有大身影及小人物群。",
+   "credit": "HoYoWiki 上传者 170306649",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.hoyolab.com/pc/genshin/entry/7073?lang=en-us",
+   "original": "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/01/06/170306649/5997fa20dc470865640c2d4095f0a19a_4973715591977100209.png",
+   "evidence": [
+    "V014",
+    "A006"
+   ]
+  },
+  "NAT3": {
+   "file": "natlan_evolution_crop.webp",
+   "w": 1600,
+   "h": 666,
+   "scene": "奥奇卡纳塔：演化壁画",
+   "observation": "分枝形体、低矮生物、有尾直立身影与人形依次沿台阶上升，最右人形面向弧带。",
+   "credit": "HoYoWiki 上传者 237301566",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.hoyolab.com/pc/genshin/entry/7288?lang=en-us",
+   "original": "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/04/11/237301566/60c4ab1854061e6aaef7246fe3c46931_8751326884804268545.png",
+   "evidence": [
+    "V015",
+    "V016"
+   ]
+  },
+  "ARA1": {
+   "file": "aranara_4.webp",
+   "w": 971,
+   "h": 803,
+   "scene": "往昔的桓那兰那壁画后续状态",
+   "observation": "弯曲白线环绕中央结构；下方两位兰那罗身体呈金色，其余较浅。",
+   "credit": "Fiona Spear",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/14707596",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2023/01/01/43486162/821e5cfd862df9d61a09674ff77d380c_7736297326598081399.png",
+   "evidence": [
+    "V018"
+   ]
+  },
+  "MANGA1": {
+   "file": "manga_prologue_page_71_panel.webp",
+   "w": 800,
+   "h": 670,
+   "scene": "官方漫画序章《风之歌》，官方阅读器序列第71张图",
+   "observation": "温妮莎进入环形多层拱廊空间；中央柱状结构，上方强光与悬浮块体。",
+   "credit": "HoYoverse 官方漫画",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://genshin.hoyoverse.com/en/manga/detail/104863",
+   "original": "https://webstatic.hoyoverse.com/upload/uploadstatic/contentweb/20181211/2018121116310279054.png",
+   "evidence": [
+    "D004",
+    "W010",
+    "D044",
+    "D045"
+   ]
+  },
+  "MANGA2": {
+   "file": "manga_prologue_page_72_panel.webp",
+   "w": 800,
+   "h": 500,
+   "scene": "官方漫画序章《风之歌》，官方阅读器序列第72张图",
+   "observation": "鹰形携带光流飞出建筑，背景可见门洞与外墙。",
+   "credit": "HoYoverse 官方漫画",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://genshin.hoyoverse.com/en/manga/detail/104863",
+   "original": "https://webstatic.hoyoverse.com/upload/uploadstatic/contentweb/20181211/2018121116310446759.png",
+   "evidence": [
+    "D004",
+    "W010",
+    "D044",
+    "D045"
+   ]
+  },
+  "ROOT1": {
+   "file": "root_cycle_1.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "根源之轮任务道具图标，第1片",
+   "observation": "金色弧形框架围绕青蓝色弧带，局部圆形节点，端部有连接位置。",
+   "credit": "HoYoWiki 上传者 35428890",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.hoyolab.com/pc/genshin/entry/4617?lang=en-us",
+   "original": "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2024/05/01/35428890/a169f3a8a71fa1cd9be2aceb12837059_6028347167252633932.png",
+   "evidence": [
+    "Y012"
+   ]
+  },
+  "ROOT2": {
+   "file": "root_cycle_2.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "根源之轮任务道具图标，第2片",
+   "observation": "金色弧形框架围绕青蓝色弧带，局部圆形节点，端部有连接位置。",
+   "credit": "HoYoWiki 上传者 35428890",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.hoyolab.com/pc/genshin/entry/4618?lang=en-us",
+   "original": "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2024/05/01/35428890/4b7716bc1a72d242b78d77080651b738_4086989871740546757.png",
+   "evidence": [
+    "Y013"
+   ]
+  },
+  "ROOT3": {
+   "file": "root_cycle_3.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "根源之轮任务道具图标，第3片",
+   "observation": "金色弧形框架围绕青蓝色弧带，局部圆形节点，端部有连接位置。",
+   "credit": "HoYoWiki 上传者 35428890",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.hoyolab.com/pc/genshin/entry/4619?lang=en-us",
+   "original": "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2024/05/01/35428890/835e9aa023705d1ffa15701ccb9a02bc_8888885717223210459.png",
+   "evidence": [
+    "Y014"
+   ]
+  },
+  "SEAL1": {
+   "file": "chymical_seal.webp",
+   "w": 424,
+   "h": 628,
+   "scene": "《神秘的书页·其一》与《大师鲁杰罗的研究笔记》内嵌图像",
+   "observation": "上半部为多层节点、纵横斜向连接；下部为大圆围合四个带三角形的节点。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/ReadPic/Tactical/UI_ReadPic_Tactical.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/ReadPic/Tactical/UI_ReadPic_Tactical.png",
+   "evidence": [
+    "H007",
+    "H009"
+   ]
+  },
+  "KIR1": {
+   "file": "kircher_sephirotic.webp",
+   "w": 1573,
+   "h": 2560,
+   "scene": "基歇尔《埃及的俄狄浦斯》：十神名之流溢体系图",
+   "observation": "纵向分层的命名圆形节点，由横线、斜线与中轴连接，边上有拉丁文和希伯来文标签。",
+   "credit": "From The New York Public Library",
+   "creator": "Athanasius Kircher",
+   "page": "https://old-digitalcollections.nypl.org/items/510d47e2-5d0f-a3d9-e040-e00a18064a99",
+   "original": "https://iiif-prod.nypl.org/index.php?id=1526785&t=v",
+   "evidence": [
+    "H012"
+   ]
+  },
+  "KEY1": {
+   "file": "key_sigil_1.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "渊下宫键纹道具图标",
+   "observation": "石质圆牌上有独立白色图形，与其他四种键纹形成形状差别。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100937.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100937.png",
+   "evidence": [
+    "H002",
+    "H003",
+    "H006"
+   ]
+  },
+  "KEY2": {
+   "file": "key_sigil_2.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "渊下宫键纹道具图标",
+   "observation": "石质圆牌上有独立白色图形，与其他四种键纹形成形状差别。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100936.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100936.png",
+   "evidence": [
+    "H002",
+    "H003",
+    "H006"
+   ]
+  },
+  "KEY3": {
+   "file": "key_sigil_3.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "渊下宫键纹道具图标",
+   "observation": "石质圆牌上有独立白色图形，与其他四种键纹形成形状差别。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100935.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100935.png",
+   "evidence": [
+    "H002",
+    "H003",
+    "H006"
+   ]
+  },
+  "KEY4": {
+   "file": "key_sigil_4.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "渊下宫键纹道具图标",
+   "observation": "石质圆牌上有独立白色图形，与其他四种键纹形成形状差别。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100938.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100938.png",
+   "evidence": [
+    "H002",
+    "H003",
+    "H006"
+   ]
+  },
+  "KEY5": {
+   "file": "key_sigil_5.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "渊下宫键纹道具图标",
+   "observation": "石质圆牌上有独立白色图形，与其他四种键纹形成形状差别。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100934.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100934.png",
+   "evidence": [
+    "H002",
+    "H003",
+    "H006"
+   ]
+  },
+  "KEY6": {
+   "file": "key_sigil_tutorial.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "渊下宫键纹探索知识配图",
+   "observation": "蓝色环境中的石质底座上悬浮菱形外框，中央呈现卷状符号。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/AbyssalPalaceTutorial/Orb/UI_AbyssalPalaceTutorial_Orb.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/AbyssalPalaceTutorial/Orb/UI_AbyssalPalaceTutorial_Orb.png",
+   "evidence": [
+    "H003"
+   ]
+  },
+  "ELM1": {
+   "file": "element_wind.webp",
+   "w": 128,
+   "h": 128,
+   "scene": "风元素界面徽记",
+   "observation": "左右展开的弧形翼状线条，底部中央为尖角。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Wind/UI_Icon_Element_Wind.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Wind/UI_Icon_Element_Wind.png",
+   "evidence": [
+    "Z001"
+   ]
+  },
+  "ELM2": {
+   "file": "element_rock.webp",
+   "w": 128,
+   "h": 128,
+   "scene": "岩元素界面徽记",
+   "observation": "由相向转折线组成菱形外轮廓，中心有嵌套折线。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Rock/UI_Icon_Element_Rock.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Rock/UI_Icon_Element_Rock.png",
+   "evidence": [
+    "Z001"
+   ]
+  },
+  "ELM3": {
+   "file": "element_electric.webp",
+   "w": 128,
+   "h": 128,
+   "scene": "雷元素界面徽记",
+   "observation": "三个卷转形体围绕中央旋转，外缘形成三向尖弧。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Electric/UI_Icon_Element_Electric.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Electric/UI_Icon_Element_Electric.png",
+   "evidence": [
+    "Z001"
+   ]
+  },
+  "ELM4": {
+   "file": "element_grass.webp",
+   "w": 128,
+   "h": 128,
+   "scene": "草元素界面徽记",
+   "observation": "两侧弧线形成心叶状轮廓，上方及两侧排列较小叶形。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Grass/UI_Icon_Element_Grass.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Grass/UI_Icon_Element_Grass.png",
+   "evidence": [
+    "Z001"
+   ]
+  },
+  "ELM5": {
+   "file": "element_water.webp",
+   "w": 128,
+   "h": 128,
+   "scene": "水元素界面徽记",
+   "observation": "三道大小不同的卷线呈圆形组织，左侧另有圆点。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Water/UI_Icon_Element_Water.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Water/UI_Icon_Element_Water.png",
+   "evidence": [
+    "Z001"
+   ]
+  },
+  "ELM6": {
+   "file": "element_fire.webp",
+   "w": 128,
+   "h": 128,
+   "scene": "火元素界面徽记",
+   "observation": "上扬的尖端、内卷线与底部菱形轮廓共同构成焰状图形。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Fire/UI_Icon_Element_Fire.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Fire/UI_Icon_Element_Fire.png",
+   "evidence": [
+    "Z001"
+   ]
+  },
+  "ELM7": {
+   "file": "element_ice.webp",
+   "w": 128,
+   "h": 128,
+   "scene": "冰元素界面徽记",
+   "observation": "六条主向枝形从中央向外展开，内部另有细分尖瓣。",
+   "credit": "ylyking/GenshinTextures-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Ice/UI_Icon_Element_Ice.png",
+   "original": "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Ice/UI_Icon_Element_Ice.png",
+   "evidence": [
+    "Z001"
+   ]
+  },
+  "PV7B": {
+   "file": "pv72_08.webp",
+   "w": 1600,
+   "h": 901,
+   "scene": "六个带独立纹样的发光标记",
+   "observation": "六个较大的发光标记分别包含不同弯曲或菱形纹样；标记沿中心轴两侧分布，另有小型四角亮点。",
+   "credit": "Monsoon Flower（版本PV画面转载）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/47222732",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/465966798/23984532c7a967bf38d238ae0fc3ee60_7012433394200301669.PNG",
+   "evidence": [
+    "D040",
+    "D041"
+   ]
+  },
+  "PV7E": {
+   "file": "pv72_40.webp",
+   "w": 1600,
+   "h": 901,
+   "scene": "重叠星形、环形与多向光束",
+   "observation": "中心的斜向四角形与近水平、竖直的长射线叠加，外围另有环形细线、小型四角星及多向光束。",
+   "credit": "Monsoon Flower（版本PV画面转载）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/47222732",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/465966798/47bc20e50268ebde836f1bc9d6a33c5c_1513502885270120219.PNG",
+   "evidence": [
+    "D040",
+    "D041"
+   ]
+  },
+  "PV7A": {
+   "file": "pv72_07.webp",
+   "w": 1600,
+   "h": 895,
+   "scene": "蒙德风神像与天空中的发光轴线",
+   "observation": "风神像处于右侧前景，中心为纵向光柱和横向光带，周围分布大小不同的亮点及带内部纹样的标记。",
+   "credit": "Monsoon Flower（版本PV画面转载）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/47222732",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/465966798/5f8f5276e3455d6975e67925e1f3753f_7900262942670379886.PNG",
+   "evidence": [
+    "D040",
+    "D041"
+   ]
+  },
+  "PV7C": {
+   "file": "pv72_35.webp",
+   "w": 1600,
+   "h": 894,
+   "scene": "温迪面前的金色浮游构件",
+   "observation": "温迪背向观看者；台阶引向中央浮游构件，方菱形外框内部为圆形空间，内有交叠弧线及纵向亮线。",
+   "credit": "Monsoon Flower（版本PV画面转载）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/47222732",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2026/10/25/465966798/fdda2bdc9c075c25f6ac27ee1fedaa7f_6474613053289341779.PNG",
+   "evidence": [
+    "D040",
+    "D041"
+   ]
+  },
+  "PV7D": {
+   "file": "pv72_38.webp",
+   "w": 1600,
+   "h": 898,
+   "scene": "蓝色柱体的断裂与菱形外饰",
+   "observation": "蓝色发光柱体外包金灰色带状构件，菱形饰件位于中部；裂纹横穿柱体并从断口向外发光。",
+   "credit": "Monsoon Flower（版本PV画面转载）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://www.hoyolab.com/article/47222732",
+   "original": "https://upload-os-bbs.hoyolab.com/upload/2026/10/26/465966798/53aba86b583110c0be52f0453c6f2392_7546762283413535980.PNG",
+   "evidence": [
+    "D040",
+    "D041"
+   ]
+  },
+  "DRUM1": {
+   "file": "kory_fire.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "俱利鼓谱·火",
+   "observation": "树形构架中央为火元素徽记，下方排列填充程度不同的乐符。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Fire/UI_DrumPic_Fire.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Fire/UI_DrumPic_Fire.png",
+   "evidence": [
+    "J002"
+   ]
+  },
+  "DRUM2": {
+   "file": "kory_water.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "俱利鼓谱·水",
+   "observation": "树形构架中央为水元素徽记，下方排列填充程度不同的乐符。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Water/UI_DrumPic_Water.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Water/UI_DrumPic_Water.png",
+   "evidence": [
+    "J002"
+   ]
+  },
+  "DRUM3": {
+   "file": "kory_grass.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "俱利鼓谱·草",
+   "observation": "树形构架中央为草元素徽记，下方排列填充程度不同的乐符。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Grass/UI_DrumPic_Grass.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Grass/UI_DrumPic_Grass.png",
+   "evidence": [
+    "J002"
+   ]
+  },
+  "DRUM4": {
+   "file": "kory_thunder.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "俱利鼓谱·雷",
+   "observation": "树形构架中央为雷元素徽记，下方排列填充程度不同的乐符。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Thunder/UI_DrumPic_Thunder.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Thunder/UI_DrumPic_Thunder.png",
+   "evidence": [
+    "J002"
+   ]
+  },
+  "DRUM5": {
+   "file": "kory_ice.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "俱利鼓谱·冰",
+   "observation": "树形构架中央为冰元素徽记，下方排列填充程度不同的乐符。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Ice/UI_DrumPic_Ice.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Ice/UI_DrumPic_Ice.png",
+   "evidence": [
+    "J002"
+   ]
+  },
+  "WORK1": {
+   "file": "workshop_annotated.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《夹在笔记中的示意图》配图",
+   "observation": "场景分区与箭头组织设施的空间联系，绿色发光形体标出图中的特殊对象。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/UndergroundVestige/Map/UI_UndergroundVestige_Map_02.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/UndergroundVestige/Map/UI_UndergroundVestige_Map_02.png",
+   "evidence": [
+    "J003"
+   ]
+  },
+  "WORK2": {
+   "file": "rene_workshop.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《雷内的调查笔记》配图",
+   "observation": "场景分区与箭头组织设施的空间联系，绿色发光形体标出图中的特殊对象。",
+   "credit": "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/UndergroundVestige/Map/UI_UndergroundVestige_Map.png",
+   "original": "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/UndergroundVestige/Map/UI_UndergroundVestige_Map.png",
+   "evidence": [
+    "C037"
+   ]
+  },
+  "AS6_01": {
+   "file": "v6_UI_ReadPic_Flag01.webp",
+   "w": 380,
+   "h": 548,
+   "scene": "《旁白的注脚》·勇敢之形",
+   "observation": "塔楼主体和可连线节点共同呈现勇敢之形。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V600",
+    "V601",
+    "V602"
+   ]
+  },
+  "AS6_02": {
+   "file": "v6_UI_ReadPic_Flag02.webp",
+   "w": 380,
+   "h": 548,
+   "scene": "《旁白的注脚》·智慧之形",
+   "observation": "三环钥匙主体和连点状态共同呈现智慧之形。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V600",
+    "V601",
+    "V602"
+   ]
+  },
+  "AS6_03": {
+   "file": "v6_UI_ReadPic_Flag03.webp",
+   "w": 380,
+   "h": 548,
+   "scene": "《旁白的注脚》·同理心之形",
+   "observation": "星形窗格主体和连点状态共同呈现同理心之形。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V600",
+    "V601",
+    "V602"
+   ]
+  },
+  "AS6_04": {
+   "file": "v6_UI_ReadPic_FairyTale_01.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《「邪龙」绘卷》第1页",
+   "observation": "积木龙低头出现在画面。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V603"
+   ]
+  },
+  "AS6_05": {
+   "file": "v6_UI_ReadPic_FairyTale_02.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《「邪龙」绘卷》第2页",
+   "observation": "龙仰望亮物。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V603"
+   ]
+  },
+  "AS6_06": {
+   "file": "v6_UI_ReadPic_FairyTale_03.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《「邪龙」绘卷》第3页",
+   "observation": "龙与武装者发生冲突。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V603"
+   ]
+  },
+  "AS6_07": {
+   "file": "v6_UI_ReadPic_FairyTale_04.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《「邪龙」绘卷》第4页",
+   "observation": "明亮森林中的折纸动物。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V603"
+   ]
+  },
+  "AS6_08": {
+   "file": "v6_UI_ReadPic_FairyTale_05.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《「邪龙」绘卷》第5页",
+   "observation": "动物遭遇龙爪后显出惊惧。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V603"
+   ]
+  },
+  "AS6_09": {
+   "file": "v6_UI_ReadPic_FairyTale_06.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《「邪龙」绘卷》第6页",
+   "observation": "龙重新仰望星光。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk",
+   "evidence": [
+    "V603"
+   ]
+  },
+  "AS6_10": {
+   "file": "v6_UI_ReadPic_Brazier_Map.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《回火之路》配图",
+   "observation": "九个圈记和红色箭头组织有向路线。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk",
+   "evidence": [
+    "K004"
+   ]
+  },
+  "AS6_11": {
+   "file": "v6_UI_ReadPic_121099.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "特帕尔的浮空装置草图",
+   "observation": "气囊、悬吊平台、局部构件、测量线构成工程草图。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk",
+   "evidence": [
+    "V610"
+   ]
+  },
+  "AS6_12": {
+   "file": "v6_UI_ReadPic_Xilonen.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "希诺宁唱片纪念图",
+   "observation": "音乐表演者被几何纹样、金色星形和强烈色块围绕。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/06286806.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/06286806.blk",
+   "evidence": [
+    "V611",
+    "V615"
+   ]
+  },
+  "AS6_13": {
+   "file": "v6_UI_ReadPic_1501301.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "《勇敢的特奎》配图",
+   "observation": "巨大蓝紫色怪物与小比例人物对峙，线条和眼状纹样强化体量差。",
+   "credit": "官方5.5游戏资源包",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk",
+   "original": "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk",
+   "evidence": [
+    "V614"
+   ]
+  },
+  "AS6_14": {
+   "file": "v6_family_portrait.webp",
+   "w": 640,
+   "h": 360,
+   "scene": "玛梅赫家庭画像",
+   "observation": "牵手人物与四只杯子形成家庭及茶会关系，蜡笔式笔触整合画面。",
+   "credit": "BWIKI游戏图像档案",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://wiki.biligame.com/ys/玛梅赫画的「全家福」",
+   "original": "https://patchwiki.biligame.com/images/ys/c/c3/3e9h8ahj2d7co1clxwrqfvbguvpjzuh.png",
+   "evidence": [
+    "V612"
+   ]
+  },
+  "RUNE1": {
+   "file": "rune_wind.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "Item/Gear/Rune 资源族：风元素符文的 Diffuse 图像",
+   "observation": "左右近似对称的翼状曲线向上展开，中心下方收为尖端；浅色底面保留灰阶刻痕与明暗。",
+   "credit": "ylyking/GenshinTextures-full",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Wind/Diffuse/Item_Gear_Rune_Wind_Diffuse.png",
+   "original": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Wind/Diffuse/Item_Gear_Rune_Wind_Diffuse.png",
+   "evidence": [
+    "A700",
+    "A701"
+   ]
+  },
+  "RUNE2": {
+   "file": "rune_rock.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "Item/Gear/Rune 资源族：岩元素符文的 Diffuse 图像",
+   "observation": "整体为菱形外轮廓，内部由多段转折线形成嵌套结构；灰阶边缘呈不规则刻痕。",
+   "credit": "umaichanuwu/gi-tex-4.6-full",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Rock/Diffuse/Item_Gear_Rune_Rock_Diffuse.png",
+   "original": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Rock/Diffuse/Item_Gear_Rune_Rock_Diffuse.png",
+   "evidence": [
+    "A700",
+    "A701"
+   ]
+  },
+  "RUNE3": {
+   "file": "rune_electric.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "Item/Gear/Rune 资源族：雷元素符文的 Diffuse 图像",
+   "observation": "三个逗点状弯曲单元围绕中心组织为旋转形；外围有分段弧线，图面整体浅灰。",
+   "credit": "umaichanuwu/gi-tex-4.6-full",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Electric/Diffuse/Item_Gear_Rune_Electric_Diffuse.png",
+   "original": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Electric/Diffuse/Item_Gear_Rune_Electric_Diffuse.png",
+   "evidence": [
+    "A700",
+    "A701"
+   ]
+  },
+  "RUNE4": {
+   "file": "rune_grass.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "Item/Gear/Rune 资源族：草元素符文的 Diffuse 图像",
+   "observation": "双侧弯曲线围成心形或叶瓣状结构，顶部和两侧有叶尖状突起，底部收尖。",
+   "credit": "ylyking/GenshinTextures-full",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Grass/Diffuse/Item_Gear_Rune_Grass_Diffuse.png",
+   "original": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Grass/Diffuse/Item_Gear_Rune_Grass_Diffuse.png",
+   "evidence": [
+    "A700",
+    "A701"
+   ]
+  },
+  "RUNE5": {
+   "file": "rune_water.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "Item/Gear/Rune 资源族：水元素符文的 Diffuse 图像",
+   "observation": "右侧大弧包围向内卷曲的线，左侧两个分离的圆点补充主轮廓，内外曲线连续回旋。",
+   "credit": "umaichanuwu/gi-tex-4.6-full",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Water/Diffuse/Item_Gear_Rune_Water_Diffuse.png",
+   "original": "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Water/Diffuse/Item_Gear_Rune_Water_Diffuse.png",
+   "evidence": [
+    "A700",
+    "A701"
+   ]
+  },
+  "RUNE6": {
+   "file": "rune_fire.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "Item/Gear/Rune 资源族：火元素符文的 Diffuse 图像",
+   "observation": "上半部为向上延伸的多条火舌状曲线，下部曲线围合近圆形中心，外围下端收尖。",
+   "credit": "ylyking/GenshinTextures-full",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Fire/Diffuse/Item_Gear_Rune_Fire_Diffuse.png",
+   "original": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Fire/Diffuse/Item_Gear_Rune_Fire_Diffuse.png",
+   "evidence": [
+    "A700",
+    "A701"
+   ]
+  },
+  "RUNE7": {
+   "file": "rune_ice.webp",
+   "w": 256,
+   "h": 256,
+   "scene": "Item/Gear/Rune 资源族：冰元素符文的 Diffuse 图像",
+   "observation": "六向放射的尖角与菱形端部围绕中心排列，横向及斜向枝杈在中心相接。",
+   "credit": "ylyking/GenshinTextures-full",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Ice/Diffuse/Item_Gear_Rune_Ice_Diffuse.png",
+   "original": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Ice/Diffuse/Item_Gear_Rune_Ice_Diffuse.png",
+   "evidence": [
+    "A700",
+    "A701"
+   ]
+  },
+  "CHASM2": {
+   "file": "chasm_inverted_city.webp",
+   "w": 1024,
+   "h": 512,
+   "scene": "地理志《颠倒古城》",
+   "observation": "大型古建筑从洞顶向下延伸，断裂构件散布于洞室中；截图未展示可用于判断连续覆绘的墙面。",
+   "credit": "ylyking/GenshinTextures-full",
+   "creator": "HoYoverse / miHoYo",
+   "page": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Codex/Scenery/JYDianDaoYiJiJieSuo/UI_Codex_Scenery_JYDianDaoYiJiJieSuo.png",
+   "original": "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Codex/Scenery/JYDianDaoYiJiJieSuo/UI_Codex_Scenery_JYDianDaoYiJiJieSuo.png",
+   "evidence": [
+    "B019",
+    "I9204"
+   ]
+  }
+ }
+}

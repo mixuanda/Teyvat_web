@@ -1,0 +1,3366 @@
+{
+ "explain": {
+  "before/after": "文本支持的普通事件先后；可用于区域内部有向图。",
+  "same_period/same_approximate_period/same_crisis": "共时范围或共同危机，不规定日月级先后。",
+  "same_war_complex": "不同材料描写共同战争群中的不同尺度事件。",
+  "parallel_regional_storyline": "保留任务内部次序，组间只对照共同主题与地区。",
+  "cross_time_cause/historical_effect_of/cross_time_effect": "跨时因果边，与普通年代先后边分图呈现。",
+  "contemporary_proposal": "当代方案引用旧事，所援用历史与方案提出时间分层。",
+  "overlapping_research": "研究过程相互交叠，以共同材料和实验目标连接。",
+  "narrative_before/narrative_after": "来源中的列述顺序；不参与普通世界年代的有向排序。",
+  "historical_reference": "当代或较后段叙述对既有历史的回顾、引用或解释；保留被引历史与引用行动的不同时间层。",
+  "documented_stage_of": "文献产生于某项工程或过程的阶段；不等同于该工程已经完成。",
+  "interpretive_comparison": "两段材料可作解释性比较，但未据此建立实施过程的严格先后。"
+ },
+ "axes": {
+  "world_history": "文本支持的事件相对年代；长时段节点依据其来源所指的相关阶段理解。",
+  "traveler_experience": "旅行者参与的任务亲历顺序；支持阶段先后，不赋予绝对年份。",
+  "source_narrative": "同一来源列举材料的次序，不自动转换为所述事件发生次序。",
+  "embedded_reference": "叙事内嵌入的旧事、转述与回想；用于知识和证据联结。",
+  "personal_experience": "跨时行动者自身经历的先后，与外部世界年代分别处理。",
+  "cross_time_state_dependency": "跨时会面依赖的既有状态，保留前提关系而不合并为统一日历次序。",
+  "cross_time_causality": "时间跳转或逆向因果联系，单独绘图。",
+  "coarse_coincidence": "共同战争、危机或近似年代范围，不规定范围内的精确先后。",
+  "comparative_or_overlapping_context": "并行地域情节、交叠研究或当代提案的比较联系。",
+  "knowledge_history": "人物获得解释、文献再读及认识转变的时间；没有独立事件锚点时不并入世界年代排序。",
+  "document_creation": "文献制作、记录工程进度及当时展望的时间位置；文献与所记事件之间使用有类型的联系。",
+  "interstellar_ship_sequence": "飞船首次经过、持续航行、迫降及当代再发现的局部时序；尚未锚定提瓦特创世纪年。"
+ },
+ "reference_frame": "距今年数以相应游戏文本的当代叙述位置为参照；区域历法保留原始纪年。 故事列述和人物跨时亲历单列时间轴；轮回理论的命名不自动转化为世界年代。",
+ "events": {
+  "E001": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E003",
+     "basis": "原生生命、王座降临、七龙臣服、造人与人类收获依次见于世界起源记述。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E002": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E008",
+     "basis": "尼伯龙根造月与远行属于其归来之前的经历。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E003",
+     "basis": "三月的诞生先于天理到来。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E003": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E001",
+     "basis": "原生生命、王座降临、七龙臣服、造人与人类收获依次见于世界起源记述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E004",
+     "basis": "原生生命、王座降临、七龙臣服、造人与人类收获依次见于世界起源记述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E002",
+     "basis": "三月的诞生先于天理到来。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E004": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E003",
+     "basis": "原生生命、王座降临、七龙臣服、造人与人类收获依次见于世界起源记述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E005",
+     "basis": "原生生命、王座降临、七龙臣服、造人与人类收获依次见于世界起源记述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E008",
+     "basis": "龙王携外部力量归来，接续龙族被征服以后的反抗。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E005": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E004",
+     "basis": "原生生命、王座降临、七龙臣服、造人与人类收获依次见于世界起源记述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E006",
+     "basis": "原生生命、王座降临、七龙臣服、造人与人类收获依次见于世界起源记述。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E006": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E005",
+     "basis": "原生生命、王座降临、七龙臣服、造人与人类收获依次见于世界起源记述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E007",
+     "basis": "统一文化属于人类文明形成后的共同生活时代。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E007": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E006",
+     "basis": "统一文化属于人类文明形成后的共同生活时代。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E010",
+     "basis": "乌帽子把陆沉前的世界归入统一文化。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E008": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E002",
+     "basis": "尼伯龙根造月与远行属于其归来之前的经历。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E004",
+     "basis": "龙王携外部力量归来，接续龙族被征服以后的反抗。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E167",
+     "basis": "月神追忆把龙王归来、三月囚禁、月亮改造及其后毁伤列为连续过程。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E011",
+     "basis": "神之心与权柄分授机制在复仇战争以后形成。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E167": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E008",
+     "basis": "月神追忆把龙王归来、三月囚禁、月亮改造及其后毁伤列为连续过程。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E009",
+     "basis": "月神追忆把龙王归来、三月囚禁、月亮改造及其后毁伤列为连续过程。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E155",
+     "basis": "三月已被囚禁，是跨时会面得以发生的囚牢状态。",
+     "axis": "cross_time_state_dependency"
+    }
+   ]
+  },
+  "E009": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E167",
+     "basis": "月神追忆把龙王归来、三月囚禁、月亮改造及其后毁伤列为连续过程。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "same_war_complex",
+     "to": "E010",
+     "basis": "三月战争记忆与《日月前事》的葬火纪年分别保存月面及地表的剧变。",
+     "axis": "coarse_coincidence"
+    }
+   ]
+  },
+  "E010": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E007",
+     "basis": "乌帽子把陆沉前的世界归入统一文化。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E033",
+     "basis": "地下地理研究发生在白夜国陆沉之后。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E139",
+     "basis": "《日月前事》依次给出陆沉、目盲、目明／日月元年、日月二年及日月十年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E011": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E008",
+     "basis": "神之心与权柄分授机制在复仇战争以后形成。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E075",
+     "basis": "神之心及权柄接续的形成先于七神共同承担执政职责的完成。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E201": {
+   "precision": "列述位置及该城事例内部先后",
+   "relations": [
+    {
+     "rel": "narrative_before",
+     "to": "E202",
+     "basis": "长辈先述用火城邦、继述金绳城邦；这是同篇例证的列述顺序。",
+     "axis": "source_narrative"
+    }
+   ]
+  },
+  "E202": {
+   "precision": "列述位置及该城事例内部先后",
+   "relations": [
+    {
+     "rel": "narrative_after",
+     "to": "E201",
+     "basis": "长辈先述用火城邦、继述金绳城邦；这是同篇例证的列述顺序。",
+     "axis": "source_narrative"
+    },
+    {
+     "rel": "narrative_before",
+     "to": "E203",
+     "basis": "长辈在金绳城邦之后列述投入暗海的城邦；原文未给出三事例间的世界年代坐标。",
+     "axis": "source_narrative"
+    }
+   ]
+  },
+  "E203": {
+   "precision": "列述位置及该城事例内部先后",
+   "relations": [
+    {
+     "rel": "narrative_after",
+     "to": "E202",
+     "basis": "长辈在金绳城邦之后列述投入暗海的城邦；原文未给出三事例间的世界年代坐标。",
+     "axis": "source_narrative"
+    }
+   ]
+  },
+  "E204": {
+   "precision": "人物亲历的阶段次序；旁及往事",
+   "relations": [
+    {
+     "rel": "historical_reference",
+     "to": "E030",
+     "basis": "尼可授教时回想长姐此前说过的琅玕学习情况；与琅玕授艺条目交叉参照，保留回想及转述层。",
+     "axis": "embedded_reference"
+    },
+    {
+     "rel": "before",
+     "to": "E205",
+     "basis": "角色故事3的求学者被明确称为最初智者的后代，城邦经历先前多位求学者后遭受巨钉。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E205": {
+   "precision": "代际相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E204",
+     "basis": "角色故事3的求学者被明确称为最初智者的后代，城邦经历先前多位求学者后遭受巨钉。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E206",
+     "basis": "巨钉来临后尼可带人逃离，紧接着展开荒野跋涉、重新授教及失去难民的经历。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E206": {
+   "precision": "同一亲历过程内的连续先后",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E205",
+     "basis": "巨钉来临后尼可带人逃离，紧接着展开荒野跋涉、重新授教及失去难民的经历。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E207",
+     "basis": "受罚时尼可明确回顾恩眷弃绝后已与凡人在荒野同行的经历。天空争战结束为该场景自己的转场锚。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E207": {
+   "precision": "人物史的阶段次序；战争结束为相对锚",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E206",
+     "basis": "受罚时尼可明确回顾恩眷弃绝后已与凡人在荒野同行的经历。天空争战结束为该场景自己的转场锚。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E208",
+     "basis": "交出智慧与力量、返回地面的尼可，随后观察失去天使后魔神庇护人群；神之眼规则又在漫长时间之后进入叙述。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E208": {
+   "precision": "包含长时段的相对阶段关系",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E207",
+     "basis": "交出智慧与力量、返回地面的尼可，随后观察失去天使后魔神庇护人群；神之眼规则又在漫长时间之后进入叙述。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E133": {
+   "precision": "文本数值推得的时间位置",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E072",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E072": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E133",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E134",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E134": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E072",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E074",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E074": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E134",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E075",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E075": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E011",
+     "basis": "神之心及权柄接续的形成先于七神共同承担执政职责的完成。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E074",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E078",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E076",
+     "basis": "甘雨在战争结束后成为初代七星秘书。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E078": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E075",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E086",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E012": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E013",
+     "basis": "先驱的设施由乌吉恩等人接续，保存其生命的研究由玛歌洁蒂继续展开。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E013": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E012",
+     "basis": "先驱的设施由乌吉恩等人接续，保存其生命的研究由玛歌洁蒂继续展开。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E014",
+     "basis": "先驱的设施由乌吉恩等人接续，保存其生命的研究由玛歌洁蒂继续展开。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E014": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E013",
+     "basis": "先驱的设施由乌吉恩等人接续，保存其生命的研究由玛歌洁蒂继续展开。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E015",
+     "basis": "月幕工程继承玛歌洁蒂的生命与信息研究，并进入卢沙里姆的计划。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E015": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E014",
+     "basis": "月幕工程继承玛歌洁蒂的生命与信息研究，并进入卢沙里姆的计划。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E018",
+     "basis": "卢沙里姆的研究在宁宁继承时期继续推进。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E016": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E154",
+     "basis": "当代模块读取以古代资料保存设施为前提。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E017": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E154",
+     "basis": "当代望月者调查读到此前完成的认知实验记录。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E018": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E015",
+     "basis": "卢沙里姆的研究在宁宁继承时期继续推进。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E019",
+     "basis": "接收的回讯答复已经送出的信号。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "same_period",
+     "to": "E009",
+     "basis": "哥伦比娅将宁宁年代与两位至高者的争斗相联系。",
+     "axis": "coarse_coincidence"
+    }
+   ]
+  },
+  "E019": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E018",
+     "basis": "接收的回讯答复已经送出的信号。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E154",
+     "basis": "尘封回讯先于当代模块重新播放。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E020": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E021",
+     "basis": "北地从月潮文明、失月后的研究、造神实验灾变，进入千年后白沙皇苏醒的叙述。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E021": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E020",
+     "basis": "北地从月潮文明、失月后的研究、造神实验灾变，进入千年后白沙皇苏醒的叙述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E022",
+     "basis": "北地从月潮文明、失月后的研究、造神实验灾变，进入千年后白沙皇苏醒的叙述。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E022": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E021",
+     "basis": "北地从月潮文明、失月后的研究、造神实验灾变，进入千年后白沙皇苏醒的叙述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E023",
+     "basis": "北地从月潮文明、失月后的研究、造神实验灾变，进入千年后白沙皇苏醒的叙述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E024",
+     "basis": "遗民规程以亥珀波瑞亚覆亡后的处境为起点。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E024": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E022",
+     "basis": "遗民规程以亥珀波瑞亚覆亡后的处境为起点。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E023": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E022",
+     "basis": "北地从月潮文明、失月后的研究、造神实验灾变，进入千年后白沙皇苏醒的叙述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E026",
+     "basis": "白沙皇苏醒后的王朝经历包括基捷建立。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E025": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E026",
+     "basis": "氏族联盟与莫诺马赫王廷的形成构成基捷建城的政治前史。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E026": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E023",
+     "basis": "白沙皇苏醒后的王朝经历包括基捷建立。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E025",
+     "basis": "氏族联盟与莫诺马赫王廷的形成构成基捷建城的政治前史。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E166",
+     "basis": "建城、停止纳贡及征服胜利均由《苍星妖灵史略》的原始纪年定位。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E166": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E026",
+     "basis": "建城、停止纳贡及征服胜利均由《苍星妖灵史略》的原始纪年定位。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E027",
+     "basis": "建城、停止纳贡及征服胜利均由《苍星妖灵史略》的原始纪年定位。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E027": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E166",
+     "basis": "建城、停止纳贡及征服胜利均由《苍星妖灵史略》的原始纪年定位。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E028",
+     "basis": "取得北方统治地位以后，王廷与王公共同处理贡赋和城市经济。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E029",
+     "basis": "人类逐渐加入并迁都至冬堡，接续白沙皇的王朝建设。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E028": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E027",
+     "basis": "取得北方统治地位以后，王廷与王公共同处理贡赋和城市经济。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E029": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E027",
+     "basis": "人类逐渐加入并迁都至冬堡，接续白沙皇的王朝建设。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E094",
+     "basis": "白沙皇死亡以前，至冬已形成妖精与人类共同生活的王国。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E100": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E094",
+     "basis": "笔记明确回顾白沙皇尚在时已经托付研究所。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E030": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E031",
+     "basis": "琅玕的教育生产、灾害及居民与技艺延续构成同一地方传承。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E031": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E030",
+     "basis": "琅玕的教育生产、灾害及居民与技艺延续构成同一地方传承。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E032",
+     "basis": "琅玕的教育生产、灾害及居民与技艺延续构成同一地方传承。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E032": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E031",
+     "basis": "琅玕的教育生产、灾害及居民与技艺延续构成同一地方传承。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E073": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E076",
+     "basis": "战时聚落的毁坏与南迁先于战后港城及治理体系的发展。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E076": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E073",
+     "basis": "战时聚落的毁坏与南迁先于战后港城及治理体系的发展。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E075",
+     "basis": "甘雨在战争结束后成为初代七星秘书。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E114",
+     "basis": "当代七星权力移交使用了长期延续的行政组织。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E033": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E010",
+     "basis": "地下地理研究发生在白夜国陆沉之后。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E139": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E010",
+     "basis": "《日月前事》依次给出陆沉、目盲、目明／日月元年、日月二年及日月十年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E034",
+     "basis": "《日月前事》依次给出陆沉、目盲、目明／日月元年、日月二年及日月十年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E034": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E139",
+     "basis": "《日月前事》依次给出陆沉、目盲、目明／日月元年、日月二年及日月十年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E140",
+     "basis": "《日月前事》依次给出陆沉、目盲、目明／日月元年、日月二年及日月十年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E035",
+     "basis": "大蛇到来以前，人工太阳及太阳之子统治已经存在。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E140": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E034",
+     "basis": "《日月前事》依次给出陆沉、目盲、目明／日月元年、日月二年及日月十年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E141",
+     "basis": "《日月前事》依次给出陆沉、目盲、目明／日月元年、日月二年及日月十年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E141": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E140",
+     "basis": "《日月前事》依次给出陆沉、目盲、目明／日月元年、日月二年及日月十年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E035": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E034",
+     "basis": "大蛇到来以前，人工太阳及太阳之子统治已经存在。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E036",
+     "basis": "大蛇庇护、重返海面及海祇东征构成海祇自身的历史顺序。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E036": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E035",
+     "basis": "大蛇庇护、重返海面及海祇东征构成海祇自身的历史顺序。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E037",
+     "basis": "大蛇庇护、重返海面及海祇东征构成海祇自身的历史顺序。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E037": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E036",
+     "basis": "大蛇庇护、重返海面及海祇东征构成海祇自身的历史顺序。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E077": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E090",
+     "basis": "雷电真与影的共同统治先于真在灾变中的死亡及影的继承。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E038": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E039",
+     "basis": "山地城邦成立以后遭逢天柱及寒灾。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E039": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E038",
+     "basis": "山地城邦成立以后遭逢天柱及寒灾。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E040": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E157",
+     "basis": "戴因斯雷布把城市建筑判为早于坎瑞亚；当代教团使用属于后来的活动。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E041": {
+   "precision": "区域内部相对次序",
+   "relations": []
+  },
+  "E142": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E042",
+     "basis": "雷鸟先见证异物与雾气，后来才与阿瑠及祭典发生联系。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E143": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E042",
+     "basis": "阿釜明确叙述先民先迁清籁、鹤观随后毁灭、雷鸟后死于清籁，家族再迁神无冢及鸣神岛。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E042": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E142",
+     "basis": "雷鸟先见证异物与雾气，后来才与阿瑠及祭典发生联系。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E143",
+     "basis": "阿釜明确叙述先民先迁清籁、鹤观随后毁灭、雷鸟后死于清籁，家族再迁神无冢及鸣神岛。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E144",
+     "basis": "阿釜明确叙述先民先迁清籁、鹤观随后毁灭、雷鸟后死于清籁，家族再迁神无冢及鸣神岛。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E158",
+     "basis": "当代祭典循环显现的是阿瑠牺牲与部落毁灭前后的旧记忆。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E144": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E042",
+     "basis": "阿釜明确叙述先民先迁清籁、鹤观随后毁灭、雷鸟后死于清籁，家族再迁神无冢及鸣神岛。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E043",
+     "basis": "阿釜明确叙述先民先迁清籁、鹤观随后毁灭、雷鸟后死于清籁，家族再迁神无冢及鸣神岛。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E043": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E144",
+     "basis": "阿釜明确叙述先民先迁清籁、鹤观随后毁灭、雷鸟后死于清籁，家族再迁神无冢及鸣神岛。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E044": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E047",
+     "basis": "三神共同体先于花神之死及镇灵转向赤王。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E045": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E046",
+     "basis": "森林生态与社会生活构成猎手收养和教导儿童的条件。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E046": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E045",
+     "basis": "森林生态与社会生活构成猎手收养和教导儿童的条件。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E047": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E044",
+     "basis": "三神共同体先于花神之死及镇灵转向赤王。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E048",
+     "basis": "花神死后镇灵群体进入赤王秩序，利露帕尔在此后参与居尔建国。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E049",
+     "basis": "菲莉吉丝治理绿洲以后，随着城市发展将身体纳入机械。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E048": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E047",
+     "basis": "花神死后镇灵群体进入赤王秩序，利露帕尔在此后参与居尔建国。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E050",
+     "basis": "居尔建国、工程劳役扩张及宫城崩溃依次形成地方王朝史。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E049": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E047",
+     "basis": "菲莉吉丝治理绿洲以后，随着城市发展将身体纳入机械。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E050": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E048",
+     "basis": "居尔建国、工程劳役扩张及宫城崩溃依次形成地方王朝史。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E051",
+     "basis": "居尔建国、工程劳役扩张及宫城崩溃依次形成地方王朝史。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E051": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E050",
+     "basis": "居尔建国、工程劳役扩张及宫城崩溃依次形成地方王朝史。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E052",
+     "basis": "建筑师回忆居尔之难、父亲之死及自己的晋用，写作时阿如主体接近完成。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E058",
+     "basis": "《雷穆利亚衰亡史》卷一将居尔王朝兴亡置于雷穆斯乘金色法图纳号降临梅洛皮斯之前。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E804",
+     "basis": "阿如建筑师在叙述居尔之难及父亲死亡之后，记录阿如主体将成的当前进度。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E052": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E051",
+     "basis": "建筑师回忆居尔之难、父亲之死及自己的晋用，写作时阿如主体接近完成。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E053",
+     "basis": "建筑师的记录仍把赤王作为工程的在世主导者。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E804": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E051",
+     "basis": "阿如建筑师在叙述居尔之难及父亲死亡之后，记录阿如主体将成的当前进度。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "documented_stage_of",
+     "to": "E052",
+     "basis": "文书产生于阿如建设主体将成的阶段；未来容纳范围与后世转用另列。",
+     "axis": "document_creation"
+    }
+   ]
+  },
+  "E053": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E052",
+     "basis": "建筑师的记录仍把赤王作为工程的在世主导者。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E054",
+     "basis": "碑铭记赤王刚死不久，兰沙赫尔返回并建立七高塔体系。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E055",
+     "basis": "失乡王子的故事以赤王死亡后的诸邦冲突为前提。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E057",
+     "basis": "赫曼努比斯的迁徙和缄默之殿创立被置于赤王死后。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E161",
+     "basis": "迁居者在后继王朝冲突中离开王城，沿用阿如的旧日愿景。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E054": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E053",
+     "basis": "碑铭记赤王刚死不久，兰沙赫尔返回并建立七高塔体系。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E056",
+     "basis": "图莱杜拉及重建居尔的材料接续七高塔王朝及后继战争。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E055": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E053",
+     "basis": "失乡王子的故事以赤王死亡后的诸邦冲突为前提。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E057": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E053",
+     "basis": "赫曼努比斯的迁徙和缄默之殿创立被置于赤王死后。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E056": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E054",
+     "basis": "图莱杜拉及重建居尔的材料接续七高塔王朝及后继战争。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E161": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E053",
+     "basis": "迁居者在后继王朝冲突中离开王城，沿用阿如的旧日愿景。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E300": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E135": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E136",
+     "basis": "胎海新心脏、赐予纯水精灵人形、囚禁及雷穆斯拜访构成厄歌莉娅相关事件的先后。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E136": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E135",
+     "basis": "胎海新心脏、赐予纯水精灵人形、囚禁及雷穆斯拜访构成厄歌莉娅相关事件的先后。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E137",
+     "basis": "胎海新心脏、赐予纯水精灵人形、囚禁及雷穆斯拜访构成厄歌莉娅相关事件的先后。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E137": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E136",
+     "basis": "胎海新心脏、赐予纯水精灵人形、囚禁及雷穆斯拜访构成厄歌莉娅相关事件的先后。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E059",
+     "basis": "胎海新心脏、赐予纯水精灵人形、囚禁及雷穆斯拜访构成厄歌莉娅相关事件的先后。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E801": {
+   "precision": "只确定雷穆斯前史内部次序；与E051的相对位置未建立",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E802",
+     "basis": "《谐律交响的前奏》依次叙述失乡远行、海渊初遇和银树化为航船。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E802": {
+   "precision": "只确定雷穆斯前史内部次序；与E051的相对位置未建立",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E801",
+     "basis": "《谐律交响的前奏》依次叙述失乡远行、海渊初遇和银树化为航船。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E803",
+     "basis": "《谐律交响的前奏》依次叙述失乡远行、海渊初遇和银树化为航船。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E803": {
+   "precision": "只确定雷穆斯前史内部次序；与E051的相对位置未建立",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E802",
+     "basis": "《谐律交响的前奏》依次叙述失乡远行、海渊初遇和银树化为航船。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E058",
+     "basis": "银树化为金色航船在初遇末尾；雷穆斯乘法图纳号降临梅洛皮斯属于随后建国阶段。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E058": {
+   "precision": "区域内部相对次序；居尔锚点只接梅洛皮斯阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E051",
+     "basis": "《雷穆利亚衰亡史》卷一将居尔王朝兴亡置于雷穆斯乘金色法图纳号降临梅洛皮斯之前。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E803",
+     "basis": "《谐律交响的前奏》将银树化为金色航船置于初遇末尾；《衰亡史》另记乘金色法图纳号降临梅洛皮斯。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E059",
+     "basis": "雷穆斯在初建梅洛皮斯之后拜访厄歌莉娅；黄金舰队与大乐章属于后续。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E060",
+     "basis": "帝国城市与航路接续雷穆斯在高海的最初建国。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E059": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E137",
+     "basis": "胎海新心脏、赐予纯水精灵人形、囚禁及雷穆斯拜访构成厄歌莉娅相关事件的先后。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E058",
+     "basis": "雷穆斯在初建梅洛皮斯之后拜访厄歌莉娅；黄金舰队与大乐章属于后续。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E061",
+     "basis": "灵魂保存工程进入福波斯秩序，帝国覆灭后厄歌莉娅获释并建制，史书作者约百年后回顾。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E060": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E058",
+     "basis": "帝国城市与航路接续雷穆斯在高海的最初建国。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E062",
+     "basis": "帝国基础设施和调律师组织在覆灭以前已经运行。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E061": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E059",
+     "basis": "灵魂保存工程进入福波斯秩序，帝国覆灭后厄歌莉娅获释并建制，史书作者约百年后回顾。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E062",
+     "basis": "灵魂保存工程进入福波斯秩序，帝国覆灭后厄歌莉娅获释并建制，史书作者约百年后回顾。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E062": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E061",
+     "basis": "灵魂保存工程进入福波斯秩序，帝国覆灭后厄歌莉娅获释并建制，史书作者约百年后回顾。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E063",
+     "basis": "灵魂保存工程进入福波斯秩序，帝国覆灭后厄歌莉娅获释并建制，史书作者约百年后回顾。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E060",
+     "basis": "帝国基础设施和调律师组织在覆灭以前已经运行。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E063": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E062",
+     "basis": "灵魂保存工程进入福波斯秩序，帝国覆灭后厄歌莉娅获释并建制，史书作者约百年后回顾。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E138",
+     "basis": "灵魂保存工程进入福波斯秩序，帝国覆灭后厄歌莉娅获释并建制，史书作者约百年后回顾。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E092",
+     "basis": "水神获授职责后延续至五百年前的死亡。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E138": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E063",
+     "basis": "灵魂保存工程进入福波斯秩序，帝国覆灭后厄歌莉娅获释并建制，史书作者约百年后回顾。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E064": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E065",
+     "basis": "衰败的古龙秩序构成传火与人类部族发展的背景。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E065": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E064",
+     "basis": "衰败的古龙秩序构成传火与人类部族发展的背景。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E067",
+     "basis": "源火与知识的传播先于希巴拉克反抗达到决定性阶段。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E066": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E067",
+     "basis": "十三领主的统治讨论在希巴拉克战争摧毁旧秩序之前。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E168",
+     "basis": "第八席原为十三领主之一，后来在与希巴拉克有关的分歧中受到处决。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E168": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E066",
+     "basis": "第八席原为十三领主之一，后来在与希巴拉克有关的分歧中受到处决。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "same_period",
+     "to": "E067",
+     "basis": "第八席之死与莉安歌追随希巴拉克属于同一场战争的经历。",
+     "axis": "coarse_coincidence"
+    },
+    {
+     "rel": "before",
+     "to": "E145",
+     "basis": "伊涅芙的出海安排在第八席被处决数十年后启动。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E067": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E066",
+     "basis": "十三领主的统治讨论在希巴拉克战争摧毁旧秩序之前。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E065",
+     "basis": "源火与知识的传播先于希巴拉克反抗达到决定性阶段。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E068",
+     "basis": "希巴拉克战胜旧龙族统治后取得火神地位并建立规则。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E068": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E067",
+     "basis": "希巴拉克战胜旧龙族统治后取得火神地位并建立规则。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E069",
+     "basis": "初代火神之后出现奥奇坎帝国，帝国随后被推翻并形成后继部族关系。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E093",
+     "basis": "五百年前火神计划使用初代建立的圣火、古名及与死亡有关的规则。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E069": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E068",
+     "basis": "初代火神之后出现奥奇坎帝国，帝国随后被推翻并形成后继部族关系。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E070",
+     "basis": "初代火神之后出现奥奇坎帝国，帝国随后被推翻并形成后继部族关系。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E070": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E069",
+     "basis": "初代火神之后出现奥奇坎帝国，帝国随后被推翻并形成后继部族关系。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E145": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E168",
+     "basis": "伊涅芙的出海安排在第八席被处决数十年后启动。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E071",
+     "basis": "伊涅芙离开古纳塔先于其在北地延续约两千年的经历。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E071": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E145",
+     "basis": "伊涅芙离开古纳塔先于其在北地延续约两千年的经历。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E079": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E162",
+     "basis": "天空档案的转述先谈血脉起源，再谈宫廷开门及后续灾祸。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E162": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E079",
+     "basis": "天空档案的转述先谈血脉起源，再谈宫廷开门及后续灾祸。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E301": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E080": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E087",
+     "basis": "移民及混血家庭先为王国成员，灾后血统分类决定诅咒的不同形态。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E081": {
+   "precision": "区域内部相对次序",
+   "relations": []
+  },
+  "E082": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E083",
+     "basis": "黑日王朝的宫廷禁令属于赤月王朝更替后的制度。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E083": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E082",
+     "basis": "黑日王朝的宫廷禁令属于赤月王朝更替后的制度。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E084",
+     "basis": "灾变前夕的行动发生于黑日王朝末期。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E211": {
+   "precision": "来源内部顺序及跨时角色位置",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E212",
+     "basis": "王庭长期生活及记忆恢复先于灾变中的个人选择。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E084": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E083",
+     "basis": "灾变前夕的行动发生于黑日王朝末期。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E087",
+     "basis": "五人分裂及救国行动瓦解被叙述为王国覆亡前的危机。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E103": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E150",
+     "basis": "水仙十字院成员先在院中成长，机构随后毁于灾变。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E086": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E078",
+     "basis": "各条分别给出六千余年、三千七百年、三千年、约两千六百年、两千年、一千年与五百年前的坐标。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E085": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "same_crisis",
+     "to": "E086",
+     "basis": "救国会议的摄政行动属于王国大灾变中的国家危机。",
+     "axis": "coarse_coincidence"
+    }
+   ]
+  },
+  "E212": {
+   "precision": "来源内部顺序及跨时角色位置",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E211",
+     "basis": "王庭生活与恢复记忆先于灾变时收到消息并离开。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E087": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E080",
+     "basis": "移民及混血家庭先为王国成员，灾后血统分类决定诅咒的不同形态。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E084",
+     "basis": "五人分裂及救国行动瓦解被叙述为王国覆亡前的危机。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "same_period",
+     "to": "E086",
+     "basis": "地方记述与五百年前各国遭到深渊入侵的共同截面相接。",
+     "axis": "coarse_coincidence"
+    },
+    {
+     "rel": "before",
+     "to": "E101",
+     "basis": "克洛达尔在王国覆亡与家人受诅咒后经历卡利贝尔事件，随后创立教团，约百年后失踪。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E088": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "same_period",
+     "to": "E086",
+     "basis": "地方记述与五百年前各国遭到深渊入侵的共同截面相接。",
+     "axis": "coarse_coincidence"
+    }
+   ]
+  },
+  "E089": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "same_period",
+     "to": "E086",
+     "basis": "地方记述与五百年前各国遭到深渊入侵的共同截面相接。",
+     "axis": "coarse_coincidence"
+    }
+   ]
+  },
+  "E090": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E077",
+     "basis": "雷电真与影的共同统治先于真在灾变中的死亡及影的继承。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "same_period",
+     "to": "E086",
+     "basis": "地方记述与五百年前各国遭到深渊入侵的共同截面相接。",
+     "axis": "coarse_coincidence"
+    },
+    {
+     "rel": "before",
+     "to": "E151",
+     "basis": "神位继承之后仍有百年尺度的梦境照料。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E160": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "historical_effect_of",
+     "to": "E116",
+     "basis": "神樱在过去的出现由影在当代的行动与时间力量形成。",
+     "axis": "cross_time_causality"
+    }
+   ]
+  },
+  "E091": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "same_period",
+     "to": "E086",
+     "basis": "地方记述与五百年前各国遭到深渊入侵的共同截面相接。",
+     "axis": "coarse_coincidence"
+    }
+   ]
+  },
+  "E092": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E063",
+     "basis": "水神获授职责后延续至五百年前的死亡。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "same_period",
+     "to": "E086",
+     "basis": "地方记述与五百年前各国遭到深渊入侵的共同截面相接。",
+     "axis": "coarse_coincidence"
+    },
+    {
+     "rel": "before",
+     "to": "E104",
+     "basis": "雷内研究的灵光与甘露花海已由旧水神死亡及西摩格变化生成。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E093": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E068",
+     "basis": "五百年前火神计划使用初代建立的圣火、古名及与死亡有关的规则。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "same_period",
+     "to": "E086",
+     "basis": "地方记述与五百年前各国遭到深渊入侵的共同截面相接。",
+     "axis": "coarse_coincidence"
+    }
+   ]
+  },
+  "E094": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E029",
+     "basis": "白沙皇死亡以前，至冬已形成妖精与人类共同生活的王国。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E100",
+     "basis": "笔记明确回顾白沙皇尚在时已经托付研究所。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E147",
+     "basis": "迁所计划见于追述君主死亡与基捷毁坏的笔记。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "same_period",
+     "to": "E086",
+     "basis": "地方记述与五百年前各国遭到深渊入侵的共同截面相接。",
+     "axis": "coarse_coincidence"
+    },
+    {
+     "rel": "before",
+     "to": "E096",
+     "basis": "白沙皇在灾变中死亡后，王廷进入安娜丝塔夏加冕的阶段。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E150": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E103",
+     "basis": "水仙十字院成员先在院中成长，机构随后毁于灾变。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E104",
+     "basis": "沙漠笔记回顾院子受到第一次洪水，并记录灾后调查。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E095": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "same_approximate_period",
+     "to": "E086",
+     "basis": "礼仪改革自有约五百年前的时间提示，与灾变时代并置。",
+     "axis": "coarse_coincidence"
+    },
+    {
+     "rel": "before",
+     "to": "E146",
+     "basis": "安洛丝的礼仪注释回顾爱依菈此前推动的改革。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E096": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E094",
+     "basis": "白沙皇在灾变中死亡后，王廷进入安娜丝塔夏加冕的阶段。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E163",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E163": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E096",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E097",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E097": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E163",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E164",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E164": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E097",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E165",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E165": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E164",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E098",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E098": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E165",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E099",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E099": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E098",
+     "basis": "北地史书及敕书依次给出七百九十九纪第一、二、三、四、六、七年和八百纪第三年。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E148",
+     "basis": "列车技术与权力移交以后，交通工程在数百年的工作中持续扩展。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E147": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E094",
+     "basis": "迁所计划见于追述君主死亡与基捷毁坏的笔记。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E148": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E099",
+     "basis": "列车技术与权力移交以后，交通工程在数百年的工作中持续扩展。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E146": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E095",
+     "basis": "安洛丝的礼仪注释回顾爱依菈此前推动的改革。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E151": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E090",
+     "basis": "神位继承之后仍有百年尺度的梦境照料。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E101": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E087",
+     "basis": "克洛达尔在王国覆亡与家人受诅咒后经历卡利贝尔事件，随后创立教团，约百年后失踪。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E102",
+     "basis": "克洛达尔在王国覆亡与家人受诅咒后经历卡利贝尔事件，随后创立教团，约百年后失踪。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E102": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E101",
+     "basis": "克洛达尔在王国覆亡与家人受诅咒后经历卡利贝尔事件，随后创立教团，约百年后失踪。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E149",
+     "basis": "克洛达尔在王国覆亡与家人受诅咒后经历卡利贝尔事件，随后创立教团，约百年后失踪。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E149": {
+   "precision": "约略距今年数或持续区间",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E102",
+     "basis": "克洛达尔在王国覆亡与家人受诅咒后经历卡利贝尔事件，随后创立教团，约百年后失踪。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E121",
+     "basis": "创教者的失踪属于深渊教团的旧史，当代命运的织机进入新阶段。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E104": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E150",
+     "basis": "沙漠笔记回顾院子受到第一次洪水，并记录灾后调查。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E092",
+     "basis": "雷内研究的灵光与甘露花海已由旧水神死亡及西摩格变化生成。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E106",
+     "basis": "雅各布在沙漠获得的生命变化成为卡特治疗实验的参照。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E810",
+     "basis": "《雷内的调查笔记》先记雅各布恢复及治疗数据，随后记涨水名称纠正与未来交叉核算。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E812",
+     "basis": "须弥救治在返回枫丹和进入学院研究之前；雅各布变化成为学院生命研究的前提。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E810": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E104",
+     "basis": "《雷内的调查笔记》先记雅各布恢复及治疗数据，随后记涨水名称纠正与未来交叉核算。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E811",
+     "basis": "须弥笔记以即将返回枫丹及寻找阿兰收尾；返乡的厄里那斯材料另记强化、身体反应与学院相约。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E811": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E810",
+     "basis": "须弥笔记以即将返回枫丹及寻找阿兰收尾；返乡的厄里那斯材料另记强化、身体反应与学院相约。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "overlapping_research",
+     "to": "E105",
+     "basis": "两项均包含雅各布接受厄里那斯血肉及能力测试；E105另扩及雪山与矿坑材料，不能据分行排成完全前后。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E812": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E104",
+     "basis": "须弥救治在返回枫丹和进入学院研究之前；雅各布变化成为学院生命研究的前提。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E106",
+     "basis": "学院合作及分室日志先行记述，末段才提出向卡特说明风险并尝试治疗；卡特失败另由后续实验记录叙述。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E105": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "overlapping_research",
+     "to": "E106",
+     "basis": "跨地区物质调查进入卡特治疗及后续生命改造，研究过程相互交叠。",
+     "axis": "comparative_or_overlapping_context"
+    },
+    {
+     "rel": "overlapping_research",
+     "to": "E811",
+     "basis": "两项均包含雅各布接受厄里那斯血肉及能力测试；E105另扩及雪山与矿坑材料，不能据分行排成完全前后。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E106": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E104",
+     "basis": "雅各布在沙漠获得的生命变化成为卡特治疗实验的参照。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E109",
+     "basis": "雅各布后来使用卡特遗留物、莉利丝的性质与旧物联系重构雷内。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E112",
+     "basis": "阿兰在与雷内分道、阻止其行动以后创办科学院。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E812",
+     "basis": "学院合作及分室日志先行记述，末段才提出向卡特说明风险并尝试治疗；卡特失败另由后续实验记录叙述。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E814",
+     "basis": "卡特治疗及组织劣化已经发生，雷内在自我转化计划中才提出重新提炼卡特，并为此前遭遇道歉。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E107": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E120",
+     "basis": "加入结社的古文明研究与等级制度形成于当代终局以前。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E813": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": [
+    {
+     "rel": "narrative_before",
+     "to": "E814",
+     "basis": "神秘书页的第八篇记录节点调查，第九篇记录四象限改造将成和转化计划；这里只登记文献编排及研究主题的接续。",
+     "axis": "source_narrative"
+    }
+   ]
+  },
+  "E814": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E106",
+     "basis": "卡特治疗及组织劣化已经发生，雷内在自我转化计划中才提出重新提炼卡特，并为此前遭遇道歉。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "narrative_after",
+     "to": "E813",
+     "basis": "神秘书页的第八篇记录节点调查，第九篇记录四象限改造将成和转化计划；这里只登记文献编排及研究主题的接续。",
+     "axis": "source_narrative"
+    },
+    {
+     "rel": "narrative_before",
+     "to": "E815",
+     "basis": "第九篇为转化前计划，第十篇及第十二篇是转化主体的成功自述与后续经验；不以文献相邻性补写中间实施步骤。",
+     "axis": "source_narrative"
+    }
+   ]
+  },
+  "E108": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "overlapping_research",
+     "to": "E109",
+     "basis": "雅各布在保存失能的雷内时同时隐瞒状态、维持结社并展开重构；代理与重构属于交叠阶段。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E109": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E106",
+     "basis": "雅各布后来使用卡特遗留物、莉利丝的性质与旧物联系重构雷内。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "overlapping_research",
+     "to": "E108",
+     "basis": "雅各布在保存失能的雷内时同时隐瞒状态、维持结社并展开重构；代理与重构属于交叠阶段。",
+     "axis": "comparative_or_overlapping_context"
+    },
+    {
+     "rel": "interpretive_comparison",
+     "to": "E815",
+     "basis": "雅各布计划筛除失败记忆，与转化主体报告记忆和记录不协调可作解释性比较；两篇没有明确记述逐步衔接过程。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E815": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": [
+    {
+     "rel": "narrative_after",
+     "to": "E814",
+     "basis": "第九篇为转化前计划，第十篇及第十二篇是转化主体的成功自述与后续经验；不以文献相邻性补写中间实施步骤。",
+     "axis": "source_narrative"
+    },
+    {
+     "rel": "interpretive_comparison",
+     "to": "E109",
+     "basis": "雅各布计划筛除失败记忆，与转化主体报告记忆和记录不协调可作解释性比较；两篇没有明确记述逐步衔接过程。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E110": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E120",
+     "basis": "四轮回理论属于当代旅行者面对的结社历史遗产。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E111": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E120",
+     "basis": "世界式布道及寻找外部变量的理论先于结社当代终局。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E112": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E106",
+     "basis": "阿兰在与雷内分道、阻止其行动以后创办科学院。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E153",
+     "basis": "桑多涅先与在世阿兰交往并读完待销毁手稿，后续机关工作继承这些知识。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E152": {
+   "precision": "文本给出的纪年或持续时间",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E153",
+     "basis": "现世机关动力传统承接阿兰四百多年前奠立的技术框架。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E153": {
+   "precision": "区域内部相对次序",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E112",
+     "basis": "桑多涅先与在世阿兰交往并读完待销毁手稿，后续机关工作继承这些知识。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E152",
+     "basis": "现世机关动力传统承接阿兰四百多年前奠立的技术框架。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E302": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E303": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E304": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E700": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E113": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E114",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E114": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E076",
+     "basis": "当代七星权力移交使用了长期延续的行政组织。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E113",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E115",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E157",
+     "basis": "层岩调查发生于旅行者已参与璃月事件后的亲历阶段。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E701": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E702": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E703": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E115": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E114",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E117",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E116",
+     "basis": "眼狩令结束以后，影在其后传说任务中继续修订治理方向。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E704": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E117": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E115",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E118",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E213": {
+   "precision": "来源内部顺序及跨时角色位置",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E117",
+     "basis": "净善宫问答发生于须弥主线危机结束后的庆祝与休整。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E118": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E117",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E119",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E119": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E118",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E121",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E305": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E121": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E149",
+     "basis": "创教者的失踪属于深渊教团的旧史，当代命运的织机进入新阶段。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E119",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E122",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E122": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E121",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E123",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E123": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E122",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E124",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E124": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E123",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E125",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E125": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E124",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E126",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E126": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E125",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E127",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E306": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E127": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E126",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E128",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E128": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E127",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E129",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E129": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E128",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E130",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E209",
+     "basis": "影明确回顾至冬会议关于龙族的讨论，并提出把原始雷力的解放作为永恒试炼的证物。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E209": {
+   "precision": "七国会议之后、各国试炼全部完成之前的任务阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E129",
+     "basis": "影明确回顾至冬会议关于龙族的讨论，并提出把原始雷力的解放作为永恒试炼的证物。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E130",
+     "basis": "影此时仍在准备永恒试炼的证物；该行动属于各国试炼全部完成、圣土化暂停之前的试炼阶段。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "historical_reference",
+     "to": "E144",
+     "basis": "当代对话回顾在清籁斩落雷鸟并封止原始雷力的经历；历史斩杀与当代解除封印分别登记。",
+     "axis": "embedded_reference"
+    }
+   ]
+  },
+  "E130": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E129",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E131",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "after",
+     "to": "E209",
+     "basis": "影此时仍在准备永恒试炼的证物；该行动属于各国试炼全部完成、圣土化暂停之前的试炼阶段。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E131": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E130",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "before",
+     "to": "E132",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E132": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E131",
+     "basis": "相应魔神任务及其后续对话给出旅行者主线的亲历顺序。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E116": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E115",
+     "basis": "眼狩令结束以后，影在其后传说任务中继续修订治理方向。",
+     "axis": "traveler_experience"
+    },
+    {
+     "rel": "cross_time_cause",
+     "to": "E160",
+     "basis": "当代植种经时间力量抵达过去，成为五百年前以后历史的一部分。",
+     "axis": "cross_time_causality"
+    }
+   ]
+  },
+  "E157": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E040",
+     "basis": "戴因斯雷布把城市建筑判为早于坎瑞亚；当代教团使用属于后来的活动。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E114",
+     "basis": "层岩调查发生于旅行者已参与璃月事件后的亲历阶段。",
+     "axis": "traveler_experience"
+    }
+   ]
+  },
+  "E158": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E042",
+     "basis": "当代祭典循环显现的是阿瑠牺牲与部落毁灭前后的旧记忆。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "parallel_regional_storyline",
+     "to": "E115",
+     "basis": "鹤观调查属于稻妻地方历史线，内部顺序由调查任务本身给出。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E120": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E107",
+     "basis": "加入结社的古文明研究与等级制度形成于当代终局以前。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E110",
+     "basis": "四轮回理论属于当代旅行者面对的结社历史遗产。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E111",
+     "basis": "世界式布道及寻找外部变量的理论先于结社当代终局。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "parallel_regional_storyline",
+     "to": "E119",
+     "basis": "结社世界任务与枫丹主线都处理当地灾害及历史遗产；各自保留自身任务内顺序。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E154": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E016",
+     "basis": "当代模块读取以古代资料保存设施为前提。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E017",
+     "basis": "当代望月者调查读到此前完成的认知实验记录。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "after",
+     "to": "E019",
+     "basis": "尘封回讯先于当代模块重新播放。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "parallel_regional_storyline",
+     "to": "E124",
+     "basis": "望月者调查与空月叙事共同接触古月遗产，现世播放单列为认识史事件。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E155": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E167",
+     "basis": "三月已被囚禁，是跨时会面得以发生的囚牢状态。",
+     "axis": "cross_time_state_dependency"
+    },
+    {
+     "rel": "before",
+     "to": "E156",
+     "basis": "哥伦比娅亲历顺序为获得交权、形体散为月光、灵魂返回未来锚点。",
+     "axis": "personal_experience"
+    }
+   ]
+  },
+  "E156": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E155",
+     "basis": "哥伦比娅亲历顺序为获得交权、形体散为月光、灵魂返回未来锚点。",
+     "axis": "personal_experience"
+    },
+    {
+     "rel": "cross_time_effect",
+     "to": "E167",
+     "basis": "当代继承者在古代囚牢中散去形体，月光此后陪伴地表，连接古代状态与现世来源。",
+     "axis": "cross_time_causality"
+    }
+   ]
+  },
+  "E214": {
+   "precision": "来源内部顺序及跨时角色位置",
+   "relations": [
+    {
+     "rel": "historical_reference",
+     "to": "E212",
+     "basis": "当代解释回溯五百年前的求援与离开；获得解释的时刻与此前真正的促成行动分开。",
+     "axis": "knowledge_history"
+    }
+   ]
+  },
+  "E159": {
+   "precision": "叙事阶段",
+   "relations": [
+    {
+     "rel": "contemporary_proposal",
+     "to": "E094",
+     "basis": "无忧庭院讨论借用白沙皇遗体及其历史，方案本身在当代提出。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E210": {
+   "precision": "当代实验场景；不赋予未载明的绝对日期",
+   "relations": []
+  },
+  "E307": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E308": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E309": {
+   "precision": "按实际年表补齐节点；未由列表位置生成时间关系",
+   "relations": []
+  },
+  "E901": {
+   "precision": "来源明确的相对状态",
+   "relations": [
+    {
+     "rel": "after",
+     "to": "E005",
+     "basis": "《离光》明确将共治放在创造完成和箱舟停驻以后；E005保存人类创生阶段。",
+     "axis": "world_history"
+    },
+    {
+     "rel": "before",
+     "to": "E009",
+     "basis": "共治以三月完整为状态前提；《酹祭》《银冕》接述永恒终点与两月坠失，E009记录月体毁伤。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E902": {
+   "precision": "来源明确的相对状态",
+   "relations": [
+    {
+     "rel": "same_period",
+     "to": "E901",
+     "basis": "两篇同以三月完整及新秩序为环境；法度形成和新约列在这一共同窗口中。",
+     "axis": "coarse_coincidence"
+    },
+    {
+     "rel": "before",
+     "to": "E009",
+     "basis": "新约篇明确三轮月仍在，早于E009的月体毁伤状态。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E903": {
+   "precision": "来源明确的相对状态",
+   "relations": [
+    {
+     "rel": "same_period",
+     "to": "E901",
+     "basis": "接魂及多地月祭以三月完整的共同秩序为背景。",
+     "axis": "coarse_coincidence"
+    },
+    {
+     "rel": "before",
+     "to": "E009",
+     "basis": "接魂与多地祭仪先述于长剑划天、永恒终末；与两月陨落的状态相接。",
+     "axis": "world_history"
+    }
+   ]
+  },
+  "E904": {
+   "precision": "诗内或梦内先后；绝对世界位置未定",
+   "relations": [
+    {
+     "rel": "interpretive_comparison",
+     "to": "E903",
+     "basis": "两份材料同有凡人魂灵、银色航船及月上乐土，可比较旧制；颂诗命令没有独立世界纪年。",
+     "axis": "comparative_or_overlapping_context"
+    }
+   ]
+  },
+  "E905": {
+   "precision": "诗内或梦内先后；绝对世界位置未定",
+   "relations": [
+    {
+     "rel": "narrative_before",
+     "to": "E906",
+     "basis": "《霜辰》先展开反复再播种与惩戒，再转入规划破碎和黄金城。只编码梦史的篇内位置。",
+     "axis": "source_narrative"
+    }
+   ]
+  },
+  "E906": {
+   "precision": "诗内或梦内先后；绝对世界位置未定",
+   "relations": [
+    {
+     "rel": "narrative_after",
+     "to": "E905",
+     "basis": "黄金城段接在反复城邑与礼冠积累之后；不由这一边把黄金城建城定到某次世界更新或葬火战前后。",
+     "axis": "source_narrative"
+    }
+   ]
+  },
+  "E1001": {
+   "precision": "局部相对次序与当前发现时间",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E1002",
+     "basis": "航行日志的局部顺序；最后一条连接过去事件与当代发现。",
+     "axis": "interstellar_ship_sequence"
+    }
+   ]
+  },
+  "E1002": {
+   "precision": "局部相对次序与当前发现时间",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E1003",
+     "basis": "航行日志的局部顺序；最后一条连接过去事件与当代发现。",
+     "axis": "interstellar_ship_sequence"
+    }
+   ]
+  },
+  "E1003": {
+   "precision": "局部相对次序与当前发现时间",
+   "relations": [
+    {
+     "rel": "before",
+     "to": "E1004",
+     "basis": "航行日志的局部顺序；最后一条连接过去事件与当代发现。",
+     "axis": "interstellar_ship_sequence"
+    }
+   ]
+  },
+  "E1004": {
+   "precision": "局部相对次序与当前发现时间",
+   "relations": []
+  }
+ }
+}
