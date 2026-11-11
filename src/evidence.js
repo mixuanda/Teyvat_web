@@ -31,7 +31,7 @@
       const re = new RegExp(kw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
       hl = (s) => s.replace(re, (m) => `<mark>${m}</mark>`);
     } else hl = null;
-    list.innerHTML = hits.length ? '' : '<p class="rail-hint">没有符合条件的引证。</p>';
+    list.innerHTML = hits.length ? '' : '<p class="muted">没有符合条件的引证。</p>';
     shown = 0;
     count.textContent = `${hits.length} 条`;
     renderMore();
@@ -45,6 +45,7 @@
   const jump = () => {
     const id = decodeURIComponent(location.hash.slice(1));
     if (!id) return;
+    if (id.startsWith('q=')) { q.value = id.slice(2); apply(); return; }
     const i = hits.findIndex((e) => e.id === id);
     if (i < 0) {
       if (!all.some((e) => e.id === id)) return;

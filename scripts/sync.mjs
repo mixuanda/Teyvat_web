@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 import sharp from 'sharp';
+import { resolveOriginals } from './originals.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const src = path.resolve(process.env.RESEARCH_DIR || path.join(root, '..', 'teyvat-research'));
@@ -17,7 +18,7 @@ const writeJSON = (p, d) => fs.writeFileSync(path.join(out, p), JSON.stringify(d
 fs.mkdirSync(path.join(out, 'images'), { recursive: true });
 
 // 正文与年表原样保留
-for (const f of ['manuscript.md', 'chronology.json', 'build_statistics.json']) {
+for (const f of ['manuscript.md', 'chronology.json', 'build_statistics.json', 'release_notes.md']) {
   fs.copyFileSync(path.join(src, f), path.join(out, f));
 }
 
@@ -31,7 +32,13 @@ writeJSON('parts.json', structure.map((p) => ({
 
 // 证据：只保留网站要展示的字段
 const str = (v) => (typeof v === 'string' && v ? v : undefined);
-writeJSON('evidence.json', readJSON('cited_evidence.json').map((e) => ({
+const fullEvidence = readJSON('cited_evidence.json');
+const corpusCommit = readJSON('timeline_constraints.json').corpus_commit;
+// 上一版本（7.1）的快照，用来判断一篇文本是否为本版本新增
+const PREV_COMMIT = process.env.PREV_COMMIT || 'c5ef717b77418e5a23234e990e7c0d3a829975ae';
+const originals = await resolveOriginals(fullEvidence, corpusCommit, PREV_COMMIT);
+fs.writeFileSync(path.join(out, 'sources.json'), JSON.stringify(originals.sources) + '\n');
+writeJSON('evidence.json', fullEvidence.map((e) => ({
   id: e.id,
   n: e.note_number,
   quotes: (e.quote ? [e.quote] : (e.fragments || [])).map((q) => (typeof q === 'string' ? q : q.text || q.quote || '')).filter(Boolean),
@@ -42,6 +49,8 @@ writeJSON('evidence.json', readJSON('cited_evidence.json').map((e) => ({
   path: str(e.source_path),
   locator: str(e.locator),
   url: (Array.isArray(e.source_urls) && e.source_urls[0]) || str(e.source_url),
+  src: originals.links[e.id]?.src,
+  hits: originals.links[e.id]?.hits,
 })));
 
 // 年表约束：事件之间的类型化关系

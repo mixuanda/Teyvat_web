@@ -1,16 +1,20 @@
 {
-  "name": "teyvat-site",
+  "name": "teyvat-web",
   "private": true,
   "type": "module",
-  "description": "《提瓦特文明史与世界结构研究》的阅读与检索网站",
+  "description": "提瓦特考据：《原神》文本的研究与存档网站",
   "scripts": {
     "sync": "node scripts/sync.mjs",
     "build": "node scripts/build.mjs",
+    "check": "node scripts/check.mjs",
+    "test": "node scripts/build.mjs && node scripts/check.mjs",
     "dev": "node scripts/build.mjs && node scripts/serve.mjs"
   },
   "devDependencies": {
-    "@fontsource/cormorant-garamond": "^5.3.0",
     "@fontsource/noto-serif-sc": "^5.3.1",
     "sharp": "^0.35.5"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }
