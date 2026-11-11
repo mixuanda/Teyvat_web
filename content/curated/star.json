@@ -1,0 +1,101 @@
+{
+  "_说明": "玩家版星图的手写内容。gate 是看到这条内容所需的主线进度（stages 的下标）；每条关系和每一步都必须挂一条引证（ev），quote 必须是该引证的原文片段，构建时逐字核对。",
+  "stages": ["蒙德", "璃月", "稻妻", "须弥", "枫丹", "纳塔", "挪德卡莱", "至冬"],
+  "kinds": { "being": "人物与存在", "event": "事件", "place": "地方与物" },
+  "nodes": [
+    { "id": "moons", "name": "三月", "kind": "being", "gate": 6, "x": 380, "y": 300, "blurb": "尼伯龙根创造的三位月神，负责维护星球的运行。提瓦特曾经有三个月亮。" },
+    { "id": "nibelung", "name": "尼伯龙根", "kind": "being", "gate": 3, "x": 180, "y": 190, "blurb": "龙族的王。远行宇宙之后，带着漆黑的力量归来。" },
+    { "id": "heaven", "name": "天理", "kind": "being", "gate": 0, "x": 600, "y": 150, "blurb": "天空之上的秩序。它究竟是谁，游戏里还没有直接回答。" },
+    { "id": "primordial", "name": "原初者", "kind": "being", "gate": 2, "x": 470, "y": 60, "blurb": "《日月前事》里随永恒王座降临的那一位。" },
+    { "id": "shades", "name": "四影", "kind": "being", "gate": 2, "x": 300, "y": 70, "blurb": "原初者创造的四个影子。" },
+    { "id": "dragons", "name": "七龙王", "kind": "being", "gate": 2, "x": 780, "y": 190, "blurb": "旧世界的七位龙王，在《日月前事》里败给了原初者。" },
+    { "id": "war", "name": "葬火之战", "kind": "event", "gate": 6, "x": 230, "y": 450, "blurb": "龙王归来后的那场战争。“葬火”是后世起的名字。" },
+    { "id": "frostmoon", "name": "霜月", "kind": "place", "gate": 6, "x": 470, "y": 520, "blurb": "三个月亮里被抛出世界的那一轮。" },
+    { "id": "columbina", "name": "哥伦比娅", "kind": "being", "gate": 6, "x": 620, "y": 390, "blurb": "在尼伯龙根的囚牢里见到了三位月神。" },
+    { "id": "ship", "name": "双子的飞船", "kind": "place", "gate": 6, "x": 700, "y": 560, "blurb": "旅行者和血亲来到提瓦特时乘坐的船。" },
+    { "id": "traveler", "name": "旅行者", "kind": "being", "gate": 0, "x": 840, "y": 470, "blurb": "从世界之外来的人，也就是你。" },
+    { "id": "sibling", "name": "血亲", "kind": "being", "gate": 0, "x": 820, "y": 620, "blurb": "和旅行者一同来到提瓦特的另一位。" },
+    { "id": "abyssgate", "name": "深渊之门", "kind": "event", "gate": 7, "x": 120, "y": 560, "blurb": "莱茵多特提到的一次“开门”。" },
+    { "id": "third", "name": "第三降临者", "kind": "being", "gate": 7, "x": 800, "y": 330, "blurb": "痕迹被世界树抹去的一位降临者。" },
+    { "id": "deadline", "name": "四十二天", "kind": "event", "gate": 7, "x": 850, "y": 60, "blurb": "「诺迦法」在神之座宣布的最后期限。" }
+  ],
+  "edges": [
+    { "a": "nibelung", "b": "moons", "label": "创造", "level": "fact", "text": "创造了三月，随后远行宇宙", "ev": "A003", "quote": "在亘古的往昔创造了我们" },
+    { "a": "nibelung", "b": "war", "label": "率龙族反抗", "level": "fact", "text": "带着漆黑的力量归来，率领龙族反抗", "ev": "A005", "quote": "带领我们反抗外来者定义的秩序" },
+    { "a": "war", "b": "moons", "label": "月亮成了武器", "level": "fact", "text": "尼伯龙根囚禁三月，把月亮改造成对抗天理的武器", "ev": "A006", "quote": "将月亮改造成了对抗天理的武器" },
+    { "a": "war", "b": "frostmoon", "label": "被抛出世界", "level": "fact", "text": "战争里两轮月亮被击碎，另一轮被抛出世界", "ev": "A006", "quote": "将月亮改造成了对抗天理的武器" },
+    { "a": "columbina", "b": "moons", "label": "接过权能", "level": "fact", "text": "在囚牢中与三月相见，接过三月的权能", "ev": "A008", "quote": "我们已将三月的权能" },
+    { "a": "moons", "b": "primordial", "label": "等来降临者", "level": "fact", "text": "等待多个千年后，迎来有翼的降临者", "ev": "I9005", "quote": "千年" },
+    { "a": "primordial", "b": "heaven", "label": "是同一位？", "level": "hypothesis", "text": "纳西妲把“第一降临者就是今天的天理”明说成现阶段的假说", "ev": "G015", "quote": "current hypothesis" },
+    { "a": "primordial", "b": "shades", "label": "创造", "level": "fact", "text": "创造了四个影子", "ev": "W001", "quote": "数量是四" },
+    { "a": "primordial", "b": "dragons", "label": "击败", "level": "fact", "text": "开战四十余年后，七个王国俯首称臣", "ev": "A001", "quote": "俯首称臣" },
+    { "a": "heaven", "b": "ship", "label": "藏起飞船", "level": "fact", "text": "哥伦比娅说，飞船是被天理藏起来的", "ev": "J1005", "quote": "霜月" },
+    { "a": "ship", "b": "frostmoon", "label": "藏在霜月", "level": "fact", "text": "双子的飞船如今在霜月上", "ev": "J1005", "quote": "霜月" },
+    { "a": "traveler", "b": "ship", "label": "乘它而来", "level": "fact", "text": "飞船在远古掠过提瓦特，长期航行后才迫降", "ev": "J1003", "quote": "掠过" },
+    { "a": "sibling", "b": "ship", "label": "从船外出现", "level": "fact", "text": "迫降后的记忆里，血亲是从船外出现的", "ev": "J1004", "quote": "迫降之后" },
+    { "a": "third", "b": "heaven", "label": "痕迹被抹去", "level": "fact", "gate": 7, "text": "莱茵多特据天空岛档案说，世界树抹去了第三降临者的痕迹", "ev": "U620", "quote": "世界树" },
+    { "a": "abyssgate", "b": "third", "label": "开门之后", "level": "fact", "gate": 7, "text": "莱茵多特把开门与此后千年的深渊灾祸连在一起", "ev": "C018", "quote": "此后千年来" },
+    { "a": "deadline", "b": "traveler", "label": "最后期限", "level": "fact", "gate": 7, "text": "「诺迦法」宣布最后的 42 天，并要求各国选出一位神之眼持有者", "ev": "D043", "quote": "最后的42天" }
+  ],
+  "questions": [
+    {
+      "id": "tianli", "title": "天理到底是谁？", "short": "天理是谁？", "group": "天理与降临者", "gate": 3, "start": "heaven",
+      "nodes": ["heaven", "primordial", "shades", "dragons", "moons"],
+      "answer": "游戏还没有直接回答。古书《日月前事》写的是“原初的那一位”；把祂等同于今天的天理，纳西妲明说只是现阶段的假说。",
+      "steps": [
+        { "era": "《日月前事》", "title": "天上来了一位“原初者”", "text": "白夜国保存的古书记载：永恒的王座降临，原初的那一位创造了四个影子。", "level": "fact", "ev": "W001", "quote": "数量是四", "gate": 2 },
+        { "era": "衔枝后四十余年", "title": "七位龙王败了", "text": "原初者与七位龙王开战。四十余年后，七个王国俯首称臣，祂开始整治天地。", "level": "fact", "ev": "A001", "quote": "俯首称臣", "gate": 2 },
+        { "era": "须弥主线之后", "title": "“原初者就是天理”只是假说", "text": "纳西妲转述降临者的说法时，把“第一降临者就是今天的天理”明确说成现阶段的假说。这句引的是英文文本。", "level": "hypothesis", "ev": "G015", "quote": "current hypothesis", "gate": 3 },
+        { "era": "月神的回忆", "title": "月神等来的是一位降临者", "text": "三位月神等了多个千年，迎来的是一位有翼的降临者。", "level": "fact", "ev": "I9005", "quote": "千年", "gate": 6 }
+      ],
+      "open": { "text": "天理如今在哪里、为什么不再出面？游戏里目前只有人物的推测，没有定论。" }
+    },
+    {
+      "id": "moon", "title": "月亮发生了什么？", "short": "月亮发生了什么？", "group": "天理与降临者", "gate": 6, "start": "moons",
+      "nodes": ["moons", "nibelung", "war", "frostmoon", "columbina", "primordial"],
+      "answer": "提瓦特原本有三个月亮。它们是尼伯龙根造的三位月神；在葬火之战中，两轮被击碎，一轮被抛出世界，就是今天的霜月。",
+      "teaser": "提瓦特原本有三个月亮。葬火之战中，两轮被击碎，一轮被抛出世界，就是现在的霜月。",
+      "steps": [
+        { "era": "古龙时代", "title": "三位月神诞生", "text": "尼伯龙根创造了三位月神，让她们维护星球的运行，随后远行宇宙。三月在多个千年里等待他归来。", "level": "fact", "ev": "A003", "quote": "在亘古的往昔创造了我们" },
+        { "era": "降临者到来以后", "title": "天上来了新的秩序", "text": "三月迎来了有翼的降临者。这之后，原初的那一位击败七位龙王，开始整治天地。", "level": "fact", "ev": "I9005", "quote": "千年" },
+        { "era": "葬火之战", "title": "月亮变成了武器", "text": "尼伯龙根带着漆黑之力归来。他囚禁三月，把月亮改造成对抗天理的武器。战争中两轮月亮被击碎，另一轮被抛出世界。", "level": "fact", "ev": "A006", "quote": "将月亮改造成了对抗天理的武器" },
+        { "era": "现在", "title": "有人见到了她们", "text": "哥伦比娅在尼伯龙根的囚牢里与三月相见，接过了三月的权能。", "level": "fact", "ev": "A008", "quote": "我们已将三月的权能" }
+      ],
+      "open": { "text": "双子的飞船为什么被藏在霜月上？哥伦比娅说是天理藏的，至于原因，她也只是推测。" }
+    },
+    {
+      "id": "ship", "title": "旅行者的飞船去哪了？", "short": "飞船去哪了？", "group": "旅行者与血亲", "gate": 6, "start": "ship",
+      "nodes": ["ship", "frostmoon", "heaven", "traveler", "sibling", "columbina"],
+      "answer": "在霜月上。哥伦比娅说是天理把它藏在那里的；至于为什么藏，她也只是推测。",
+      "steps": [
+        { "era": "远古", "title": "飞船曾经路过提瓦特", "text": "月面的飞行日志显示，飞船在远古掠过提瓦特，之后继续航行。", "level": "fact", "ev": "J1003", "quote": "掠过" },
+        { "era": "很久以后", "title": "漫长的航行，然后迫降", "text": "日志有损毁。旅行者估计中间隔了以千年计的时间，飞船才迫降。这个数字是旅行者自己的推估。", "level": "inference", "ev": "J1003", "quote": "千年" },
+        { "era": "迫降之后", "title": "血亲从船外出现", "text": "哥伦比娅展示的记忆里，飞船刚落地时，血亲是从外面出现的。", "level": "fact", "ev": "J1004", "quote": "迫降之后" },
+        { "era": "现在", "title": "飞船在霜月上", "text": "哥伦比娅说明，双子的飞船被天理藏在了霜月。", "level": "fact", "ev": "J1005", "quote": "霜月" }
+      ],
+      "open": { "text": "天理为什么要藏起飞船？哥伦比娅用的词是“或许”：也许船上有不该被提瓦特知道的东西。", "ev": "J1005", "quote": "或许" }
+    },
+    {
+      "id": "abyss", "title": "深渊是从哪里来的？", "short": "深渊从哪来？", "group": "深渊", "gate": 7, "start": "abyssgate",
+      "nodes": ["abyssgate", "third", "heaven"],
+      "answer": "还没有完整的答案。能确定的是：五百年前所有国家都遭到深渊入侵；莱茵多特则把一次“开门”与此后千年的深渊灾祸连在一起。",
+      "steps": [
+        { "era": "五百年前", "title": "所有国家都被入侵", "text": "玛薇卡回顾：那时候所有国家都遭到了深渊的入侵。", "level": "fact", "ev": "D014", "quote": "所有国家都遭到了深渊的入侵" },
+        { "era": "世界树的记忆", "title": "禁忌知识来自深渊", "text": "大慈树王把禁忌知识描述为来自深渊、世界无法理解的信息，世界会对它“排异”。", "level": "fact", "ev": "W024", "quote": "「排异」" },
+        { "era": "更早", "title": "一次“开门”", "text": "莱茵多特把开门的行为，与此后漫长的深渊灾祸连在一起。", "level": "fact", "ev": "C018", "quote": "此后千年来" }
+      ],
+      "open": { "text": "深渊本身是什么、门后是哪里，游戏文本目前没有给出定论。" }
+    },
+    {
+      "id": "deadline", "title": "“四十二天”是什么？", "short": "四十二天？", "group": "终幕", "gate": 7, "start": "deadline",
+      "nodes": ["deadline", "traveler", "heaven"],
+      "answer": "是「诺迦法」在神之座宣布的最后期限：42 天。",
+      "steps": [
+        { "era": "七国会议", "title": "圣土化", "text": "心海把圣土化解释为光界力过强、土地回归原初的现象。", "level": "fact", "ev": "Y025", "quote": "圣土化" },
+        { "era": "神之座", "title": "最后的 42 天", "text": "「诺迦法」宣布限期，并要求各国选出一位神之眼持有者。", "level": "fact", "ev": "D043", "quote": "最后的42天" },
+        { "era": "之后", "title": "各国的回答", "text": "女皇离开神之座后提出共同反抗，各国代表随即表态。", "level": "fact", "ev": "D047", "quote": "我们唯有反抗到底" }
+      ],
+      "open": { "text": "期限到了会发生什么？目前的文本还没有写到。" }
+    }
+  ]
+}

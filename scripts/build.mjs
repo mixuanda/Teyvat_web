@@ -1,7 +1,9 @@
 // 静态站点生成：content/ + src/ → dist/
+// 两层：玩家版「星图」（深色，首要入口）与「考据层」（浅色：原文库、专题、年表）。
 import fs from 'node:fs';
 import path from 'node:path';
 import { diagrams } from './diagrams.mjs';
+import { TYPES } from './originals.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const C = (p) => path.join(root, 'content', p);
@@ -23,14 +25,35 @@ const plates = readJSON('plates.json');
 const partsDef = readJSON('parts.json');
 const sources = readJSON('sources.json');
 const SRC = Object.fromEntries(sources.map((x) => [x.id, x]));
-// 引文在原文中的上下文：命中的整行（过长则截取引文周围）
+const star = readJSON('curated/star.json');
+const topics = readJSON('curated/topics.json');
+const VERSION = (source.corpus_version || '').replace(/\.0$/, ''); // 7.2
+const PREV = '7.1';
+const LANG_NAME = { CHS: '简体中文', EN: '英文', JP: '日文', KR: '韩文' };
+const LEVEL = { fact: '事实', inference: '推断', hypothesis: '假说' };
+
+// 原文的派生信息：状态、短链、锚点
+for (const s of sources) {
+  s.pending = s.first === 'new';
+  s.firstLabel = s.pending ? VERSION : `${PREV} 及更早`;
+  s.typeName = TYPES[s.type];
+  s.href = `t/${s.id}/`;
+  s.short = `/t/${s.id}`;
+}
+const HITS = {}; // 证据 id → [[语言, 行, 引文], …]
+const anchorOf = (L, l) => (L === 'CHS' ? `p${l + 1}` : `${L.toLowerCase()}-p${l + 1}`);
+// 引文在原文中的上下文：命中的整行（过长则截取引文周围）。待确认的原文不显示正文。
 for (const e of evidenceList) {
   const src = SRC[e.src];
   if (!src) continue;
+  e.pending = src.pending;
+  e.href = src.href;
+  e.short = src.short;
   const byLine = new Map();
-  e.quotes.forEach((q, i) => { const l = e.hits?.[i]; if (l >= 0) (byLine.get(l) || byLine.set(l, []).get(l)).push(q); });
-  e.ctx = [...byLine].sort((a, b) => a[0] - b[0]).map(([l, qs]) => {
-    const [who, full] = src.lines[l];
+  e.quotes.forEach((q, i) => { const h = e.hits?.[i]; if (h) { const k = `${h[0]}:${h[1]}`; (byLine.get(k) || byLine.set(k, { L: h[0], l: h[1], qs: [] }).get(k)).qs.push(q); } });
+  e.anchors = [...byLine.values()].map((v) => anchorOf(v.L, v.l));
+  e.ctx = src.pending ? [] : [...byLine.values()].sort((a, b) => a.l - b.l).map(({ L, l, qs }) => {
+    const [who, full] = src.langs[L][l];
     const idx = qs.map((q) => full.indexOf(q)).filter((i) => i >= 0);
     let t = full;
     if (full.length > 170 && idx.length) {
@@ -38,14 +61,24 @@ for (const e of evidenceList) {
       const to = Math.min(full.length, Math.max(...idx.map((i, k) => i + qs[k].length)) + 55);
       t = (from ? '…' : '') + full.slice(from, to) + (to < full.length ? '…' : '');
     } else if (full.length > 170) t = `${full.slice(0, 170)}…`;
-    return { l, s: who, t, qs };
+    return { a: anchorOf(L, l), s: who, t, qs };
   });
-  e.loose = e.quotes.filter((q, i) => !(e.hits?.[i] >= 0));
+  e.loose = src.pending ? e.quotes : e.quotes.filter((q, i) => !e.hits?.[i]);
+  HITS[e.id] = e.quotes.map((q, i) => (e.hits?.[i] ? [...e.hits[i], q] : null)).filter(Boolean);
   delete e.hits;
 }
-const groupByTex = Object.fromEntries(plates.groups.map((g) => [g.tex, g]));
 
-// 每卷一个色相（取自壁画的石青与赭金之间）
+// 核验：手写内容里的每条引文，必须是所挂引证的原文片段，否则不发布
+{
+  const bad = [];
+  const check = (where, ev, quote) => { if (!EV[ev] || !EV[ev].quotes.includes(quote)) bad.push(`${where}: ${ev} “${quote}”`); };
+  star.edges.forEach((x) => check(`关系 ${x.a}→${x.b}`, x.ev, x.quote));
+  star.questions.forEach((q) => { q.steps.forEach((s, i) => check(`问题 ${q.id} 第 ${i + 1} 步`, s.ev, s.quote)); if (q.open?.ev) check(`问题 ${q.id} 未解部分`, q.open.ev, q.open.quote); });
+  topics.forEach((t) => t.claims.forEach((c) => (c.cites || []).forEach((ci) => check(`专题 ${t.id}`, ci.ev, ci.quote))));
+  if (bad.length) { console.error(`引文核验未通过，停止构建：\n${bad.join('\n')}`); process.exit(1); }
+}
+
+const groupByTex = Object.fromEntries(plates.groups.map((g) => [g.tex, g]));
 const PART_HUES = [42, 205, 28, 350, 170, 265, 190, 95, 320, 230, 12, 60];
 const parts = partsDef.map((p, i) => ({
   idx: i,
@@ -170,55 +203,60 @@ const chapters = md.split(/^## /m).slice(1).map((raw, ci) => {
 });
 figureIndex.forEach((f) => f.chapter.figures.push(f));
 
-// ───────────────────────── 页面骨架 ─────────────────────────
-const NAV = [
-  ['read/', '读本', '读'],
-  ['timeline/', '年表', '年'],
-  ['starmap/', '星图', '星'],
-  ['evidence/', '证据', '证'],
-  ['plates/', '图版', '图'],
-  ['about/', '关于', '记'],
-];
-const SITE = '提瓦特文明史';
-const SIGIL = `<svg class="sigil" viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="20" r="17.5" fill="none" stroke="currentColor" stroke-width="1"/><circle cx="20" cy="20" r="11" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="1.5 3"/><path d="M20 2.5v6M20 31.5v6M2.5 20h6M31.5 20h6" stroke="currentColor" stroke-width="1"/><path d="M20 12.5l2.2 5.3 5.3 2.2-5.3 2.2L20 27.5l-2.2-5.3-5.3-2.2 5.3-2.2z" fill="currentColor"/></svg>`;
+// ───────────────────────── 通用片段 ─────────────────────────
+const SITE = '提瓦特考据';
+const pill = (text, tone = 'blue') => `<span class="pill ${tone}">${esc(text)}</span>`;
+const statusPill = (s) => (s.pending ? pill('待确认', 'amber') : pill('在线', 'green'));
+const levelTag = (level) => `<span class="lv lv-${level}">${LEVEL[level]}</span>`;
+const LOCK = '<svg class="lock" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>';
+const chapterURL = (c) => `read/${pad(c.no)}/`;
+const evLink = (e, base) => (e.href ? `${base}${e.href}${e.anchors?.[0] ? `#${e.anchors[0]}` : ''}` : `${base}evidence/#${e.id}`);
+const stageAfter = (g) => `${star.stages[g]}篇后可看`;
 
-function page({ url, title, desc, body, cls = '', scripts = [], data = {}, hue }) {
+const STUDY_NAV = [['t/', '原文库'], ['topic/', '专题'], ['timeline/', '年表'], ['hypothesis/', '假说'], ['updates/', '更新'], ['about/', '关于']];
+const STAR_NAV = [['', '星图'], ['q/', '问题'], ['who/', '人物'], ['study/', '原文与证据']];
+// 哪些路径属于导航里的哪一项
+const NAV_OF = { t: 't/', evidence: 't/', topic: 'topic/', read: 'topic/', plates: 'topic/', timeline: 'timeline/', hypothesis: 'hypothesis/', updates: 'updates/', about: 'about/', q: 'q/', who: 'who/', gate: '', '': '' };
+
+function page({ url, title, desc, body, layer = 'study', cls = '', scripts = [], data = {}, bare = false }) {
   const depth = url.split('/').filter(Boolean).length;
   const base = depth ? '../'.repeat(depth) : './';
-  const section = url.split('/')[0];
+  const cur = NAV_OF[url.split('/')[0]];
+  const navHTML = (items) => items.map(([u, t]) => `<a href="${base}${u}"${cur === u && !(layer === 'study' && url.startsWith('study')) ? ' aria-current="page"' : ''}>${t}</a>`).join('');
+  const header = layer === 'star'
+    ? `<header class="topbar">
+<a class="brand" href="${base}">${SITE}</a>
+<nav class="nav" aria-label="主导航">${navHTML(STAR_NAV)}</nav>
+<a class="progress-btn" href="${base}gate/" aria-label="修改游戏进度"><i></i><span id="progress-label">选择进度</span></a>
+</header>`
+    : `<header class="topbar"><div class="wrap">
+<a class="brand" href="${base}study/">${SITE}</a>
+<nav class="nav" aria-label="主导航">${navHTML(STUDY_NAV)}</nav>
+<label class="topsearch">搜索<input type="search" data-search placeholder="原文、专题或短链" autocomplete="off"></label>
+</div></header>`;
+  const footer = layer === 'star' ? '' : `<footer class="footer"><div class="wrap">
+<p>本站是玩家的非营利研究项目，与米哈游及 HoYoverse 无关。游戏文本与图像的权利归权利人所有。</p>
+<p>只收录已在游戏内开放的内容。文本固定于 ${esc(source.corpus_version || '')} 语料快照（${esc((source.corpus_commit || '').slice(0, 8))}）。<a href="${base}">回到星图</a></p>
+</div></footer>`;
   const html = `<!doctype html>
 <html lang="zh-CN">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>${esc(title ? `${title} · ${SITE}` : `${SITE}与世界结构研究`)}</title>
-<meta name="description" content="${esc(desc || '以年代、元素、循环、图像与多语对读重建提瓦特文明史：43 章正文、217 项编年事件、711 条原文引证。')}">
-<meta name="theme-color" content="#10151f">
-<script>(function(){try{var t=localStorage.getItem('theme');if(t)document.documentElement.dataset.theme=t}catch(e){}})()</script>
+<title>${esc(title ? `${title} · ${SITE}` : SITE)}</title>
+<meta name="description" content="${esc(desc || '《原神》文本的研究与存档：每个论断，都能回到游戏内的原文。')}">
+<meta name="theme-color" content="${layer === 'star' ? '#0D1424' : '#FFFFFF'}">
 <link rel="stylesheet" href="${base}assets/fonts.css">
 <link rel="stylesheet" href="${base}assets/styles.css">
 <link rel="icon" href="${base}assets/favicon.svg" type="image/svg+xml">
 </head>
-<body class="${cls}" data-base="${base}"${hue != null ? ` style="--part-h:${hue}"` : ''}>
+<body class="${layer} ${cls}" data-base="${base}">
 <a class="skip" href="#main">跳到正文</a>
-<header class="topbar">
-<a class="brand" href="${base}">${SIGIL}<span class="brand-text"><b>${SITE}</b><i>与世界结构研究</i></span></a>
-<nav class="nav" aria-label="主导航">${NAV.map(([u, t]) => `<a href="${base}${u}"${section === u.replace('/', '') ? ' aria-current="page"' : ''}>${t}</a>`).join('')}</nav>
-<div class="tools">
-<button class="tool" id="open-search" type="button" aria-label="搜索"><svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="8.5" cy="8.5" r="5.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M13 13l4.5 4.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><span>搜索</span><kbd>/</kbd></button>
-<button class="tool icon" id="toggle-theme" type="button" aria-label="切换昼夜"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2.5a7.5 7.5 0 1 0 7.5 7.5A6 6 0 0 1 10 2.5z" fill="currentColor"/></svg></button>
-</div>
-</header>
+${bare ? '' : header}
 <main id="main">
 ${body}
 </main>
-<footer class="footer">
-<div class="footer-in">
-<p><b>${esc(stats.edition)}</b> · ${esc(stats.revision_date)} · 文本固定于《原神》${esc(source.corpus_version || '')} 语料快照</p>
-<p>非官方同人研究。《原神》及其文本、图像的权利归 HoYoverse / miHoYo 所有；图像来源与上传者逐幅列于<a href="${base}plates/">图版</a>页。</p>
-</div>
-</footer>
-<nav class="tabbar" aria-label="底部导航">${[['', '首页', '首'], ...NAV.slice(0, 5)].map(([u, t, g]) => `<a href="${base}${u}"${(section || '') === u.replace('/', '') ? ' aria-current="page"' : ''}><i>${g}</i><span>${t}</span></a>`).join('')}</nav>
+${footer}
 ${Object.entries(data).map(([k, v]) => `<script type="application/json" id="${k}">${JSON.stringify(v).replace(/</g, '\\u003c')}</script>`).join('\n')}
 <script src="${base}assets/app.js" defer></script>
 ${scripts.map((s) => `<script src="${base}assets/${s}" defer></script>`).join('\n')}
@@ -236,151 +274,334 @@ fs.mkdirSync(path.join(dist, 'assets'), { recursive: true });
 fs.mkdirSync(path.join(dist, 'data'), { recursive: true });
 fs.cpSync(C('images'), path.join(dist, 'images'), { recursive: true });
 for (const f of fs.readdirSync(path.join(root, 'src'))) fs.copyFileSync(path.join(root, 'src', f), path.join(dist, 'assets', f));
-
-// 字体：自托管的 Noto Serif SC（按 unicode-range 切片，浏览器只取用到的片）+ Cormorant Garamond
 {
+  // 自托管 Noto Serif SC（按 unicode-range 切片，浏览器只取用到的片）
   const fdir = path.join(dist, 'assets', 'fonts');
   fs.mkdirSync(fdir, { recursive: true });
   let css = '';
-  const take = (pkg, cssFile) => {
-    const dir = path.join(root, 'node_modules', '@fontsource', pkg);
-    const src = fs.readFileSync(path.join(dir, cssFile), 'utf8');
-    css += src.replace(/src: url\(\.\/files\/([^)]+\.woff2)\) format\('woff2'\)[^;]*;/g, (m, f) => {
+  const dir = path.join(root, 'node_modules', '@fontsource', 'noto-serif-sc');
+  for (const w of [500, 700]) {
+    css += fs.readFileSync(path.join(dir, `${w}.css`), 'utf8').replace(/src: url\(\.\/files\/([^)]+\.woff2)\) format\('woff2'\)[^;]*;/g, (m, f) => {
       fs.copyFileSync(path.join(dir, 'files', f), path.join(fdir, f));
       return `src: url(fonts/${f}) format('woff2');`;
     });
-  };
-  for (const w of [400, 700, 900]) take('noto-serif-sc', `${w}.css`);
-  for (const f of ['latin-500.css', 'latin-600.css', 'latin-500-italic.css']) take('cormorant-garamond', f);
+  }
   fs.writeFileSync(path.join(dist, 'assets', 'fonts.css'), css);
-}
-fs.writeFileSync(path.join(dist, 'assets', 'favicon.svg'), SIGIL.replace('class="sigil"', 'xmlns="http://www.w3.org/2000/svg"').replace(/currentColor/g, '#d8a93f'));
-
-const chapterURL = (c) => `read/${pad(c.no)}/`;
-const eraAnchors = [
-  ['六千余年', '钟离的个人经历', 6000],
-  ['三千七百年前', '璃月建立', 3700],
-  ['约三千年前', '甘雨参战', 3000],
-  ['约两千六百年前', '旧蒙德革命', 2600],
-  ['两千年前', '魔神战争结束', 2000],
-  ['一千年前', '温妮莎革命', 1000],
-  ['五百年前', '跨地域灾变', 500],
-  ['当代', '旅行者时代', 0],
-];
-function eraRibbon(base) {
-  const pos = (y) => (100 - Math.pow(y / 6000, 0.75) * 100).toFixed(2);
-  return `<div class="era" role="img" aria-label="可以对照的距今年代">
-<div class="era-line"></div>
-${eraAnchors.map(([d, t, y], i) => `<a class="era-pt ${i % 2 ? 'up' : 'down'}" style="left:${pos(y)}%" href="${base}read/01/#s2"><i></i><b>${d}</b><span>${t}</span></a>`).join('')}
-</div>`;
+  fs.writeFileSync(path.join(dist, 'assets', 'favicon.svg'), '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><rect width="32" height="32" rx="7" fill="#0D1424"/><circle cx="16" cy="16" r="5" fill="#E6C06A"/><circle cx="16" cy="16" r="10" fill="none" stroke="#E6C06A" stroke-opacity=".5"/></svg>');
 }
 
-// ───────────────────────── 首页 ─────────────────────────
+// 证据 → 年表事件 / 专题 / 问题 的反查表
+const eventRefs = {};
+for (const e of chronology) if (e.event_id) (e.sources || []).forEach((id) => (eventRefs[id] ||= []).push(e.event_id));
+const topicRefs = {};
+topics.forEach((t) => t.claims.forEach((c) => (c.cites || []).forEach((ci) => (topicRefs[ci.ev] ||= new Set()).add(t))));
+const questionRefs = {};
+star.questions.forEach((q) => q.steps.forEach((s) => (questionRefs[s.ev] ||= new Set()).add(q)));
+
+// ───────────────────────── 玩家版：星图 ─────────────────────────
+const nodeById = Object.fromEntries(star.nodes.map((n) => [n.id, n]));
+const edgeGate = (x) => Math.max(nodeById[x.a].gate, nodeById[x.b].gate, x.gate || 0);
+const starData = {
+  stages: star.stages,
+  kinds: star.kinds,
+  nodes: star.nodes,
+  edges: star.edges.map((x) => {
+    const e = EV[x.ev];
+    return { a: x.a, b: x.b, label: x.label, level: x.level, gate: edgeGate(x), text: x.text, quote: x.quote, src: e.title, href: evLink(e, ''), pending: !!e.pending };
+  }),
+  questions: star.questions.map((q) => ({ id: q.id, title: q.title, short: q.short, gate: q.gate, nodes: q.nodes, start: q.start, teaser: q.teaser || q.answer })),
+};
 {
-  const base = './';
-  const statItems = [
-    [stats.body_han_characters, '正文汉字'],
-    [stats.sections, '章'],
-    [stats.subsections, '小节'],
-    [stats.chronology_events, '编年事件'],
-    [stats.evidence, '原文引证'],
-    [stats.source_titles, '来源题名'],
-    [stats.image_assets, '幅图像'],
-  ];
-  const mosaicIds = ['MOON1', 'TSU1', 'NAT2', 'CHEN1', 'REM1', 'GUR1', 'SNOW1', 'CHASM2', 'TSU7'].filter((id) => plates.images[id]);
   const body = `
-<section class="hero">
-<canvas id="astrolabe" aria-hidden="true"></canvas>
-<div class="hero-in">
-<p class="eyebrow">${esc(stats.edition)} · ${esc(stats.revision_date)}</p>
-<h1><span>提瓦特</span><span>文明史</span></h1>
-<p class="hero-sub">与世界结构研究</p>
-<p class="hero-lede">年代、元素、循环、图像与多语对读。<br>一部每句话都能追到游戏原文的长篇研究——在这里，它可以被读、被查、被质疑。</p>
-<div class="hero-cta">
-<a class="btn primary" href="${base}read/01/">从第一章读起</a>
-<a class="btn" href="${base}starmap/">打开星图 ✦</a>
+<div class="explore" id="explore">
+<aside class="qlist" aria-label="问题">
+<h2>从一个问题开始</h2>
+<div id="qlist"></div>
+<div class="qteaser" id="qteaser" hidden></div>
+</aside>
+<section class="sky" aria-label="星图">
+<div class="sky-tools"><button type="button" id="sky-all">展开全部已解锁</button><button type="button" id="sky-reset">回到起点</button></div>
+<p class="sky-hint">点一颗星，它的关系会长出来。带“？”的还在迷雾里。</p>
+<div class="sky-svg"><svg id="sky-svg" role="img" aria-label="关系星图" viewBox="0 0 900 680" preserveAspectRatio="xMidYMid meet"></svg></div>
+<div class="sky-legend" aria-hidden="true"><span><i class="dot k-being"></i>人物与存在</span><span><i class="dot k-event"></i>事件</span><span><i class="dot k-place"></i>地方与物</span><span><i class="dot fog"></i>迷雾</span><span>虚线为假说</span></div>
+</section>
+<aside class="detail" id="detail" aria-label="节点详情"></aside>
 </div>
-</div>
-<a class="hero-scroll" href="#numbers" aria-label="向下">↓</a>
-</section>
-
-<section class="numbers" id="numbers">
-${statItems.map(([n, l]) => `<div class="num"><b data-count="${n}">${fmt(n)}</b><span>${l}</span></div>`).join('')}
-</section>
-
-<section class="block">
-<a class="skycard" href="${base}starmap/">
-<canvas id="skycard-canvas" aria-hidden="true"></canvas>
-<div class="skycard-text">
-<p class="eyebrow">Star Chart</p>
-<h2>星图</h2>
-<p>研究引用过的每一篇原文都是一颗星。在同一段论述里被一起引用的文本连成星座——从任何一颗星出发，可以读到它的全文，也能看到它照亮了哪些论断。</p>
-<span class="btn small">进入星图 ✦</span>
-</div>
-</a>
-</section>
-
-<section class="block ways">
-<header class="block-head"><p class="eyebrow">Three Ways In</p><h2>三种读法</h2><p>同一份研究，三个入口。论证、时间、出处互相连通，从任何一处都能走到另外两处。</p></header>
-<div class="way-grid">
-<a class="way" href="${base}read/"><span class="way-glyph">读</span><h3>读本</h3><p>十一卷 ${stats.sections} 章的连续正文。右栏随你读到的段落，同步摆出它所依据的原文。</p><em>论证 →</em></a>
-<a class="way" href="${base}timeline/"><span class="way-glyph">年</span><h3>年表</h3><p>${stats.chronology_events} 项事件按共同年代与并行地域谱系排列，标明每个时间是纪年、推算还是相对次序。</p><em>时间 →</em></a>
-<a class="way" href="${base}evidence/"><span class="way-glyph">证</span><h3>证据</h3><p>${stats.evidence} 条短引，带来源题名、定位和固定版本原件链接，并反查它在正文中被用在哪里。</p><em>出处 →</em></a>
-</div>
-</section>
-
-<section class="block draw">
-<div class="draw-card" id="draw">
-<p class="eyebrow">随手抽一条原文</p>
-<blockquote id="draw-quote">…</blockquote>
-<p class="draw-src"><span id="draw-title"></span><a id="draw-link" href="${base}evidence/">它支撑了哪些论述 →</a></p>
-<button class="btn small" id="draw-again" type="button">再抽一条</button>
-</div>
-</section>
-
-<section class="block">
-<header class="block-head"><p class="eyebrow">Anchors</p><h2>可以对照的距今年代</h2><p>不同地区的历史，靠几个明确的“距今多少年”放进同一条时间轴。</p></header>
-${eraRibbon(base)}
-</section>
-
-<section class="block">
-<header class="block-head"><p class="eyebrow">Volumes</p><h2>全书结构</h2></header>
-<ol class="shelf">
-${parts.map((p) => `<li style="--part-h:${p.hue}"><a href="${base}read/#part-${p.idx}"><span class="shelf-label">${p.label}</span><b>${esc(p.name)}</b><span class="shelf-meta">${p.chapters.length} 章 · ${fmt(p.chapters.reduce((a, c) => a + c.chars, 0))} 字</span></a></li>`).join('\n')}
-</ol>
-</section>
-
-<section class="block">
-<header class="block-head"><p class="eyebrow">Plates</p><h2>图像也是史料</h2><p>壁画、纹样与教程图被逐幅观察、记录来源，再与文本互证。</p></header>
-<a class="mosaic" href="${base}plates/">${mosaicIds.map((id) => { const im = plates.images[id]; return `<img loading="lazy" src="${base}images/${im.file}" width="${im.w}" height="${im.h}" alt="${esc(im.scene || '')}">`; }).join('')}<span class="mosaic-more">查看全部 ${plates.groups.length} 组图版 →</span></a>
-</section>`;
-  const draw = evidenceList.filter((e) => e.quotes.join('').length >= 12 && !e.lang || e.lang === 'CHS').filter((e) => e.quotes[0].length >= 10 && e.quotes[0].length <= 60)
-    .map((e) => ({ id: e.id, q: e.quotes[0], t: e.title }));
-  page({ url: '', title: '', body, cls: 'home', scripts: ['home.js'], data: { 'draw-data': draw } });
+<noscript><p class="noscript">星图需要启用 JavaScript。也可以直接进入<a href="study/">原文与证据</a>。</p></noscript>`;
+  page({ url: '', title: '星图', layer: 'star', cls: 'explore-page', body, scripts: ['star.js'], data: { 'star-data': starData } });
 }
-
-// ───────────────────────── 读本目录 ─────────────────────────
+// 进度选择
+{
+  const body = `
+<div class="gate">
+<p class="gate-brand">${SITE}</p>
+<div class="gate-head">
+<h1>你的魔神任务打到哪了？</h1>
+<p>之后的剧情会藏在迷雾里，不会剧透你。随时可以改。</p>
+</div>
+<div class="gate-track">
+<div class="gate-line" id="gate-line" aria-hidden="true"></div>
+<ol aria-label="选择进度" id="gate-stages">${star.stages.map((s, i) => `<li><span class="gate-dot" aria-hidden="true"></span><button type="button" data-stage="${i}" aria-pressed="false">${esc(s)}</button></li>`).join('')}</ol>
+</div>
+<div class="gate-foot">
+<p id="gate-said">选一个你已经打完的篇章。</p>
+<a class="gate-go" id="gate-go" href="../" aria-disabled="true">进入星图</a>
+<p class="gate-note">只记在这台设备上，不需要登录。</p>
+</div>
+</div>`;
+  page({ url: 'gate/', title: '进度选择', layer: 'star', cls: 'gate-page', bare: true, body, scripts: ['star.js'], data: { 'star-data': { stages: star.stages } } });
+}
+// 问题页
+const miniMap = (q) => {
+  const ns = q.nodes.map((id) => nodeById[id]);
+  const set = new Set(q.nodes);
+  const es = star.edges.filter((x) => set.has(x.a) && set.has(x.b));
+  const xs = ns.map((n) => n.x), ys = ns.map((n) => n.y);
+  const x0 = Math.min(...xs) - 70, y0 = Math.min(...ys) - 40, w = Math.max(...xs) - x0 + 70, h = Math.max(...ys) - y0 + 60;
+  return `<svg viewBox="${x0} ${y0} ${w} ${h}" role="img" aria-label="${esc(q.title)} 的关系图">${es.map((x) => `<line data-gate="${edgeGate(x)}" x1="${nodeById[x.a].x}" y1="${nodeById[x.a].y}" x2="${nodeById[x.b].x}" y2="${nodeById[x.b].y}" class="${x.level === 'hypothesis' ? 'hyp' : ''}"/>`).join('')}${ns.map((n) => `<g data-gate="${n.gate}"><circle cx="${n.x}" cy="${n.y}" r="13" class="k-${n.kind}"/><text x="${n.x}" y="${n.y + 34}">${esc(n.name)}</text></g>`).join('')}</svg>`;
+};
+star.questions.forEach((q, qi) => {
+  const base = '../../';
+  const next = star.questions[(qi + 1) % star.questions.length];
+  const maxGate = Math.max(q.gate, ...q.steps.map((s) => s.gate || 0));
+  const quoteBox = (s) => {
+    const e = EV[s.ev];
+    return `<div class="quote">${levelTag(s.level)}<span class="q">“${esc(s.quote)}”</span><a href="${evLink(e, base)}">${esc(e.title)}</a>${e.pending ? pill('待确认', 'amber') : ''}</div>`;
+  };
+  const body = `
+<div class="answer wrap">
+<article>
+<nav class="crumbs" aria-label="位置"><a href="${base}q/">问题</a> / ${esc(q.group)}</nav>
+<div class="fogbox big" data-fog="${q.gate}">${LOCK}<div><strong>这个问题还在迷雾里</strong><p>${stageAfter(q.gate)}。<a href="${base}gate/">修改进度</a></p></div></div>
+<div data-gate="${q.gate}">
+<div class="answer-head">
+<h1>${esc(q.title)}</h1>
+<p class="lede">${esc(q.answer)}</p>
+<p class="meta">读完约 ${Math.max(1, Math.round((q.answer.length + q.steps.reduce((a, s) => a + s.text.length, 0)) / 250))} 分钟 · 涉及${esc(star.stages[maxGate])}篇剧情 · ${new Set(q.steps.map((s) => s.ev)).size} 条游戏原文</p>
+</div>
+<div class="stepbar" aria-hidden="true">${q.steps.map(() => '<span></span>').join('')}</div>
+<ol class="steps">
+${q.steps.map((s, i) => `<li class="step">
+<div class="rail" aria-hidden="true"><span class="n">${i + 1}</span><span class="line"></span></div>
+<section>
+<div class="fogbox" data-fog="${s.gate ?? q.gate}">${LOCK} 这一步在迷雾里，${stageAfter(s.gate ?? q.gate)}。</div>
+<div data-gate="${s.gate ?? q.gate}">
+<p class="era" data-n="${i + 1}">${esc(s.era)}</p>
+<h2>${esc(s.title)}</h2>
+<p>${esc(s.text)}</p>
+${quoteBox(s)}
+</div>
+</section>
+</li>`).join('\n')}
+</ol>
+<div class="stepnav"><button type="button" id="step-prev">上一步</button><button type="button" id="step-next" class="primary">下一步</button></div>
+<section class="open">
+<div class="open-head">${levelTag('hypothesis')}<h2>还没有答案的部分</h2></div>
+<p>${esc(q.open.text)}</p>
+${q.open.ev ? quoteBox({ ...q.open, level: 'hypothesis' }) : ''}
+</section>
+<div class="answer-links">
+<a href="${base}q/${next.id}/">下一个问题：${esc(next.title)}</a>
+<a href="${base}t/">看全部原文与核验</a>
+</div>
+</div>
+</article>
+<aside data-gate="${q.gate}">
+<h2>这条线在星图上</h2>
+<div class="mini">${miniMap(q)}</div>
+<a href="${base}#q=${q.id}">在星图里打开 →</a>
+</aside>
+</div>`;
+  page({ url: `q/${q.id}/`, title: q.title, layer: 'star', cls: 'answer-page', body, scripts: ['star.js'], data: { 'star-data': { stages: star.stages } } });
+});
+// 问题列表、人物列表
 {
   const base = '../';
-  const maxChars = Math.max(...chapters.map((c) => c.chars));
-  const body = `
-<header class="page-head">
-<p class="eyebrow">Reader</p>
-<h1>读本</h1>
-<p class="page-lede">全书 ${stats.sections} 章、${stats.subsections} 小节、${fmt(stats.body_han_characters)} 汉字。每一章都可以单独读；右侧的长条表示篇幅。</p>
-</header>
-<div class="toc">
-${parts.map((p) => `<section class="toc-part" id="part-${p.idx}" style="--part-h:${p.hue}">
-<header><span class="toc-label">${p.label}</span><h2>${esc(p.name)}</h2></header>
-<ol>
-${p.chapters.map((c) => `<li><a href="${base}${chapterURL(c)}"><span class="toc-no">${pad(c.no)}</span><span class="toc-title">${esc(c.title)}</span><span class="toc-meta">${fmt(c.chars)} 字 · ${c.cites.size} 证${c.figures.length ? ` · ${c.figures.length} 图` : ''}</span><span class="toc-bar"><i style="width:${Math.max(2, (c.chars / maxChars) * 100).toFixed(1)}%"></i></span></a></li>`).join('\n')}
-</ol>
-</section>`).join('\n')}
-</div>`;
-  page({ url: 'read/', title: '读本', body, cls: 'toc-page' });
+  const groups = [...new Set(star.questions.map((q) => q.group))];
+  page({
+    url: 'q/', title: '问题', layer: 'star', cls: 'list-page', scripts: ['star.js'], data: { 'star-data': { stages: star.stages } },
+    body: `<div class="wrap listing"><h1>问题</h1><p class="lede">每个问题一页，按时间一步步讲，每一步都挂着游戏里的原文。</p>
+${groups.map((g) => `<section><h2>${esc(g)}</h2><div class="cards">${star.questions.filter((q) => q.group === g).map((q) => `<a class="card" href="${base}q/${q.id}/"><strong>${esc(q.title)}</strong><span data-gate="${q.gate}">${esc(q.teaser || q.answer)}</span><span class="locknote" data-fog="${q.gate}">${LOCK} ${stageAfter(q.gate)}</span></a>`).join('')}</div></section>`).join('\n')}</div>`,
+  });
+  page({
+    url: 'who/', title: '人物', layer: 'star', cls: 'list-page', scripts: ['star.js'], data: { 'star-data': { stages: star.stages } },
+    body: `<div class="wrap listing"><h1>人物</h1><p class="lede">星图上的每一颗星。还没到的剧情只显示为迷雾。</p>
+${Object.entries(star.kinds).map(([k, name]) => `<section><h2><i class="dot k-${k}"></i>${name}</h2><div class="cards">${star.nodes.filter((n) => n.kind === k).map((n) => `<a class="card" href="${base}#n=${n.id}"><strong data-gate="${n.gate}">${esc(n.name)}</strong><span data-gate="${n.gate}">${esc(n.blurb)}</span><strong class="locknote" data-fog="${n.gate}">？</strong><span class="locknote" data-fog="${n.gate}">${LOCK} ${stageAfter(n.gate)}</span></a>`).join('')}</div></section>`).join('\n')}</div>`,
+  });
 }
 
-// ───────────────────────── 各章 ─────────────────────────
+// ───────────────────────── 考据层：首页 ─────────────────────────
+const typeOrder = Object.keys(TYPES).filter((t) => sources.some((s) => s.type === t));
+{
+  const base = '../';
+  const liveCount = sources.filter((s) => !s.pending).length;
+  const body = `<div class="wrap stack">
+<section class="hero">
+<h1>每个论断，都能回到游戏内的原文</h1>
+<p>《原神》文本的研究与存档。原文库按类型收录研究引用过的文本；专题不贴全文，只引用原文短链并标出所引的那一句。</p>
+<form class="bigsearch" onsubmit="return false">
+<label>搜索原文、专题或短链<input type="search" data-search placeholder="例如 日月前事，或 /t/book/333" autocomplete="off"></label>
+<button type="button" data-search-go>搜索</button>
+</form>
+</section>
+<section class="versionbar" aria-label="数据版本">
+${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${sources.length} 篇，${liveCount} 篇在 ${PREV} 及更早的版本里已经出现。</span><span class="muted">${VERSION} 新增的 ${sources.length - liveCount} 篇标为待确认，正文暂不显示。</span><a href="${base}about/#gate">上线规则</a>
+</section>
+<div class="grid3">
+<section class="card"><h2>原文库</h2><p>研究引用过的全部文本，按类型存放，每篇有固定短链。</p><ul class="twocol">${typeOrder.map((t) => `<li><a href="${base}t/#type=${t}">${TYPES[t]}</a></li>`).join('')}</ul></section>
+<section class="card"><h2>专题</h2><p>一页回答一个问题，事实、推断、假说分开标。</p><ul>${topics.map((t) => `<li><a href="${base}topic/${t.id}/">${esc(t.title)}</a></li>`).join('')}<li><a href="${base}topic/#full">研究全文 · ${stats.sections} 章</a></li></ul></section>
+<section class="card"><h2>年表</h2><p>文本自己写明的纪年、换算得到的年数、只知先后的次序，三者分开显示。</p><a href="${base}timeline/">打开年表</a></section>
+</div>
+<section class="stack-s">
+<h2>可靠性靠什么保证</h2>
+<div class="grid3">
+<section class="card"><h3>逐条核验</h3><p>星图和专题里的每条引文，构建时与所挂的引证逐字比对，对不上就不发布。引证本身在同步时到固定版本的原文里定位到段落。</p></section>
+<section class="card"><h3>上线门</h3><p>当前版本新增的文本先标为待确认，不显示正文；在后一个版本的数据里仍然存在，才转为在线。</p></section>
+<section class="card"><h3>分级标注</h3><p>每个论断标明是事实、推断还是假说，并写出什么证据会推翻它。</p></section>
+</div>
+</section></div>`;
+  page({ url: 'study/', title: '原文与证据', body, cls: 'home' });
+}
+
+// ───────────────────────── 原文库 ─────────────────────────
+{
+  const base = '../';
+  const langs = ['CHS', 'EN', 'JP', 'KR'];
+  const check = (name, value, label, checked = true) => `<label><input type="checkbox" name="${name}" value="${value}"${checked ? ' checked' : ''}>${label}</label>`;
+  const rows = [...sources].sort((a, b) => typeOrder.indexOf(a.type) - typeOrder.indexOf(b.type) || a.title.localeCompare(b.title, 'zh'));
+  const body = `<div class="wrap stack">
+<div class="pagehead">
+<h1>原文库</h1>
+<p>研究引用过的游戏内文本，按类型存放。状态说明：在线是这篇文本在 ${PREV} 及更早的版本里已经出现；待确认是 ${VERSION} 新增、尚未确认开放，正文暂不显示。限时活动结束后不能重读的“已下线”文本，目前还没有单独标出。<a href="${base}evidence/">按引证浏览 →</a></p>
+</div>
+<div class="library">
+<aside class="filters" aria-label="筛选" id="filters">
+<fieldset><legend>类型</legend>${typeOrder.map((t) => check('type', t, TYPES[t])).join('')}</fieldset>
+<fieldset><legend>状态</legend>${check('status', 'live', '在线')}${check('status', 'pending', '待确认')}</fieldset>
+<fieldset><legend>语言</legend>${langs.map((l) => check('lang', l, LANG_NAME[l], l === 'CHS')).join('')}</fieldset>
+</aside>
+<div class="results">
+<label class="libsearch">按题名筛选<input type="search" id="lib-q" autocomplete="off"></label>
+<p class="count" id="lib-count">${sources.length} 篇</p>
+<div class="tablebox"><table>
+<thead><tr><th scope="col">题名</th><th scope="col">类型</th><th scope="col">首见版本</th><th scope="col">状态</th><th scope="col">短链</th></tr></thead>
+<tbody id="lib-rows">
+${rows.map((s) => `<tr data-type="${s.type}" data-status="${s.pending ? 'pending' : 'live'}" data-langs="${Object.keys(s.langs).join(' ')}"><td><a class="serif" href="${base}${s.href}">${esc(s.title)}</a></td><td>${pill(s.typeName)}</td><td>${s.firstLabel}</td><td>${statusPill(s)}</td><td><code>${s.short}</code></td></tr>`).join('\n')}
+</tbody></table></div>
+</div>
+</div></div>`;
+  page({ url: 't/', title: '原文库', body, cls: 'library-page', scripts: ['library.js'] });
+}
+
+// ───────────────────────── 原文页 ─────────────────────────
+const markFrags = (text, qs) => {
+  let h = esc(text);
+  for (const q of [...new Set(qs)].sort((a, b) => b.length - a.length)) { const eq = esc(q); if (eq) h = h.split(eq).join(`\u0001${eq}\u0002`); }
+  return h.replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>');
+};
+for (const s of sources) {
+  const depth = s.href.split('/').filter(Boolean).length;
+  const base = '../'.repeat(depth);
+  const evs = s.evidence.map((id) => EV[id]).filter(Boolean);
+  const langs = Object.keys(s.langs);
+  // 行 → 引它的证据
+  const cited = {};
+  for (const evId of s.evidence) (HITS[evId] || []).forEach(([L, l, q]) => { const k = `${L}:${l}`; (cited[k] ||= { evs: new Set(), qs: [] }); cited[k].evs.add(evId); cited[k].qs.push(q); });
+  const useCount = (ids) => { const n = new Set(); ids.forEach((id) => { (backrefs[id] || []).forEach((r) => n.add(`r${r[0]}#${r[1]}`)); (topicRefs[id] || []).forEach((t) => n.add(`t${t.id}`)); (questionRefs[id] || []).forEach((q) => n.add(`q${q.id}`)); }); return n.size; };
+  const panel = (L) => {
+    const dialog = s.langs[L].some((l) => l[0]);
+    return s.langs[L].map(([who, t], i) => {
+      const a = anchorOf(L, i);
+      if (t.startsWith('＊')) return `<p class="sep">${esc(t.replace(/^＊\s*/, '') || '＊')}</p>`;
+      const c = cited[`${L}:${i}`];
+      return `<p id="${a}" class="para${c ? ' cited' : ''}"><a class="pn" href="#${a}">¶${i + 1}</a>${dialog && who ? `<span class="who">${esc(who)}</span>` : ''}${c ? markFrags(t, c.qs) : esc(t)}${c ? `<span class="pnote">被 ${useCount([...c.evs])} 处论述引用 · 锚点 ${s.short}#${a}${[...c.evs].map((id) => ` <a class="cite" href="${base}evidence/#${id}" data-ev="${id}">${EV[id].n}</a>`).join('')}</span>` : ''}</p>`;
+    }).join('\n');
+  };
+  const sameLen = langs.length > 1 && langs.every((L) => s.langs[L].length === s.langs[langs[0]].length);
+  const parallel = sameLen ? s.langs[langs[0]].map((_, i) => `<div class="prow"><span class="pn">¶${i + 1}</span>${langs.map((L) => `<p lang="${L === 'CHS' ? 'zh-CN' : L === 'EN' ? 'en' : L === 'JP' ? 'ja' : 'ko'}">${esc(s.langs[L][i][1])}</p>`).join('')}</div>`).join('\n') : '';
+  const usedTopics = new Set(), usedQs = new Set(), usedRefs = new Map(), usedEvents = new Set();
+  evs.forEach((e) => { (topicRefs[e.id] || []).forEach((t) => usedTopics.add(t)); (questionRefs[e.id] || []).forEach((q) => usedQs.add(q)); (backrefs[e.id] || []).forEach((r) => usedRefs.set(`${r[0]}#${r[1]}`, r)); (eventRefs[e.id] || []).forEach((x) => usedEvents.add(x)); });
+  const refs = [...usedRefs.values()].sort((a, b) => a[0] - b[0]);
+  const body = `<div class="wrap stack">
+<nav class="crumbs" aria-label="位置"><a href="${base}t/">原文库</a> / <a href="${base}t/#type=${s.type}">${s.typeName}</a> / ${esc(s.title)}</nav>
+<div class="source">
+<article>
+<div class="source-head">
+<h1>${esc(s.title)}</h1>
+${s.heading ? `<p class="muted">${esc(s.heading)}</p>` : ''}
+<div class="pills">${pill(s.typeName)}${statusPill(s)}<code>${s.short}</code><button type="button" class="btn" data-copy="${s.short}">复制短链</button></div>
+</div>
+${s.pending ? `<div class="pending-note"><strong>正文暂不显示</strong><p>这篇文本是 ${VERSION} 新增的，还没有确认已在游戏内开放。确认之后会显示全文；在此之前，引用它的论述会标为“部分证据待确认”。</p></div>` : `
+<div class="tabs" role="tablist" aria-label="语言">${langs.map((L, i) => `<button type="button" role="tab" aria-selected="${i === 0}" data-tab="${L}">${LANG_NAME[L]}</button>`).join('')}${sameLen ? `<button type="button" role="tab" aria-selected="false" data-tab="ALL">${langs.length === 4 ? '四语' : '双语'}对读</button>` : ''}</div>
+${langs.map((L, i) => `<div class="textbox" role="tabpanel" data-panel="${L}"${i ? ' hidden' : ''}>\n${panel(L)}\n</div>`).join('\n')}
+${sameLen ? `<div class="textbox parallel n${langs.length}" role="tabpanel" data-panel="ALL" hidden>\n${parallel}\n</div>` : ''}`}
+</article>
+<aside>
+<section class="card"><h2>出处</h2><dl>
+<div><dt>类型</dt><dd>${s.typeName}</dd></div>
+<div><dt>首见版本</dt><dd>${s.firstLabel}</dd></div>
+<div><dt>数据位置</dt><dd class="path"><a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.path)}</a></dd></div>
+</dl></section>
+<section class="card"><h2>核验</h2><dl>
+<div><dt>固定版本</dt><dd>${esc(source.corpus_version || '')} · ${esc((source.corpus_commit || '').slice(0, 8))}</dd></div>
+<div><dt>上线门</dt><dd>${s.pending ? `${VERSION} 新增，待确认` : `已在 ${PREV} 的数据里出现`}</dd></div>
+<div><dt>引文定位</dt><dd>${evs.length} 条引证取自此篇，其中 ${evs.filter((e) => (HITS[e.id] || []).length).length} 条已在原文中定位到段落</dd></div>
+<div><dt>最近核验</dt><dd>${esc(stats.revision_date)}</dd></div>
+</dl></section>
+<section class="card"><h2>被引用于</h2>
+${[...usedTopics].map((t) => `<a href="${base}topic/${t.id}/">${esc(t.title)}</a>`).join('')}
+${[...usedQs].map((q) => `<a href="${base}q/${q.id}/">星图问题（含剧情）</a>`).slice(0, 1).join('')}
+${refs.length ? `<ul class="reflist">${refs.slice(0, 12).map(([no, sec, title]) => `<li><a href="${base}read/${pad(no)}/#${sec}"><b>${pad(no)}</b>${esc(title)}</a></li>`).join('')}</ul>${refs.length > 12 ? `<p class="muted small">另有 ${refs.length - 12} 处</p>` : ''}` : ''}
+${usedEvents.size ? `<p class="muted small">年表：${[...usedEvents].map((x) => `<a href="${base}timeline/#${x}">${x}</a>`).join('、')}</p>` : ''}
+</section>
+</aside>
+</div></div>`;
+  page({ url: s.href, title: s.title, desc: s.pending ? '' : s.langs[langs[0]].slice(0, 3).map((l) => l[1]).join(' ').slice(0, 110), body, cls: 'source-page', scripts: ['source.js'], data: s.pending ? {} : { 'ev-data': Object.fromEntries(evs.map((e) => [e.id, e])) } });
+}
+
+// ───────────────────────── 专题 ─────────────────────────
+const citeRow = (ci, base) => {
+  const e = EV[ci.ev];
+  const s = SRC[e.src];
+  return `<div class="citerow"><span class="q">“${esc(ci.quote)}”</span><a href="${evLink(e, base)}">${esc(s ? s.title : e.title)}</a>${s ? `<code>${s.short}</code><span class="muted">首见 ${s.firstLabel}</span>${statusPill(s)}` : ''}</div>`;
+};
+const topicPending = (t) => t.claims.some((c) => (c.cites || []).some((ci) => EV[ci.ev].pending));
+for (const t of topics) {
+  const base = '../../';
+  const ch = t.read && chapters[t.read.chapter - 1];
+  const body = `<div class="wrap stack">
+<nav class="crumbs" aria-label="位置"><a href="${base}topic/">专题</a> / ${esc(t.title)}</nav>
+<article class="topic">
+<div class="topic-head">
+<h1>${esc(t.title)}</h1>
+<p class="lede"><strong>结论：${esc(t.conclusion)}</strong>${esc(t.summary)}</p>
+<p class="meta">对应游戏版本 ${VERSION} · 最近核验 ${esc(stats.revision_date)}${topicPending(t) ? ' · 部分证据待确认' : ''}</p>
+</div>
+${t.claims.map((c) => `<section class="card claim"><div>${levelTag(c.level)}</div><p>${esc(c.text)}</p>${(c.cites || []).map((ci) => citeRow(ci, base)).join('')}</section>`).join('\n')}
+<section class="card falsify"><h2>什么会推翻这个结论</h2><p>${esc(t.falsify)}</p></section>
+${topicPending(t) ? `<p class="muted">标为“待确认”的证据来自当前版本的新增文本。确认它已在游戏内开放之前，依赖它的论断在列表页显示为“部分证据待确认”。</p>` : ''}
+${ch ? `<p class="muted">完整的论证见研究全文：<a href="${base}${chapterURL(ch)}#${t.read.section}">第 ${ch.no} 章 · ${esc(t.read.label)}</a></p>` : ''}
+</article></div>`;
+  page({ url: `topic/${t.id}/`, title: t.title, desc: `结论：${t.conclusion}${t.summary}`, body, cls: 'topic-page' });
+}
+{
+  const base = '../';
+  const body = `<div class="wrap stack">
+<div class="pagehead"><h1>专题</h1><p>一页回答一个问题。每个论断标明是事实、推断还是假说，引文只标出所引的那一句，并连回原文库。</p></div>
+<div class="grid2">
+${topics.map((t) => `<a class="card link" href="${base}topic/${t.id}/"><h2>${esc(t.title)}</h2><p><strong>结论：${esc(t.conclusion)}</strong>${esc(t.summary)}</p><p class="tags">${[...new Set(t.claims.map((c) => c.level))].map(levelTag).join('')}${topicPending(t) ? pill('部分证据待确认', 'amber') : ''}</p></a>`).join('\n')}
+</div>
+<section class="stack-s" id="full">
+<h2>研究全文</h2>
+<p class="muted">专题取自这份长稿：《提瓦特文明史与世界结构研究》${esc(stats.edition)}，${stats.sections} 章、${fmt(stats.body_han_characters)} 汉字、${stats.evidence} 条引证。读到哪一段，右栏列出该段引用的原文。另有 <a href="${base}plates/">${stats.image_plates} 组图版</a>。</p>
+<div class="toc">
+${parts.map((p) => `<section class="card"><h3><span>${p.label}</span>${esc(p.name)}</h3><ol>${p.chapters.map((c) => `<li><a href="${base}${chapterURL(c)}"><b>${pad(c.no)}</b><span>${esc(c.title)}</span><em>${fmt(c.chars)} 字 · ${c.cites.size} 证</em></a></li>`).join('')}</ol></section>`).join('\n')}
+</div>
+</section></div>`;
+  page({ url: 'topic/', title: '专题', body, cls: 'topics-page' });
+}
+
+// ───────────────────────── 研究全文：各章 ─────────────────────────
 chapters.forEach((c, i) => {
   const base = '../../';
   const prev = chapters[i - 1];
@@ -388,33 +609,29 @@ chapters.forEach((c, i) => {
   const named = c.sections.filter((s) => s.title);
   const evData = Object.fromEntries([...c.cites].filter((id) => EV[id]).map((id) => [id, EV[id]]));
   const body = `
-<div class="progress" aria-hidden="true"><i id="progress-bar"></i></div>
+<div class="readbar" aria-hidden="true"><i id="progress-bar"></i></div>
+<div class="wrap wide">
 <header class="chapter-head">
-<p class="crumbs"><a href="${base}read/">读本</a><span>/</span><a href="${base}read/#part-${c.part.idx}">${c.part.label} · ${esc(c.part.name)}</a></p>
-<div class="chapter-no">${pad(c.no)}</div>
-<h1>${esc(c.title)}</h1>
-<p class="chapter-meta"><span>${fmt(c.chars)} 字</span><span>约 ${Math.max(1, Math.round(c.chars / 450))} 分钟</span><span>${named.length} 小节</span><span>${c.cites.size} 条引证</span></p>
+<nav class="crumbs" aria-label="位置"><a href="${base}topic/">专题</a> / <a href="${base}topic/#full">研究全文</a> / ${c.part.label} · ${esc(c.part.name)}</nav>
+<h1><span class="chapter-no">${pad(c.no)}</span>${esc(c.title)}</h1>
+<p class="meta">${fmt(c.chars)} 字 · 约 ${Math.max(1, Math.round(c.chars / 450))} 分钟 · ${named.length} 小节 · ${c.cites.size} 条引证</p>
 </header>
 <div class="reader">
-<aside class="outline" aria-label="本章小节">
-<p class="rail-title">本章</p>
-<ol>${named.map((s) => `<li><a href="#${s.id}">${esc(s.title)}</a></li>`).join('')}</ol>
-</aside>
+<aside class="outline" aria-label="本章小节"><h2>本章</h2><ol>${named.map((s) => `<li><a href="#${s.id}">${esc(s.title)}</a></li>`).join('')}</ol></aside>
 <article class="prose">
-${c.sections.map((s) => `<section id="${s.id}">${s.title ? `<h2><a class="anchor" href="#${s.id}" aria-label="本节链接">§</a>${esc(s.title)}</h2>` : ''}
+${c.sections.map((s) => `<section id="${s.id}">${s.title ? `<h2>${esc(s.title)}</h2>` : ''}
 ${s.html.join('\n')}
 </section>`).join('\n')}
 <nav class="pager">
-${prev ? `<a class="prev" href="${base}${chapterURL(prev)}"><span>← 上一章 · ${pad(prev.no)}</span><b>${esc(prev.title)}</b></a>` : '<span></span>'}
-${next ? `<a class="next" href="${base}${chapterURL(next)}"><span>下一章 · ${pad(next.no)} →</span><b>${esc(next.title)}</b></a>` : '<span></span>'}
+${prev ? `<a href="${base}${chapterURL(prev)}"><span>上一章 · ${pad(prev.no)}</span><b>${esc(prev.title)}</b></a>` : '<span></span>'}
+${next ? `<a class="next" href="${base}${chapterURL(next)}"><span>下一章 · ${pad(next.no)}</span><b>${esc(next.title)}</b></a>` : '<span></span>'}
 </nav>
 </article>
-<aside class="evrail" aria-label="本段证据">
-<p class="rail-title">本段所据原文 <span id="rail-count"></span></p>
-<div id="rail-cards"><p class="rail-hint">把指针移到任一段落，或点击文中的金色编号，这里会列出该段引用的原文。</p></div>
+<aside class="evrail" aria-label="本段证据"><h2>本段所据原文 <span id="rail-count"></span></h2>
+<div id="rail-cards"><p class="muted small">把指针移到任一段落，或点文中的编号，这里列出该段引用的原文。</p></div>
 </aside>
-</div>`;
-  page({ url: chapterURL(c), title: c.title, desc: plain(c.sections[0]?.text[0] || '').slice(0, 110), body, cls: 'chapter', scripts: ['reader.js'], data: { 'ev-data': evData }, hue: c.part.hue });
+</div></div>`;
+  page({ url: chapterURL(c), title: c.title, desc: plain(c.sections[0]?.text[0] || '').slice(0, 110), body, cls: 'chapter', scripts: ['reader.js'], data: { 'ev-data': evData } });
 });
 
 // ───────────────────────── 年表 ─────────────────────────
@@ -424,336 +641,144 @@ const REL = {
   interpretive_comparison: '解释性比较', parallel_regional_storyline: '并行地域情节', documented_stage_of: '文献所记阶段',
   historical_effect_of: '历史后果', cross_time_cause: '跨时原因', cross_time_effect: '跨时结果', contemporary_proposal: '当代方案',
 };
-const BASIS = { 相对顺序: 'rel', 文本纪年: 'text', 近似年代: 'approx', 当代叙事: 'now' };
+const BASIS = { 文本纪年: 'text', 近似年代: 'approx', 纪年推算: 'approx', 相对顺序: 'rel', 当代叙事: 'now' };
 const eventsById = Object.fromEntries(chronology.filter((x) => x.event_id).map((x) => [x.event_id, x]));
-const eventRefs = {}; // 证据 → 事件
 {
   const base = '../';
   const groups = [];
-  for (const row of chronology) {
-    if (row.group) groups.push({ title: row.group, events: [] });
-    else groups[groups.length - 1].events.push(row);
-  }
+  for (const row of chronology) { if (row.group) groups.push({ title: row.group, events: [] }); else groups[groups.length - 1].events.push(row); }
   const short = (s, n = 34) => (s.length > n ? `${s.slice(0, n)}…` : s);
   const eventHTML = (e) => {
     const r = relations.events[e.event_id];
     const rels = (r?.relations || []).filter((x) => eventsById[x.to]);
-    (e.sources || []).forEach((id) => (eventRefs[id] ||= []).push(e.event_id));
-    const extra = ['internal_time_constraint', 'temporal_layer', 'original_date'].filter((k) => typeof e[k] === 'string').map((k) => `<p class="ev-extra">${esc(e[k])}</p>`).join('');
-    return `<li class="event" id="${e.event_id}" data-basis="${BASIS[e.time_basis] || 'other'}">
+    const basis = BASIS[e.time_basis] || 'other';
+    return `<li class="event" id="${e.event_id}" data-basis="${basis}">
 <div class="event-date">${esc(e.date)}</div>
 <div class="event-body">
-<p class="event-region">${esc(e.region)}<a class="event-id" href="#${e.event_id}">${e.event_id}</a></p>
+<p class="event-region">${esc(e.region)} <a class="event-id" href="#${e.event_id}">${e.event_id}</a></p>
 <p class="event-text">${esc(e.event)}</p>
-<p class="event-meta"><span class="basis" title="这个时间是怎么定的">${esc(e.time_basis)}</span>${(e.sources || []).filter((id) => EV[id]).map((id) => `<a class="chip" href="${base}evidence/#${id}" data-ev="${id}">${esc(short(EV[id].title, 16))}</a>`).join('')}</p>
-${rels.length || extra ? `<details class="rels"><summary>${rels.length ? `${rels.length} 条时间关系` : '定位说明'}</summary>${extra}${r?.precision ? `<p class="ev-extra">精度：${esc(r.precision)}</p>` : ''}<ul>${rels.map((x) => `<li><span class="rel rel-${x.rel.replace(/_.*/, '')}">${REL[x.rel] || x.rel}</span><a href="#${x.to}">${esc(short(eventsById[x.to].event))}</a><small>${esc(x.basis || '')}</small></li>`).join('')}</ul></details>` : ''}
+<p class="event-meta">${pill(e.time_basis, basis === 'text' ? 'green' : basis === 'approx' ? 'blue' : 'grey')}${(e.sources || []).filter((id) => EV[id]).map((id) => `<a class="chip" href="${base}evidence/#${id}" data-ev="${id}">${esc(short(EV[id].title, 16))}</a>`).join('')}</p>
+${rels.length ? `<details class="rels"><summary>${rels.length} 条时间关系</summary>${r?.precision ? `<p class="muted small">精度：${esc(r.precision)}</p>` : ''}<ul>${rels.map((x) => `<li><span class="rel">${REL[x.rel] || x.rel}</span><a href="#${x.to}">${esc(short(eventsById[x.to].event))}</a><small>${esc(x.basis || '')}</small></li>`).join('')}</ul></details>` : ''}
 </div>
 </li>`;
   };
   const gTitle = (t) => { const m = t.match(/^([^、：]{1,6})、(.+)$/); return m ? [m[1].replace('（续）', '·续'), m[2]] : ['', t]; };
-  const body = `
-<header class="page-head">
-<p class="eyebrow">Chronology</p>
-<h1>年表</h1>
-<p class="page-lede">${stats.chronology_events} 项事件。先是宇宙与共同年代的锚点，再是并行的地域谱系，然后在五百年前汇成同一截面，最后进入旅行者时代。${esc(relations.reference_frame.split('。')[0])}。</p>
-</header>
-${eraRibbon(base)}
+  const body = `<div class="wrap stack">
+<div class="pagehead"><h1>年表</h1><p>${stats.chronology_events} 项事件。文本自己写明的纪年、换算得到的年数、只知先后的次序，三者分开显示：每项事件都标着它的时间是怎么定的。</p></div>
 <div class="tl-controls" id="tl-controls">
-<input type="search" id="tl-q" placeholder="筛选事件、地区、年代…" aria-label="筛选事件">
+<label class="libsearch">筛选事件、地区、年代<input type="search" id="tl-q" autocomplete="off"></label>
 <div class="seg" role="group" aria-label="时间依据">
 <button type="button" data-basis="" aria-pressed="true">全部</button>
 <button type="button" data-basis="text" aria-pressed="false">文本纪年</button>
-<button type="button" data-basis="approx" aria-pressed="false">近似年代</button>
-<button type="button" data-basis="rel" aria-pressed="false">相对顺序</button>
+<button type="button" data-basis="approx" aria-pressed="false">换算年数</button>
+<button type="button" data-basis="rel" aria-pressed="false">只知先后</button>
 <button type="button" data-basis="now" aria-pressed="false">当代叙事</button>
 <button type="button" data-basis="other" aria-pressed="false">文献内部次序</button>
 </div>
-<span class="tl-count" id="tl-count">${stats.chronology_events} 项</span>
+<span class="count" id="tl-count">${stats.chronology_events} 项</span>
 </div>
 <div class="tl">
 <aside class="tl-nav" aria-label="年表分组"><ol>${groups.map((g, i) => { const [n, t] = gTitle(g.title); return `<li><a href="#g${i}"><i>${esc(n || '·')}</i>${esc(t.split('：').pop())}</a></li>`; }).join('')}</ol></aside>
 <div class="tl-main">
 ${groups.map((g, i) => { const [n, t] = gTitle(g.title); return `<section class="tl-group" id="g${i}">
-<header><span class="tl-gno">${esc(n)}</span><h2>${esc(t)}</h2><span class="tl-gcount">${g.events.length}</span></header>
+<header><span class="tl-gno">${esc(n)}</span><h2>${esc(t)}</h2><span class="count">${g.events.length}</span></header>
 <ol class="events">
 ${g.events.map(eventHTML).join('\n')}
 </ol>
 </section>`; }).join('\n')}
-<p class="tl-empty" id="tl-empty" hidden>没有符合条件的事件。</p>
+<p class="muted" id="tl-empty" hidden>没有符合条件的事件。</p>
 </div>
-</div>`;
+</div></div>`;
   page({ url: 'timeline/', title: '年表', body, cls: 'timeline', scripts: ['timeline.js'] });
 }
 
 // ───────────────────────── 图版 ─────────────────────────
 {
   const base = '../';
-  const body = `
-<header class="page-head">
-<p class="eyebrow">Plates</p>
-<h1>图版</h1>
-<p class="page-lede">${stats.image_assets} 幅图像组成 ${stats.image_plates} 组图版，另有 ${stats.diagram_figures} 幅结构图。每幅都记录了“看到了什么”与来源；点开任一幅查看观察记录。</p>
-</header>
+  const body = `<div class="wrap stack">
+<div class="pagehead"><h1>图版</h1><p>${stats.image_assets} 幅图像组成 ${stats.image_plates} 组图版，另有 ${stats.diagram_figures} 幅结构图。每幅都记录了“看到了什么”与来源；点开任一幅查看观察记录。</p></div>
 <div class="plates">
 ${figureIndex.map((f) => (f.kind === 'plate' ? plateHTML(f.ref, f.no, base, { linkChapter: f.chapter }) : diagramHTML(f.ref, f.no, base, { linkChapter: f.chapter }))).join('\n')}
-</div>`;
+</div></div>`;
   page({ url: 'plates/', title: '图版', body, cls: 'plates-page' });
 }
 
-// ───────────────────────── 证据 ─────────────────────────
-const KIND = (e) => (!e.path ? '教程与外部原典' : e.path.startsWith('Readable') ? '书籍与可读文本' : e.path.startsWith('BinOutput') ? '对白与任务' : '角色、物品与资料');
+// ───────────────────────── 引证 ─────────────────────────
 {
-  const kinds = [...new Set(evidenceList.map(KIND))];
-  const body = `
-<header class="page-head">
-<p class="eyebrow">Evidence</p>
-<h1>证据</h1>
-<p class="page-lede">${stats.evidence} 条短引，出自 ${stats.source_titles} 种来源题名。每条都连着它所在的<a href="../text/">原文全文</a>（共 ${sources.length} 篇），也能反查它在正文与年表里被用在了哪里。</p>
-</header>
+  const body = `<div class="wrap stack">
+<div class="pagehead"><h1>引证</h1><p>${stats.evidence} 条短引，出自 ${stats.source_titles} 种来源题名。每条都连着它所在的原文，也能反查它在研究全文与年表里被用在了哪里。<a href="../t/">按原文浏览 →</a></p></div>
 <div class="ev-controls">
-<input type="search" id="ev-q" placeholder="搜索引文、来源题名、编号…" aria-label="搜索证据">
-<select id="ev-kind" aria-label="来源类型"><option value="">全部类型</option>${kinds.map((k) => `<option>${k}</option>`).join('')}</select>
+<label class="libsearch">搜索引文、来源题名、编号<input type="search" id="ev-q" autocomplete="off"></label>
+<select id="ev-kind" aria-label="来源类型"><option value="">全部类型</option>${[...typeOrder.map((t) => TYPES[t]), '现实文献'].map((k) => `<option>${k}</option>`).join('')}</select>
 <select id="ev-chap" aria-label="所在章"><option value="">全部章</option>${chapters.map((c) => `<option value="${c.no}">${pad(c.no)} ${esc(c.title.slice(0, 22))}</option>`).join('')}</select>
 <select id="ev-sort" aria-label="排序"><option value="n">按首次出现</option><option value="refs">按被引次数</option></select>
-<span class="tl-count" id="ev-count"></span>
+<span class="count" id="ev-count"></span>
 </div>
-<div class="ev-list" id="ev-list"><p class="rail-hint">正在载入证据…</p></div>
-<button class="btn" id="ev-more" type="button" hidden>显示更多</button>`;
-  page({ url: 'evidence/', title: '证据', body, cls: 'evidence-page', scripts: ['evidence.js'], data: { 'chapter-titles': Object.fromEntries(chapters.map((c) => [c.no, c.title])) } });
+<div class="ev-list" id="ev-list"><p class="muted">正在载入…</p></div>
+<button class="btn" id="ev-more" type="button" hidden>显示更多</button></div>`;
+  page({ url: 'evidence/', title: '引证', body, cls: 'evidence-page', scripts: ['evidence.js'] });
   fs.writeFileSync(path.join(dist, 'data', 'evidence.json'), JSON.stringify(evidenceList.map((e) => ({
-    ...e, kind: KIND(e), refs: backrefs[e.id] || [], events: eventRefs[e.id] || [],
+    ...e, kind: SRC[e.src]?.typeName || '现实文献', refs: backrefs[e.id] || [], events: eventRefs[e.id] || [],
   }))));
 }
 
-// ───────────────────────── 原文（文库） ─────────────────────────
-const KIND_GLYPH = { 书籍与可读文本: '书', 对白与任务: '言', '角色、物品与资料': '物', 现实文献: '典' };
-const markFrags = (text, qs) => {
-  let h = esc(text);
-  for (const q of [...new Set(qs)].sort((a, b) => b.length - a.length)) {
-    const eq = esc(q);
-    if (eq) h = h.split(eq).join(`\u0001${eq}\u0002`);
-  }
-  return h.replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>');
-};
-for (const s of sources) {
-  const base = '../../';
-  const evs = s.evidence.map((id) => EV[id]).filter(Boolean);
-  const lineEv = new Map(); // 行 → [{e, qs}]
-  for (const e of evs) for (const c of e.ctx || []) (lineEv.get(c.l) || lineEv.set(c.l, []).get(c.l)).push({ e, qs: c.qs });
-  const dialog = s.lines.some((l) => l[0]);
-  const body = `
-<header class="chapter-head text-head">
-<p class="crumbs"><a href="${base}text/">原文</a><span>/</span><span>${esc(s.kind)}</span></p>
-<h1>${esc(s.title)}</h1>
-${s.heading ? `<p class="text-sub">${esc(s.heading)}</p>` : ''}
-<p class="chapter-meta"><span>${s.lines.length} 行</span><span>${evs.length} 条引证取自此篇</span><span>${esc(s.lang)}</span><span><a href="${esc(s.url)}" target="_blank" rel="noopener">固定版本原件 ↗</a></span><span><a href="${base}starmap/#${s.id}">在星图中 ✦</a></span></p>
-</header>
-<div class="reader text-reader">
-<article class="original${dialog ? ' dialog' : ''}">
-${s.lines.map(([who, t], i) => {
-    const hit = lineEv.get(i);
-    if (t.startsWith('＊')) return `<p class="oline sep" id="L${i}">${esc(t.replace(/^＊\s*/, '') || '＊')}</p>`;
-    return `<p class="oline${hit ? ' hit' : ''}" id="L${i}">${dialog ? `<span class="who">${esc(who)}</span>` : ''}<span class="otext">${hit ? markFrags(t, hit.flatMap((h) => h.qs)) : esc(t)}${hit ? citeRun(hit.map((h) => h.e.id), base) : ''}</span></p>`;
-  }).join('\n')}
-<p class="original-end">—— 全文完 · 文本取自《原神》${esc(source.corpus_version || '')} 固定语料 ——</p>
-</article>
-<aside class="evrail text-rail" aria-label="引用处">
-<p class="rail-title">这篇原文被用在</p>
-${evs.map((e) => `<div class="use"><p class="use-q"><a class="cite" data-ev="${e.id}" href="${base}evidence/#${e.id}">${e.n}</a>${e.quotes.map((q) => `<a href="#L${(e.ctx?.find((c) => c.qs.includes(q)) || {}).l ?? 0}">「${esc(q)}」</a>`).join('')}</p>
-<div class="ev-refs">${(backrefs[e.id] || []).map(([no, sec, title]) => `<a href="${base}read/${pad(no)}/#${sec}" title="${esc(title)}"><b>${pad(no)}</b>${esc(title)}</a>`).join('')}${(eventRefs[e.id] || []).map((id) => `<a href="${base}timeline/#${id}"><b>年表</b>${id}</a>`).join('')}</div></div>`).join('\n')}
-</aside>
-</div>`;
-  page({ url: `text/${s.id}/`, title: s.title, desc: s.lines.slice(0, 3).map((l) => l[1]).join(' ').slice(0, 110), body, cls: 'chapter text-page', data: { 'ev-data': Object.fromEntries(evs.map((e) => [e.id, e])) } });
-}
+// ───────────────────────── 假说 ─────────────────────────
 {
   const base = '../';
-  const kinds = [...new Set(sources.map((s) => s.kind))];
-  const body = `
-<header class="page-head">
-<p class="eyebrow">Library</p>
-<h1>原文</h1>
-<p class="page-lede">研究引用过的 ${sources.length} 篇原文全文：书籍、对白、角色故事与物品说明，均取自固定版本语料。被引用的句子在文中标出，并连回引用它的论述。</p>
-</header>
-<div class="ev-controls"><input type="search" id="lib-q" placeholder="按题名筛选…" aria-label="筛选原文"><span class="tl-count" id="lib-count">${sources.length} 篇</span></div>
-<div class="library">
-${kinds.map((k) => `<section class="lib-kind"><h2><i>${KIND_GLYPH[k]}</i>${k}<span>${sources.filter((s) => s.kind === k).length}</span></h2>
-<ul>${sources.filter((s) => s.kind === k).sort((a, b) => b.evidence.length - a.evidence.length || a.title.localeCompare(b.title, 'zh')).map((s) => `<li><a href="${base}text/${s.id}/"><span>${esc(s.title)}</span><em>${s.evidence.length} 引 · ${s.lines.length} 行</em></a></li>`).join('')}</ul></section>`).join('\n')}
-</div>
-<script>(()=>{const q=document.getElementById('lib-q'),c=document.getElementById('lib-count'),li=[...document.querySelectorAll('.library li')];q.addEventListener('input',()=>{const k=q.value.trim().toLowerCase();let n=0;li.forEach(l=>{const ok=!k||l.textContent.toLowerCase().includes(k);l.hidden=!ok;n+=ok});c.textContent=n+' 篇'})})()</script>`;
-  page({ url: 'text/', title: '原文', body, cls: 'library-page' });
+  const items = [];
+  topics.forEach((t) => t.claims.filter((c) => c.level !== 'fact').forEach((c) => items.push({ level: c.level, text: c.text, from: t.title, href: `topic/${t.id}/`, cites: c.cites || [] })));
+  const body = `<div class="wrap stack">
+<div class="pagehead"><h1>假说</h1><p>这里集中列出不是“事实”的论断：从原文推出来的是推断，证据还不足以定论的是假说。每条都写明出处；涉及主线剧情的假说放在<a href="${base}q/">星图的问题页</a>里，按你的进度显示。</p></div>
+${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><p>${esc(x.text)}</p>${x.cites.map((ci) => citeRow(ci, base)).join('')}<p class="muted small">出自专题：<a href="${base}${x.href}">${esc(x.from)}</a></p></section>`).join('\n')}
+<section class="card"><h2>分级的含义</h2><dl class="levels"><div><dt>${levelTag('fact')}</dt><dd>游戏文本直接写明的内容，引文可逐字核对。</dd></div><div><dt>${levelTag('inference')}</dt><dd>由一条或几条事实推出，推理过程写在论断里。</dd></div><div><dt>${levelTag('hypothesis')}</dt><dd>有文本线索但不足以定论，或文本本身就以推测的语气说出。</dd></div></dl></section>
+</div>`;
+  page({ url: 'hypothesis/', title: '假说', body, cls: 'hyp-page' });
 }
 
-// ───────────────────────── 星图 ─────────────────────────
-// 每篇被引用的文本是一颗星；同一段落里被一起引用的文本连成星座；星座按“卷”分布。
+// ───────────────────────── 更新 ─────────────────────────
 {
-  const works = new Map(); // key → work
-  const workOfEv = {};
-  for (const e of evidenceList) {
-    const key = e.src || `x:${e.title}`;
-    let w = works.get(key);
-    if (!w) works.set(key, w = { id: e.src || `x${works.size}`, t: e.src ? SRC[e.src].title : e.title, k: e.src ? SRC[e.src].kind : '现实文献', src: !!e.src, url: e.src ? null : e.url, evs: [], paras: 0, partCount: {}, refs: new Map(), nb: new Map() });
-    w.evs.push(e);
-    workOfEv[e.id] = w;
-  }
-  const chapterPart = Object.fromEntries(chapters.map((c) => [c.no, c.part.idx]));
-  for (const pc of paraCites) {
-    const ws = [...new Set(pc.ids.map((id) => workOfEv[id]).filter(Boolean))];
-    for (const w of ws) { w.paras++; const p = chapterPart[pc.no]; w.partCount[p] = (w.partCount[p] || 0) + 1; }
-    for (let i = 0; i < ws.length; i++) for (let j = i + 1; j < ws.length; j++) {
-      ws[i].nb.set(ws[j], (ws[i].nb.get(ws[j]) || 0) + 1);
-      ws[j].nb.set(ws[i], (ws[j].nb.get(ws[i]) || 0) + 1);
-    }
-  }
-  const all = [...works.values()];
-  for (const w of all) {
-    for (const e of w.evs) for (const r of backrefs[e.id] || []) w.refs.set(`${r[0]}#${r[1]}`, r);
-    if (!w.paras) { w.paras = 1; const r = [...w.refs.values()][0]; w.partCount[r ? chapterPart[r[0]] : 0] = 1; }
-    w.part = Number(Object.entries(w.partCount).sort((a, b) => b[1] - a[1] || a[0] - b[0])[0][0]);
-  }
-  // 布局：十二个星座绕成一环，星座内部用力导向
-  let seed = 20261111;
-  const rnd = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
-  const consts = parts.map((p, i) => {
-    const members = all.filter((w) => w.part === i);
-    return { idx: i, label: p.label, name: p.name, hue: p.hue, r: members.length ? 90 + Math.sqrt(members.length) * 50 : 0, members };
-  });
-  // 沿一个大环依次排开，弧长与星座大小成正比
-  const GAP = 120;
-  const circumference = consts.reduce((a, c) => a + (c.r ? 2 * c.r + GAP : 0), 0);
-  const RING = circumference / (2 * Math.PI);
-  let arc = 0;
-  for (const c of consts) {
-    if (!c.r) { c.x = 0; c.y = 0; continue; }
-    const a = ((arc + c.r + GAP / 2) / circumference) * Math.PI * 2 - Math.PI / 2;
-    arc += 2 * c.r + GAP;
-    const ring = RING + (c.idx % 2 ? 110 : -110);
-    c.x = Math.cos(a) * ring; c.y = Math.sin(a) * ring;
-  }
-  const lines = [];
-  for (const c of consts) {
-    const m = c.members;
-    m.forEach((w) => { const a = rnd() * 6.283, r = Math.sqrt(rnd()) * c.r; w.x = c.x + Math.cos(a) * r; w.y = c.y + Math.sin(a) * r; });
-    const edges = [];
-    m.forEach((w, i) => w.nb.forEach((wt, o) => { if (o.part === c.idx && m.indexOf(o) > i) edges.push([w, o, wt]); }));
-    for (let it = 0; it < 320; it++) {
-      const k = 1 - it / 320;
-      for (const w of m) { w.fx = (c.x - w.x) * 0.02; w.fy = (c.y - w.y) * 0.02; }
-      for (let i = 0; i < m.length; i++) for (let j = i + 1; j < m.length; j++) {
-        const a = m[i], b = m[j];
-        let dx = a.x - b.x, dy = a.y - b.y;
-        const d2 = dx * dx + dy * dy + 4;
-        const f = 60 / d2;
-        dx *= f; dy *= f;
-        a.fx += dx; a.fy += dy; b.fx -= dx; b.fy -= dy;
-      }
-      for (const [a, b, wt] of edges) {
-        const dx = b.x - a.x, dy = b.y - a.y;
-        const d = Math.hypot(dx, dy) || 1;
-        const f = ((d - 42) / d) * 0.03 * Math.min(3, wt);
-        a.fx += dx * f; a.fy += dy * f; b.fx -= dx * f; b.fy -= dy * f;
-      }
-      for (const w of m) { w.x += Math.max(-9, Math.min(9, w.fx)) * k; w.y += Math.max(-9, Math.min(9, w.fy)) * k; }
-    }
-    // 星座连线：共引关系的最大生成森林
-    const parent = new Map(m.map((w) => [w, w]));
-    const find = (w) => { while (parent.get(w) !== w) { parent.set(w, parent.get(parent.get(w))); w = parent.get(w); } return w; };
-    edges.sort((a, b) => b[2] - a[2] || Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y) - Math.hypot(b[0].x - b[1].x, b[0].y - b[1].y));
-    for (const [a, b] of edges) { const ra = find(a), rb = find(b); if (ra !== rb) { parent.set(ra, rb); lines.push([a, b]); } }
-    if (m.length) c.r = Math.max(...m.map((w) => Math.hypot(w.x - c.x, w.y - c.y)), 60) + 40;
-  }
-  all.forEach((w, i) => { w.i = i; });
-  const secTitles = {};
-  const stars = all.map((w) => {
-    const refs = [...w.refs.values()].sort((a, b) => a[0] - b[0]);
-    refs.forEach((r) => { secTitles[`${r[0]}#${r[1]}`] = r[2]; });
-    return {
-      id: w.id, t: w.t, k: w.k, p: w.part, x: Math.round(w.x), y: Math.round(w.y), m: w.paras,
-      q: w.evs.flatMap((e) => e.quotes).slice(0, 4),
-      ev: w.evs.map((e) => e.id), src: w.src ? 1 : 0, url: w.url || undefined,
-      refs: refs.map((r) => `${r[0]}#${r[1]}`),
-      nc: w.nb.size,
-      nb: [...w.nb].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([o, wt]) => [o.i, wt]),
-    };
-  });
-  fs.writeFileSync(path.join(dist, 'data', 'stars.json'), JSON.stringify({
-    stars, lines: lines.map(([a, b]) => [a.i, b.i]), secTitles,
-    consts: consts.map((c) => ({ label: c.label, name: c.name, hue: c.hue, x: Math.round(c.x), y: Math.round(c.y), r: Math.round(c.r), n: c.members.length })),
-  }));
-  const kindsCount = (k) => all.filter((w) => w.k === k).length;
-  const body = `
-<div class="sky" id="sky">
-<canvas id="sky-canvas" aria-label="星图：每颗星是一篇被引用的原文"></canvas>
-<div class="sky-head">
-<p class="eyebrow">Star Chart</p>
-<h1>星图</h1>
-<p>${all.length} 颗星，是这部研究引用过的 ${all.length} 篇文本。在同一段论述里被一起引用的文本，连成星座；十二个星座对应全书的导论与十一卷。越亮的星，被引用得越多。</p>
-<div class="sky-search"><input type="search" id="sky-q" placeholder="寻找一颗星：书名、人物、任务…" aria-label="寻找一颗星" autocomplete="off"><ul id="sky-hits" hidden></ul></div>
-</div>
-<div class="sky-legend">
-<span><i class="sp sp-book"></i>书籍与可读文本 ${kindsCount('书籍与可读文本')}</span>
-<span><i class="sp sp-talk"></i>对白与任务 ${kindsCount('对白与任务')}</span>
-<span><i class="sp sp-item"></i>角色、物品与资料 ${kindsCount('角色、物品与资料')}</span>
-<span><i class="sp sp-real"></i>现实文献 ${kindsCount('现实文献')}</span>
-</div>
-<div class="sky-zoom"><button type="button" id="sky-in" aria-label="放大">＋</button><button type="button" id="sky-out" aria-label="缩小">－</button><button type="button" id="sky-home" aria-label="全图">◎</button></div>
-<ol class="sky-consts" id="sky-consts">${consts.map((c, i) => (c.members.length ? `<li><button type="button" data-c="${i}" style="--part-h:${c.hue}"><b>${c.label}</b>${esc(c.name.replace(/^导论：/, ''))}</button></li>` : '')).join('')}</ol>
-<aside class="sky-panel" id="sky-panel" hidden></aside>
-<div class="sky-tip" id="sky-tip" hidden></div>
-<p class="sky-hint" id="sky-hint">拖动漫游 · 滚轮缩放 · 点一颗星</p>
-</div>`;
-  page({ url: 'starmap/', title: '星图', desc: '每篇被引用的原文是一颗星，被一起引用的文本连成星座。', body, cls: 'starmap', scripts: ['starmap.js'] });
+  const notes = fs.existsSync(C('release_notes.md')) ? fs.readFileSync(C('release_notes.md'), 'utf8') : '';
+  const html = notes.split('\n').map((l) => l.trim()).filter(Boolean).map((l) => (l.startsWith('# ') ? `<h2>${esc(l.slice(2))}</h2>` : l.startsWith('## ') ? `<h3>${esc(l.slice(3))}</h3>` : `<p>${esc(l)}</p>`)).join('\n');
+  const body = `<div class="wrap stack">
+<div class="pagehead"><h1>更新</h1><p>数据版本 ${VERSION}。研究稿现行版本：${esc(stats.edition)}（${esc(stats.revision_date)}）。</p></div>
+<article class="card longtext">${html}</article></div>`;
+  page({ url: 'updates/', title: '更新', body, cls: 'updates-page' });
 }
 
 // ───────────────────────── 关于 ─────────────────────────
 {
   const base = '../';
-  const body = `
-<header class="page-head">
-<p class="eyebrow">Colophon</p>
-<h1>关于这项研究</h1>
-<p class="page-lede">它试图回答一个问题：如果把《原神》的全部文本当作一个文明留下的史料，能写出怎样一部文明史？</p>
-</header>
-<article class="prose about">
-<section>
-<h2>它是什么</h2>
-<p>《提瓦特文明史与世界结构研究》是一部长篇研究稿，副题为“年代、元素、循环、图像与多语对读”。现行版本是${esc(stats.edition)}（${esc(stats.revision_date)}）：正文 ${fmt(stats.body_han_characters)} 汉字，${stats.sections} 章、${stats.subsections} 小节；${stats.chronology_events} 项编年事件；${stats.evidence} 条原文短引，出自 ${stats.source_titles} 种来源题名；${stats.image_assets} 幅图像组成 ${stats.image_plates} 组图版。</p>
-<p>这个网站是它的阅读界面。论文原本以 LaTeX 排成 ${stats.pdf_pages} 页 PDF；网站不改动任何论述，只是把正文、年表、证据与图版之间本来就存在的联系，变成可以点击的路径。</p>
-</section>
-<section>
-<h2>和一般 wiki 有什么不同</h2>
-<p>wiki 按词条组织，回答“某某是什么”。这里按论证组织，回答“凭什么这么说”。正文每一处论断后都有编号，指向一条原文短引；每条短引又记着来源题名、文本定位和固定版本原件的地址。</p>
-<p>年表也不把所有事件压成一条线。每个时间都标明依据——是文本自己给出的纪年、据此推算的近似年代、仅有的相对先后，还是当代叙事中的位置；事件之间的先后、同期与跨时因果，分别登记为不同类型的关系。</p>
-</section>
-<section>
-<h2>文本从哪里来</h2>
-<p>全部游戏文本固定于同一份语料快照（版本 ${esc(source.corpus_version || '')}，提交 <code>${esc((source.corpus_commit || '').slice(0, 12))}</code>），引文以中文为主，关键段落作中、英、日、韩四语对读，数字与称谓的异文单独记录。</p>
-<p>被引用的书籍、对白与角色故事在<a href="${base}text/">原文</a>页给出全文，引用的句子在其中标出；视频与字幕不随站发布。</p>
-</section>
-<section>
-<h2>怎样读</h2>
-<p><a href="${base}starmap/">星图</a>把被引用的 ${sources.length} 余篇文本画成星空，适合漫游；<a href="${base}read/">读本</a>适合从头到尾读；<a href="${base}timeline/">年表</a>适合带着“某件事发生在何时”的问题进入；<a href="${base}evidence/">证据</a>适合反过来查——从一句原文出发，看它支撑了哪些论述。任何页面按 <kbd>/</kbd> 都可以全文搜索。</p>
-</section>
-<section>
+  const body = `<div class="wrap stack">
+<div class="pagehead"><h1>关于</h1><p>把《原神》的文本当作一个文明留下的史料来读，并且让每一句结论都能被核对。</p></div>
+<article class="card longtext">
+<h2>两种读法</h2>
+<p><a href="${base}">星图</a>给想弄明白剧情的玩家：先选主线进度，之后的内容藏在迷雾里；从一个问题出发，一步步看到相关的人物、事件和它们之间的关系。</p>
+<p>考据层给想核对的人：<a href="${base}t/">原文库</a>收录研究引用过的 ${sources.length} 篇文本，<a href="${base}topic/">专题</a>一页回答一个问题，<a href="${base}timeline/">年表</a>有 ${stats.chronology_events} 项事件。专题取自一份 ${fmt(stats.body_han_characters)} 字的长稿，全文也在专题页里。</p>
+<h2 id="gate">上线规则</h2>
+<p>全部文本固定于同一份语料快照（${esc(source.corpus_version || '')}，提交 <code>${esc((source.corpus_commit || '').slice(0, 12))}</code>）。一篇文本如果在上一版本（${PREV}）的快照里不存在，就算作 ${VERSION} 新增，标为“待确认”：原文页不显示正文，引用它的论述标明“部分证据待确认”。</p>
+<p>目前这道门只做了“是否已过一个版本”这一项检查。是否能追溯到已开放的任务或物品、是否带测试标记，还没有逐条核对；限时活动的“已下线”状态也还没有标出。</p>
+<h2>核验</h2>
+<p>星图和专题里的每条引文，构建时都要与所挂引证的原文片段逐字比对，对不上构建就失败。研究全文的 ${stats.evidence} 条短引中，绝大多数已定位到原文的具体段落，可以从引证卡直接跳到那一段。</p>
 <h2>声明</h2>
-<p>本站为非官方的同人研究，与 HoYoverse / miHoYo 无关。《原神》及其文本、图像的权利归其权利人所有。站内图像仅作研究引用，来源与上传者逐幅列于<a href="${base}plates/">图版</a>页。</p>
-</section>
-</article>`;
+<p>本站是玩家的非营利研究项目，与米哈游及 HoYoverse 无关。游戏文本与图像的权利归权利人所有；图像来源与上传者逐幅列于<a href="${base}plates/">图版</a>页。</p>
+</article></div>`;
   page({ url: 'about/', title: '关于', body, cls: 'about-page' });
 }
 
-// ───────────────────────── 搜索索引 ─────────────────────────
+// ───────────────────────── 搜索索引（仅考据层使用） ─────────────────────────
 {
   const idx = [];
+  for (const t of topics) idx.push(['专', t.title, `topic/${t.id}/`, `结论：${t.conclusion}${t.summary}`]);
+  for (const s of sources) idx.push(['文', s.title, s.href, `${s.short} ${s.typeName}${s.pending ? '' : ` ${Object.values(s.langs)[0].slice(0, 3).map((l) => l[1]).join(' ').slice(0, 140)}`}`]);
   for (const c of chapters) {
     idx.push(['章', c.title, chapterURL(c), `${c.part.label} · 第 ${c.no} 章`]);
-    for (const s of c.sections) idx.push(['节', s.title || c.title, `${chapterURL(c)}#${s.id}`, s.text.join(' '), c.no]);
+    for (const s of c.sections) idx.push(['节', s.title || c.title, `${chapterURL(c)}#${s.id}`, s.text.join(' ')]);
   }
-  for (const e of chronology) if (e.event_id) idx.push(['事', `${e.date} · ${e.region}`, `timeline/#${e.event_id}`, e.event]);
+  for (const e of chronology) if (e.event_id) idx.push(['年', `${e.date} · ${e.region}`, `timeline/#${e.event_id}`, e.event]);
   for (const e of evidenceList) idx.push(['证', e.title, `evidence/#${e.id}`, e.quotes.join(' / ')]);
-  for (const x of sources) idx.push(['文', x.title, `text/${x.id}/`, x.lines.slice(0, 4).map((l) => l[1]).join(' ').slice(0, 160)]);
   fs.writeFileSync(path.join(dist, 'data', 'search.json'), JSON.stringify(idx));
 }
 
 fs.writeFileSync(path.join(dist, '.nojekyll'), '');
 const count = (d) => fs.readdirSync(d, { withFileTypes: true }).reduce((a, f) => a + (f.isDirectory() ? count(path.join(d, f.name)) : 1), 0);
-console.log(`已生成 ${chapters.length} 章、${figureIndex.length} 幅图版，共 ${count(dist)} 个文件 → dist/`);
+console.log(`已生成：${star.questions.length} 个问题、${star.nodes.length} 颗星、${topics.length} 篇专题、${sources.length} 篇原文、${chapters.length} 章，共 ${count(dist)} 个文件 → dist/`);

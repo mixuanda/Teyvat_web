@@ -18,7 +18,7 @@ const writeJSON = (p, d) => fs.writeFileSync(path.join(out, p), JSON.stringify(d
 fs.mkdirSync(path.join(out, 'images'), { recursive: true });
 
 // 正文与年表原样保留
-for (const f of ['manuscript.md', 'chronology.json', 'build_statistics.json']) {
+for (const f of ['manuscript.md', 'chronology.json', 'build_statistics.json', 'release_notes.md']) {
   fs.copyFileSync(path.join(src, f), path.join(out, f));
 }
 
@@ -34,8 +34,10 @@ writeJSON('parts.json', structure.map((p) => ({
 const str = (v) => (typeof v === 'string' && v ? v : undefined);
 const fullEvidence = readJSON('cited_evidence.json');
 const corpusCommit = readJSON('timeline_constraints.json').corpus_commit;
-const originals = await resolveOriginals(fullEvidence, corpusCommit);
-writeJSON('sources.json', originals.sources);
+// 上一版本（7.1）的快照，用来判断一篇文本是否为本版本新增
+const PREV_COMMIT = process.env.PREV_COMMIT || 'c5ef717b77418e5a23234e990e7c0d3a829975ae';
+const originals = await resolveOriginals(fullEvidence, corpusCommit, PREV_COMMIT);
+fs.writeFileSync(path.join(out, 'sources.json'), JSON.stringify(originals.sources) + '\n');
 writeJSON('evidence.json', fullEvidence.map((e) => ({
   id: e.id,
   n: e.note_number,

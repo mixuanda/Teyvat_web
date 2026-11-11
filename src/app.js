@@ -1,49 +1,23 @@
-// 全站共用：昼夜切换、证据卡、图像查看、全文搜索
+// 全站共用：引证卡、搜索（考据层）、图像查看
 (() => {
   const base = document.body.dataset.base || './';
   const $ = (s, el = document) => el.querySelector(s);
   const esc = (s) => String(s ?? '').replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 
-  // ── 昼夜 ──
-  $('#toggle-theme')?.addEventListener('click', () => {
-    const root = document.documentElement;
-    const next = root.dataset.theme === 'light' ? 'dark' : 'light';
-    root.dataset.theme = next;
-    try { localStorage.setItem('theme', next); } catch {}
-    document.dispatchEvent(new CustomEvent('themechange'));
-  });
-
-  // ── 证据数据：章页内嵌；其他页按需取全量 ──
+  // ── 引证数据：页面内嵌的优先；其余按需取全量 ──
   let evMap = null;
   let evPromise = null;
   const inlineEv = $('#ev-data');
   if (inlineEv) evMap = JSON.parse(inlineEv.textContent);
   const loadAll = () => (evPromise ||= fetch(`${base}data/evidence.json`).then((r) => r.json()).then((list) => {
-    const all = Object.fromEntries(list.map((e) => [e.id, e]));
-    evMap = { ...all, ...(evMap || {}) };
+    evMap = { ...Object.fromEntries(list.map((e) => [e.id, e])), ...(evMap || {}) };
     return list;
   }));
-  const getEv = async (id) => {
-    if (evMap?.[id]) return evMap[id];
-    await loadAll();
-    return evMap[id];
-  };
+  const getEv = async (id) => { if (evMap?.[id]) return evMap[id]; await loadAll(); return evMap[id]; };
   const markQ = (t, qs) => {
     let out = esc(t);
     for (const q of [...new Set(qs)].sort((a, b) => b.length - a.length)) out = out.split(esc(q)).join(`\u0001${esc(q)}\u0002`);
     return out.replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>');
-  };
-  const evCard = (e, { refs = false, hl = null } = {}) => {
-    const h = (s) => (hl ? hl(esc(s)) : esc(s));
-    return `<article class="evcard" id="${refs ? e.id : `card-${e.id}`}" data-id="${e.id}">
-<header><span class="ev-n">${e.n}</span><span class="ev-title">${h(e.title)}</span><span class="ev-id">${e.id}</span></header>
-<blockquote>${e.ctx?.length
-      ? e.ctx.map((c) => `<a class="ctx" href="${base}text/${e.src}/#L${c.l}" title="在原文中查看这一行">${c.s ? `<i>${esc(c.s)}</i>` : ''}${markQ(c.t, c.qs)}</a>`).join('') + (e.loose || []).map((q) => `<span>${h(q)}</span>`).join('')
-      : e.quotes.map((q) => `<span>${h(q)}</span>`).join('')}</blockquote>
-${e.note ? `<p class="ev-note">${h(e.note)}</p>` : ''}
-<footer>${e.speaker ? `<span>${esc(e.speaker)}</span>` : ''}${e.lang && e.lang !== 'CHS' ? `<span>${esc(e.lang)}</span>` : ''}${e.locator ? `<span>${esc(e.locator)}</span>` : ''}${e.src ? `<a href="${base}text/${e.src}/${e.ctx?.[0] ? `#L${e.ctx[0].l}` : ''}">读全文 →</a><a href="${base}starmap/#${e.src}">星图 ✦</a>` : e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">出处 ↗</a>` : ''}${refs ? '' : `<a href="${base}evidence/#${e.id}">反查引用处 →</a>`}</footer>
-${refs ? refsHTML(e) : ''}
-</article>`;
   };
   const refsHTML = (e) => {
     const items = [
@@ -52,8 +26,20 @@ ${refs ? refsHTML(e) : ''}
     ];
     return items.length ? `<div class="ev-refs">${items.join('')}</div>` : '';
   };
+  const evCard = (e, { refs = false, hl = null } = {}) => {
+    const h = (s) => (hl ? hl(esc(s)) : esc(s));
+    const quotes = (e.ctx || []).map((c) => `<a class="ctx" href="${base}${e.href}#${c.a}" title="在原文中查看这一段">${c.s ? `<i>${esc(c.s)}</i>` : ''}${markQ(c.t, c.qs)}</a>`).join('')
+      + ((e.ctx?.length ? e.loose : e.quotes) || []).map((q) => `<span>${h(q)}</span>`).join('');
+    return `<article class="evcard" id="${refs ? e.id : `card-${e.id}`}" data-id="${e.id}">
+<header><span class="ev-n">${e.n}</span><span class="ev-title">${h(e.title)}</span><span class="ev-id">${e.id}</span></header>
+<blockquote>${quotes}</blockquote>
+${e.note ? `<p class="ev-note">${h(e.note)}</p>` : ''}
+<footer>${e.pending ? '<span class="pill amber">待确认</span>' : ''}${e.short ? `<code>${esc(e.short)}</code>` : ''}${e.href ? `<a href="${base}${e.href}${e.anchors?.[0] ? `#${e.anchors[0]}` : ''}">原文页 →</a>` : e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">出处 ↗</a>` : ''}${refs ? '' : `<a href="${base}evidence/#${e.id}">反查引用处 →</a>`}</footer>
+${refs ? refsHTML(e) : ''}
+</article>`;
+  };
 
-  // ── 证据浮层 ──
+  // ── 引证浮层 ──
   let pop = null;
   let popFor = null;
   const closePop = () => { pop?.remove(); pop = null; popFor?.classList.remove('on'); popFor = null; };
@@ -69,8 +55,8 @@ ${refs ? refsHTML(e) : ''}
     document.body.append(pop);
     const r = a.getBoundingClientRect();
     const w = pop.offsetWidth;
-    const left = Math.max(12, Math.min(window.innerWidth - w - 12, r.left + r.width / 2 - w / 2));
-    const below = r.bottom + pop.offsetHeight + 16 < window.innerHeight || r.top < pop.offsetHeight + 16;
+    const left = Math.max(12, Math.min(innerWidth - w - 12, r.left + r.width / 2 - w / 2));
+    const below = r.bottom + pop.offsetHeight + 16 < innerHeight || r.top < pop.offsetHeight + 16;
     pop.style.left = `${left + scrollX}px`;
     pop.style.top = `${(below ? r.bottom + 8 : r.top - pop.offsetHeight - 8) + scrollY}px`;
   };
@@ -79,12 +65,16 @@ ${refs ? refsHTML(e) : ''}
     if (a) {
       if (ev.metaKey || ev.ctrlKey) return;
       ev.preventDefault();
-      // 章页有自己的侧栏处理
       if (window.Reader?.onCite(a)) return;
       if (popFor === a) closePop(); else openPop(a);
       return;
     }
     if (pop && !ev.target.closest('.popover')) closePop();
+    const copy = ev.target.closest('[data-copy]');
+    if (copy) {
+      const url = new URL(base + copy.dataset.copy.slice(1) + '/', location.href).href;
+      navigator.clipboard?.writeText(url).then(() => { const t = copy.textContent; copy.textContent = '已复制'; setTimeout(() => { copy.textContent = t; }, 1400); });
+    }
   });
 
   // ── 图像查看 ──
@@ -107,18 +97,18 @@ ${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d
     $('.lightbox-close', box).focus();
   });
 
-  // ── 全文搜索 ──
+  // ── 搜索（考据层）：页头与首页的搜索框都打开同一个结果面板 ──
   let index = null;
   let searchEl = null;
-  const KIND = { 章: '章', 节: '节', 事: '年', 证: '证', 文: '文' };
-  const openSearch = async () => {
+  const openSearch = async (initial = '') => {
     if (searchEl) return;
     searchEl = document.createElement('div');
     searchEl.className = 'search';
-    searchEl.innerHTML = `<div class="search-box" role="dialog" aria-label="全文搜索"><input type="search" placeholder="搜索正文、事件与原文引证…" autocomplete="off"><div class="search-results"><p class="search-tip">在 43 章正文、217 项事件与 711 条引证中搜索。↑↓ 选择，回车打开，Esc 关闭。</p></div></div>`;
+    searchEl.innerHTML = '<div class="search-box" role="dialog" aria-label="搜索"><input type="search" placeholder="原文、专题或短链" autocomplete="off"><div class="search-results"><p class="search-tip">搜索原文题名与短链、专题、研究全文、年表和引证。</p></div></div>';
     document.body.append(searchEl);
     const input = $('input', searchEl);
     const results = $('.search-results', searchEl);
+    input.value = initial;
     input.focus();
     let sel = -1;
     const close = () => { searchEl?.remove(); searchEl = null; };
@@ -128,12 +118,13 @@ ${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d
       sel = -1;
       if (!q) { results.innerHTML = '<p class="search-tip">输入关键词开始搜索。</p>'; return; }
       if (!index) { results.innerHTML = '<p class="search-tip">正在载入索引…</p>'; return; }
+      const order = { 专: 0, 文: 1, 章: 2, 节: 3, 年: 4, 证: 5 };
       const hits = [];
       for (const [k, title, url, text] of index) {
         const ti = title.toLowerCase().indexOf(q);
         const xi = text.toLowerCase().indexOf(q);
         if (ti < 0 && xi < 0) continue;
-        hits.push({ k, title, url, text, xi, score: (ti >= 0 ? 0 : 10) + (k === '章' ? 0 : k === '节' ? 1 : k === '事' ? 2 : 3) });
+        hits.push({ k, title, url, text, xi, score: (ti >= 0 ? 0 : 10) + order[k] });
       }
       hits.sort((a, b) => a.score - b.score);
       const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
@@ -141,9 +132,8 @@ ${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d
       results.innerHTML = hits.length
         ? hits.slice(0, 60).map((h) => {
           const from = h.xi > 24 ? h.xi - 24 : 0;
-          const snip = (from ? '…' : '') + h.text.slice(from, from + 110);
-          return `<a href="${base}${h.url}"><i class="k">${KIND[h.k]}</i><b>${mark(h.title)}</b><span>${mark(snip)}</span></a>`;
-        }).join('') + (hits.length > 60 ? `<p class="search-tip">共 ${hits.length} 处，仅显示前 60 处。</p>` : '')
+          return `<a href="${base}${h.url}"><i class="k">${h.k}</i><b>${mark(h.title)}</b><span>${mark((from ? '…' : '') + h.text.slice(from, from + 110))}</span></a>`;
+        }).join('') + (hits.length > 60 ? `<p class="search-tip">共 ${hits.length} 处，只显示前 60 处。</p>` : '')
         : '<p class="search-tip">没有找到。换个说法试试。</p>';
     };
     let t;
@@ -160,17 +150,19 @@ ${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d
       } else if (e.key === 'Enter' && links.length) { location.href = links[Math.max(sel, 0)].href; close(); }
     });
     results.addEventListener('click', (e) => { if (e.target.closest('a')) setTimeout(close, 0); });
-    if (!index) { index = await fetch(`${base}data/search.json`).then((r) => r.json()); if (searchEl) run(); }
+    if (!index) index = await fetch(`${base}data/search.json`).then((r) => r.json());
+    if (searchEl) run();
   };
-  $('#open-search')?.addEventListener('click', openSearch);
-  document.addEventListener('keydown', (e) => {
-    if ((e.key === '/' || (e.key === 'k' && (e.metaKey || e.ctrlKey))) && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); openSearch(); }
-    if (e.key === 'Escape') closePop();
+  document.querySelectorAll('[data-search]').forEach((inp) => {
+    const go = () => { const v = inp.value; inp.value = ''; inp.blur(); openSearch(v); };
+    inp.addEventListener('input', go);
+    inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); go(); } });
   });
-
-  // ── 入场 ──
-  const io = new IntersectionObserver((es) => es.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }), { rootMargin: '0px 0px -3% 0px' });
-  document.querySelectorAll('.block, .toc-part, .plates .plate').forEach((el) => { el.classList.add('reveal'); io.observe(el); });
+  $('[data-search-go]')?.addEventListener('click', () => openSearch(''));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closePop();
+    if (e.key === '/' && document.body.classList.contains('study') && !/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) { e.preventDefault(); openSearch(''); }
+  });
 
   window.Site = { base, esc, getEv, loadAll, evCard };
 })();
