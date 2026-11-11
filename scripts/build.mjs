@@ -45,15 +45,19 @@ const SRC2 = SRC;
 const star = readJSON('curated/star.json');
 const topics = readJSON('curated/topics.json');
 const gateRules = readJSON('curated/gates.json');
+const release = readJSON('curated/release.json');
 const VERSION = (source.corpus_version || '').replace(/\.0$/, ''); // 7.2
 const PREV = '7.1';
+const OPEN = release.confirmed.includes(VERSION); // 当前数据版本是否已确认开放
 const LANG_NAME = { CHS: '简体中文', EN: '英文', JP: '日文', KR: '韩文' };
 const LEVEL = { fact: '事实', inference: '推断', hypothesis: '假说' };
 
 // 原文的派生信息：状态、短链、锚点
 for (const s of sources) {
-  s.pending = s.first === 'new';
-  s.firstLabel = s.pending ? VERSION : `${PREV} 及更早`;
+  s.isNew = s.first === 'new';
+  // 本版本新增、且本版本还没确认开放时，才算待确认
+  s.pending = s.isNew && !OPEN;
+  s.firstLabel = s.isNew ? VERSION : `${PREV} 及更早`;
   s.typeName = TYPES[s.type];
   s.href = `t/${s.id}/`;
   s.short = `/t/${s.id}`;
@@ -65,6 +69,7 @@ for (const e of evidenceList) {
   const src = SRC[e.src];
   if (!src) continue;
   e.pending = src.pending;
+  e.isNew = src.isNew;
   e.href = src.href;
   e.short = src.short;
   const byLine = new Map();
@@ -92,7 +97,7 @@ const RULES = gateRules.rules.map(([g, pat]) => [g, new RegExp(pat)]);
 const evGate = (id) => {
   const e = EV[id];
   if (!e) return null;
-  if (e.pending) return LAST;
+  if (e.isNew) return LAST; // 本版本新增的出处，剧情上算最后一篇
   for (const [g, re] of RULES) if (re.test(e.title)) return g;
   return null;
 };
@@ -582,7 +587,7 @@ const typeOrder = Object.keys(TYPES).filter((t) => sources.some((s) => s.type ==
 </form>
 </section>
 <section class="versionbar" aria-label="数据版本">
-${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${fmt(sources.length)} 篇，${fmt(liveCount)} 篇在 ${PREV} 及更早的版本里已经出现。</span><span class="muted">${VERSION} 新增的 ${sources.length - liveCount} 篇标为待确认，正文暂不显示。</span><a href="${base}about/#gate">上线规则</a>
+${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${fmt(sources.length)} 篇，${fmt(sources.filter((s) => !s.isNew).length)} 篇在 ${PREV} 及更早的版本里已经出现。</span><span class="muted">${OPEN ? `${VERSION} 已开放，新增的 ${fmt(sources.filter((s) => s.isNew).length)} 篇已收录。` : `${VERSION} 新增的 ${fmt(sources.length - liveCount)} 篇标为待确认，正文暂不显示。`}</span><a href="${base}about/#gate">上线规则</a>
 </section>
 <div class="grid3">
 <section class="card"><h2>原文库</h2><p>${fmt(sources.length)} 篇文本，按类型存放，每篇有固定短链。另有<a href="${base}terms/">名词索引</a>。</p><ul class="twocol">${typeOrder.map((t) => `<li><a href="${base}t/#type=${t}">${TYPES[t]}</a></li>`).join('')}</ul></section>
@@ -593,7 +598,7 @@ ${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${fmt(sources.length)} �
 <h2>可靠性靠什么保证</h2>
 <div class="grid3">
 <section class="card"><h3>逐条核验</h3><p>星图和专题里的每条引文，构建时与所挂的引证逐字比对，对不上就不发布。引证本身在同步时到固定版本的原文里定位到段落。</p></section>
-<section class="card"><h3>上线门</h3><p>当前版本新增的文本先标为待确认，不显示正文；在后一个版本的数据里仍然存在，才转为在线。</p></section>
+<section class="card"><h3>上线门</h3><p>新版本的文本先标为待确认，不显示正文；确认这个版本已在游戏内开放之后才显示。${OPEN ? `${VERSION} 已确认开放。` : ''}</p></section>
 <section class="card"><h3>分级标注</h3><p>每个论断标明是事实、推断还是假说，并写出什么证据会推翻它。</p></section>
 </div>
 </section></div>`;
@@ -611,12 +616,12 @@ ${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${fmt(sources.length)} �
   const body = `<div class="wrap stack">
 <div class="pagehead">
 <h1>原文库</h1>
-<p>固定版本（${VERSION}）里的简体中文文本，共 ${fmt(sources.length)} 篇，按类型存放。其中研究引用过的 ${citedCount} 篇另有多语言文本和引文定位。状态说明：在线是这篇文本在 ${PREV} 及更早的版本里已经出现；待确认是 ${VERSION} 新增、尚未确认开放，正文暂不显示。<a href="${base}terms/">名词索引 →</a>　<a href="${base}evidence/">按引证浏览 →</a></p>
+<p>固定版本（${VERSION}）里的简体中文文本，共 ${fmt(sources.length)} 篇，按类型存放。其中研究引用过的 ${citedCount} 篇另有多语言文本和引文定位。${OPEN ? `${VERSION} 已确认开放，这一版新增的 ${fmt(sources.filter((s) => s.isNew).length)} 篇也在其中，“首见版本”一列标着 ${VERSION}。` : `状态说明：在线是这篇文本在 ${PREV} 及更早的版本里已经出现；待确认是 ${VERSION} 新增、尚未确认开放，正文暂不显示。`}<a href="${base}terms/">名词索引 →</a>　<a href="${base}evidence/">按引证浏览 →</a></p>
 </div>
 <div class="library">
 <aside class="filters" aria-label="筛选" id="filters">
 <fieldset><legend>类型</legend>${typeOrder.map((t) => check('type', t, `${TYPES[t]} <small>${cnt(t)}</small>`)).join('')}</fieldset>
-<fieldset><legend>状态</legend>${check('status', 'live', '在线')}${check('status', 'pending', '待确认')}</fieldset>
+<fieldset><legend>首见版本</legend>${check('first', 'old', `${PREV} 及更早`)}${check('first', 'new', VERSION)}</fieldset>
 <fieldset><legend>范围</legend>${check('cited', '1', '只看研究引用过的', false)}</fieldset>
 <fieldset><legend>还要有这些语言</legend>${langs.slice(1).map((l) => check('lang', l, LANG_NAME[l], false)).join('')}</fieldset>
 </aside>
@@ -631,7 +636,7 @@ ${pill(`数据版本 ${VERSION}`)}<span>原文库现收 ${fmt(sources.length)} �
 </div></div>`;
   page({ url: 't/', title: '原文库', body, cls: 'library-page', scripts: ['library.js'], data: { 'lib-meta': { types: TYPES, version: VERSION, prev: PREV } } });
   // 每行：[id, 题名, 类型, 是否待确认, 语言, 是否被研究引用, 所属]
-  fs.writeFileSync(path.join(dist, 'data', 'library.json'), JSON.stringify(rows.map((s) => [s.id, s.title, s.type, s.pending ? 1 : 0, Object.keys(s.langs).join(''), s.corpus ? 0 : 1, s.corpus ? s.heading || '' : ''])));
+  fs.writeFileSync(path.join(dist, 'data', 'library.json'), JSON.stringify(rows.map((s) => [s.id, s.title, s.type, (s.pending ? 1 : 0) + (s.isNew ? 2 : 0), Object.keys(s.langs).join(''), s.corpus ? 0 : 1, s.corpus ? s.heading || '' : ''])));
 }
 
 // ───────────────────────── 原文页 ─────────────────────────
@@ -680,7 +685,7 @@ ${sameLen ? `<div class="textbox parallel n${langs.length}" role="tabpanel" data
 </dl></section>
 <section class="card"><h2>核验</h2><dl>
 <div><dt>固定版本</dt><dd>${esc(source.corpus_version || '')} · ${esc((source.corpus_commit || '').slice(0, 8))}</dd></div>
-<div><dt>上线门</dt><dd>${s.pending ? `${VERSION} 新增，待确认` : `已在 ${PREV} 的数据里出现`}</dd></div>
+<div><dt>上线门</dt><dd>${s.pending ? `${VERSION} 新增，待确认` : s.isNew ? `${VERSION} 新增，${VERSION} 已确认开放` : `已在 ${PREV} 的数据里出现`}</dd></div>
 ${evs.length ? `<div><dt>引文定位</dt><dd>${evs.length} 条引证取自此篇，其中 ${evs.filter((e) => (HITS[e.id] || []).length).length} 条已在原文中定位到段落</dd></div>` : ''}
 <div><dt>最近核验</dt><dd>${esc(stats.revision_date)}</dd></div>
 </dl></section>
@@ -891,7 +896,7 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
 <p><a href="${base}">星图</a>给想弄明白剧情的玩家：先选主线进度，之后的内容藏在迷雾里；从一个问题出发，一步步看到相关的人物、事件和它们之间的关系。</p>
 <p>考据层给想核对的人：<a href="${base}t/">原文库</a>收录固定版本里的 ${fmt(sources.length)} 篇简体中文文本（书籍、任务对白、角色故事与语音、物品说明等），另有<a href="${base}terms/">名词索引</a>；<a href="${base}topic/">专题</a>一页回答一个问题，<a href="${base}timeline/">年表</a>有 ${stats.chronology_events} 项事件。专题取自一份 ${fmt(stats.body_han_characters)} 字的长稿，全文也在专题页里。</p>
 <h2 id="gate">上线规则</h2>
-<p>全部文本固定于同一份语料快照（${esc(source.corpus_version || '')}，提交 <code>${esc((source.corpus_commit || '').slice(0, 12))}</code>）。一篇文本如果在上一版本（${PREV}）的快照里不存在，就算作 ${VERSION} 新增，标为“待确认”：原文页不显示正文，引用它的论述标明“部分证据待确认”。</p>
+<p>全部文本固定于同一份语料快照（${esc(source.corpus_version || '')}，提交 <code>${esc((source.corpus_commit || '').slice(0, 12))}</code>）。一篇文本如果在上一版本（${PREV}）的快照里不存在，就算作 ${VERSION} 新增。新版本的文本在确认开放之前标为“待确认”：原文页不显示正文，引用它的论述标明“部分证据待确认”。${OPEN ? `${VERSION} 已经确认开放，所以这一版新增的文本现在正常显示。` : ''}</p>
 <p>目前这道门做了两项检查：是否已过一个版本；是否带测试或未上线的标记（带标记的不收）。是否能追溯到已开放的任务或物品，还没有逐条核对，所以库里可能混有游戏内实际读不到的文本；限时活动的“已下线”状态也还没有标出。</p>
 <h2>核验</h2>
 <p>星图和专题里的每条引文，构建时都要与所挂引证的原文片段逐字比对，对不上构建就失败。研究全文的 ${stats.evidence} 条短引中，绝大多数已定位到原文的具体段落，可以从引证卡直接跳到那一段。</p>

@@ -25,6 +25,8 @@ const clean = (s) => String(s ?? '')
 const T = (h) => (h && tm[h] ? clean(tm[h]) : '');
 const split = (text, who = '') => clean(text).split('\n').map((t) => t.trim()).filter(Boolean).map((t) => [who, t]);
 // 测试与未上线内容的标记
+// 当前数据版本是否已确认开放（见 content/curated/release.json）
+const OPEN = JSON.parse(fs.readFileSync(path.join(root, 'content', 'curated', 'release.json'), 'utf8')).confirmed.includes('7.2');
 const TEST = /([（(]\s*test\s*[)）]|\$UNRELEASED|\$HIDDEN|测试|test用|临时文本|废弃)/i;
 const isNew = (hashes) => hashes.length > 0 && !hashes.some((h) => prevTM[h]);
 
@@ -199,9 +201,9 @@ const usedTalk = new Set();
 // ── 成组的短文本：物品、武器、圣遗物、摆设、图鉴、成就、提示 ──
 {
   const group = (id, type, title, kind, rows) => {
-    // rows: [名字, 说明, [哈希]]；本版本新增的条目不进正文
+    // rows: [名字, 说明, [哈希]]；本版本还没确认开放时，新增的条目不进正文
     const lines = [];
-    const kept = rows.filter((r) => r[0] && r[1] && !isNew(r[2]));
+    const kept = rows.filter((r) => r[0] && r[1] && (OPEN || !isNew(r[2])));
     const chunks = [];
     for (let i = 0; i < kept.length; i += 400) chunks.push(kept.slice(i, i + 400));
     chunks.forEach((chunk, ci) => {
