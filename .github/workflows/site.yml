@@ -1,0 +1,47 @@
+name: site
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: site-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # 构建时核对手写内容的每条引文；随后检查全站链接
+      - run: npm test
+      - uses: actions/upload-pages-artifact@v3
+        if: github.ref == 'refs/heads/main'
+        with:
+          path: dist
+
+  # 发布到 GitHub Pages。需要先在仓库 Settings → Pages 把 Source 设为 GitHub Actions，
+  # 再把仓库变量 DEPLOY_PAGES 设为 true（或手动运行本工作流）。
+  deploy:
+    needs: build
+    if: github.ref == 'refs/heads/main' && (github.event_name == 'workflow_dispatch' || vars.DEPLOY_PAGES == 'true')
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

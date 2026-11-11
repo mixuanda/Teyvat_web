@@ -34,7 +34,7 @@
 <header><span class="ev-n">${e.n}</span><span class="ev-title">${h(e.title)}</span><span class="ev-id">${e.id}</span></header>
 <blockquote>${quotes}</blockquote>
 ${e.note ? `<p class="ev-note">${h(e.note)}</p>` : ''}
-<footer>${e.pending ? '<span class="pill amber">待确认</span>' : ''}${e.short ? `<code>${esc(e.short)}</code>` : ''}${e.href ? `<a href="${base}${e.href}${e.anchors?.[0] ? `#${e.anchors[0]}` : ''}">原文页 →</a>` : e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">出处 ↗</a>` : ''}${refs ? '' : `<a href="${base}evidence/#${e.id}">反查引用处 →</a>`}</footer>
+<footer>${e.pending ? '<span class="pill amber">待确认</span>' : ''}${e.short ? `<code>${esc(e.short)}</code>` : ''}${e.href ? `<a href="${base}${e.href}${e.anchors?.[0] && !e.pending ? `#${e.anchors[0]}` : ''}">原文页 →</a>` : e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">出处 ↗</a>` : ''}${refs ? '' : `<a href="${base}evidence/#${e.id}">反查引用处 →</a>`}</footer>
 ${refs ? refsHTML(e) : ''}
 </article>`;
   };

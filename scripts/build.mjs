@@ -71,6 +71,14 @@ for (const e of evidenceList) {
 // 核验：手写内容里的每条引文，必须是所挂引证的原文片段，否则不发布
 {
   const bad = [];
+  // 没写 quote 的，取该引证的第一条原文片段
+  const fill = (x) => { if (x.ev && !x.quote && EV[x.ev]) x.quote = EV[x.ev].quotes[0]; };
+  star.edges.forEach(fill);
+  star.questions.forEach((q) => { q.steps.forEach(fill); if (q.open) fill(q.open); });
+  topics.forEach((t) => t.claims.forEach((c) => (c.cites || []).forEach(fill)));
+  const ids = new Set(star.nodes.map((n) => n.id));
+  star.edges.forEach((x) => { if (!ids.has(x.a) || !ids.has(x.b)) bad.push(`关系指向不存在的星：${x.a}→${x.b}`); });
+  star.questions.forEach((q) => [q.start, ...q.nodes].forEach((id) => { if (!ids.has(id)) bad.push(`问题 ${q.id} 指向不存在的星：${id}`); }));
   const check = (where, ev, quote) => { if (!EV[ev] || !EV[ev].quotes.includes(quote)) bad.push(`${where}: ${ev} “${quote}”`); };
   star.edges.forEach((x) => check(`关系 ${x.a}→${x.b}`, x.ev, x.quote));
   star.questions.forEach((q) => { q.steps.forEach((s, i) => check(`问题 ${q.id} 第 ${i + 1} 步`, s.ev, s.quote)); if (q.open?.ev) check(`问题 ${q.id} 未解部分`, q.open.ev, q.open.quote); });
@@ -210,7 +218,8 @@ const statusPill = (s) => (s.pending ? pill('待确认', 'amber') : pill('在线
 const levelTag = (level) => `<span class="lv lv-${level}">${LEVEL[level]}</span>`;
 const LOCK = '<svg class="lock" aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="11" width="14" height="10" rx="2"></rect><path d="M8 11V8a4 4 0 0 1 8 0v3"></path></svg>';
 const chapterURL = (c) => `read/${pad(c.no)}/`;
-const evLink = (e, base) => (e.href ? `${base}${e.href}${e.anchors?.[0] ? `#${e.anchors[0]}` : ''}` : `${base}evidence/#${e.id}`);
+// 待确认的原文不显示正文，所以不带段落锚点
+const evLink = (e, base) => (e.href ? `${base}${e.href}${e.anchors?.[0] && !e.pending ? `#${e.anchors[0]}` : ''}` : `${base}evidence/#${e.id}`);
 const stageAfter = (g) => `${star.stages[g]}篇后可看`;
 
 const STUDY_NAV = [['t/', '原文库'], ['topic/', '专题'], ['timeline/', '年表'], ['hypothesis/', '假说'], ['updates/', '更新'], ['about/', '关于']];
@@ -309,7 +318,7 @@ const starData = {
     const e = EV[x.ev];
     return { a: x.a, b: x.b, label: x.label, level: x.level, gate: edgeGate(x), text: x.text, quote: x.quote, src: e.title, href: evLink(e, ''), pending: !!e.pending };
   }),
-  questions: star.questions.map((q) => ({ id: q.id, title: q.title, short: q.short, gate: q.gate, nodes: q.nodes, start: q.start, teaser: q.teaser || q.answer })),
+  questions: star.questions.map((q) => ({ id: q.id, title: q.title, short: q.short, group: q.group, gate: q.gate, nodes: q.nodes, start: q.start, teaser: q.teaser || q.answer })),
 };
 {
   const body = `
@@ -580,7 +589,7 @@ for (const t of topics) {
 ${t.claims.map((c) => `<section class="card claim"><div>${levelTag(c.level)}</div><p>${esc(c.text)}</p>${(c.cites || []).map((ci) => citeRow(ci, base)).join('')}</section>`).join('\n')}
 <section class="card falsify"><h2>什么会推翻这个结论</h2><p>${esc(t.falsify)}</p></section>
 ${topicPending(t) ? `<p class="muted">标为“待确认”的证据来自当前版本的新增文本。确认它已在游戏内开放之前，依赖它的论断在列表页显示为“部分证据待确认”。</p>` : ''}
-${ch ? `<p class="muted">完整的论证见研究全文：<a href="${base}${chapterURL(ch)}#${t.read.section}">第 ${ch.no} 章 · ${esc(t.read.label)}</a></p>` : ''}
+${ch ? `<p class="muted">完整的论证见研究全文：<a href="${base}${chapterURL(ch)}${t.read.section ? `#${t.read.section}` : ''}">第 ${ch.no} 章 · ${esc(ch.sections.find((x) => x.id === t.read.section)?.title || ch.title)}</a></p>` : ''}
 </article></div>`;
   page({ url: `topic/${t.id}/`, title: t.title, desc: `结论：${t.conclusion}${t.summary}`, body, cls: 'topic-page' });
 }
@@ -780,5 +789,11 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
 }
 
 fs.writeFileSync(path.join(dist, '.nojekyll'), '');
+// 404：不知道自己被放在哪一级目录下，所以样式内联，返回链接由脚本推算
+fs.writeFileSync(path.join(dist, '404.html'), `<!doctype html><html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>没有这一页 · ${SITE}</title>
+<style>body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0D1424;color:#EEF2F8;font-family:'PingFang SC','Microsoft YaHei',sans-serif;text-align:center;padding:24px}h1{font-size:32px;margin:0 0 12px}p{color:#A6B1C4;margin:0 0 28px;line-height:28px}a{display:inline-flex;align-items:center;height:48px;padding:0 28px;border-radius:999px;background:#E6C06A;color:#0D1424;font-weight:700;text-decoration:none}</style></head>
+<body><main><h1>这一页还在迷雾里</h1><p>地址可能写错了，或者这篇内容已经搬走。</p><a id="home" href="/">回到星图</a></main>
+<script>(function(){var seg=location.pathname.split('/')[1];if(/github\\.io$/.test(location.hostname)&&seg)document.getElementById('home').href='/'+seg+'/'})()</script></body></html>
+`);
 const count = (d) => fs.readdirSync(d, { withFileTypes: true }).reduce((a, f) => a + (f.isDirectory() ? count(path.join(d, f.name)) : 1), 0);
 console.log(`已生成：${star.questions.length} 个问题、${star.nodes.length} 颗星、${topics.length} 篇专题、${sources.length} 篇原文、${chapters.length} 章，共 ${count(dist)} 个文件 → dist/`);

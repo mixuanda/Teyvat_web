@@ -1,101 +1,2038 @@
 {
-  "_说明": "玩家版星图的手写内容。gate 是看到这条内容所需的主线进度（stages 的下标）；每条关系和每一步都必须挂一条引证（ev），quote 必须是该引证的原文片段，构建时逐字核对。",
-  "stages": ["蒙德", "璃月", "稻妻", "须弥", "枫丹", "纳塔", "挪德卡莱", "至冬"],
-  "kinds": { "being": "人物与存在", "event": "事件", "place": "地方与物" },
-  "nodes": [
-    { "id": "moons", "name": "三月", "kind": "being", "gate": 6, "x": 380, "y": 300, "blurb": "尼伯龙根创造的三位月神，负责维护星球的运行。提瓦特曾经有三个月亮。" },
-    { "id": "nibelung", "name": "尼伯龙根", "kind": "being", "gate": 3, "x": 180, "y": 190, "blurb": "龙族的王。远行宇宙之后，带着漆黑的力量归来。" },
-    { "id": "heaven", "name": "天理", "kind": "being", "gate": 0, "x": 600, "y": 150, "blurb": "天空之上的秩序。它究竟是谁，游戏里还没有直接回答。" },
-    { "id": "primordial", "name": "原初者", "kind": "being", "gate": 2, "x": 470, "y": 60, "blurb": "《日月前事》里随永恒王座降临的那一位。" },
-    { "id": "shades", "name": "四影", "kind": "being", "gate": 2, "x": 300, "y": 70, "blurb": "原初者创造的四个影子。" },
-    { "id": "dragons", "name": "七龙王", "kind": "being", "gate": 2, "x": 780, "y": 190, "blurb": "旧世界的七位龙王，在《日月前事》里败给了原初者。" },
-    { "id": "war", "name": "葬火之战", "kind": "event", "gate": 6, "x": 230, "y": 450, "blurb": "龙王归来后的那场战争。“葬火”是后世起的名字。" },
-    { "id": "frostmoon", "name": "霜月", "kind": "place", "gate": 6, "x": 470, "y": 520, "blurb": "三个月亮里被抛出世界的那一轮。" },
-    { "id": "columbina", "name": "哥伦比娅", "kind": "being", "gate": 6, "x": 620, "y": 390, "blurb": "在尼伯龙根的囚牢里见到了三位月神。" },
-    { "id": "ship", "name": "双子的飞船", "kind": "place", "gate": 6, "x": 700, "y": 560, "blurb": "旅行者和血亲来到提瓦特时乘坐的船。" },
-    { "id": "traveler", "name": "旅行者", "kind": "being", "gate": 0, "x": 840, "y": 470, "blurb": "从世界之外来的人，也就是你。" },
-    { "id": "sibling", "name": "血亲", "kind": "being", "gate": 0, "x": 820, "y": 620, "blurb": "和旅行者一同来到提瓦特的另一位。" },
-    { "id": "abyssgate", "name": "深渊之门", "kind": "event", "gate": 7, "x": 120, "y": 560, "blurb": "莱茵多特提到的一次“开门”。" },
-    { "id": "third", "name": "第三降临者", "kind": "being", "gate": 7, "x": 800, "y": 330, "blurb": "痕迹被世界树抹去的一位降临者。" },
-    { "id": "deadline", "name": "四十二天", "kind": "event", "gate": 7, "x": 850, "y": 60, "blurb": "「诺迦法」在神之座宣布的最后期限。" }
-  ],
-  "edges": [
-    { "a": "nibelung", "b": "moons", "label": "创造", "level": "fact", "text": "创造了三月，随后远行宇宙", "ev": "A003", "quote": "在亘古的往昔创造了我们" },
-    { "a": "nibelung", "b": "war", "label": "率龙族反抗", "level": "fact", "text": "带着漆黑的力量归来，率领龙族反抗", "ev": "A005", "quote": "带领我们反抗外来者定义的秩序" },
-    { "a": "war", "b": "moons", "label": "月亮成了武器", "level": "fact", "text": "尼伯龙根囚禁三月，把月亮改造成对抗天理的武器", "ev": "A006", "quote": "将月亮改造成了对抗天理的武器" },
-    { "a": "war", "b": "frostmoon", "label": "被抛出世界", "level": "fact", "text": "战争里两轮月亮被击碎，另一轮被抛出世界", "ev": "A006", "quote": "将月亮改造成了对抗天理的武器" },
-    { "a": "columbina", "b": "moons", "label": "接过权能", "level": "fact", "text": "在囚牢中与三月相见，接过三月的权能", "ev": "A008", "quote": "我们已将三月的权能" },
-    { "a": "moons", "b": "primordial", "label": "等来降临者", "level": "fact", "text": "等待多个千年后，迎来有翼的降临者", "ev": "I9005", "quote": "千年" },
-    { "a": "primordial", "b": "heaven", "label": "是同一位？", "level": "hypothesis", "text": "纳西妲把“第一降临者就是今天的天理”明说成现阶段的假说", "ev": "G015", "quote": "current hypothesis" },
-    { "a": "primordial", "b": "shades", "label": "创造", "level": "fact", "text": "创造了四个影子", "ev": "W001", "quote": "数量是四" },
-    { "a": "primordial", "b": "dragons", "label": "击败", "level": "fact", "text": "开战四十余年后，七个王国俯首称臣", "ev": "A001", "quote": "俯首称臣" },
-    { "a": "heaven", "b": "ship", "label": "藏起飞船", "level": "fact", "text": "哥伦比娅说，飞船是被天理藏起来的", "ev": "J1005", "quote": "霜月" },
-    { "a": "ship", "b": "frostmoon", "label": "藏在霜月", "level": "fact", "text": "双子的飞船如今在霜月上", "ev": "J1005", "quote": "霜月" },
-    { "a": "traveler", "b": "ship", "label": "乘它而来", "level": "fact", "text": "飞船在远古掠过提瓦特，长期航行后才迫降", "ev": "J1003", "quote": "掠过" },
-    { "a": "sibling", "b": "ship", "label": "从船外出现", "level": "fact", "text": "迫降后的记忆里，血亲是从船外出现的", "ev": "J1004", "quote": "迫降之后" },
-    { "a": "third", "b": "heaven", "label": "痕迹被抹去", "level": "fact", "gate": 7, "text": "莱茵多特据天空岛档案说，世界树抹去了第三降临者的痕迹", "ev": "U620", "quote": "世界树" },
-    { "a": "abyssgate", "b": "third", "label": "开门之后", "level": "fact", "gate": 7, "text": "莱茵多特把开门与此后千年的深渊灾祸连在一起", "ev": "C018", "quote": "此后千年来" },
-    { "a": "deadline", "b": "traveler", "label": "最后期限", "level": "fact", "gate": 7, "text": "「诺迦法」宣布最后的 42 天，并要求各国选出一位神之眼持有者", "ev": "D043", "quote": "最后的42天" }
-  ],
-  "questions": [
+ "_说明": "玩家版星图的手写内容。gate 是看到这条内容所需的主线进度（stages 的下标）；每条关系和每一步都必须挂一条引证（ev），quote 必须是该引证的原文片段，构建时逐字核对。",
+ "stages": [
+  "蒙德",
+  "璃月",
+  "稻妻",
+  "须弥",
+  "枫丹",
+  "纳塔",
+  "挪德卡莱",
+  "至冬"
+ ],
+ "kinds": {
+  "being": "人物与存在",
+  "event": "事件",
+  "place": "地方与物"
+ },
+ "nodes": [
+  {
+   "id": "moons",
+   "name": "三月",
+   "kind": "being",
+   "gate": 6,
+   "x": 380,
+   "y": 300,
+   "blurb": "尼伯龙根创造的三位月神，负责维护星球的运行。提瓦特曾经有三个月亮。"
+  },
+  {
+   "id": "nibelung",
+   "name": "尼伯龙根",
+   "kind": "being",
+   "gate": 3,
+   "x": 180,
+   "y": 190,
+   "blurb": "龙族的王。远行宇宙之后，带着漆黑的力量归来。"
+  },
+  {
+   "id": "heaven",
+   "name": "天理",
+   "kind": "being",
+   "gate": 0,
+   "x": 600,
+   "y": 150,
+   "blurb": "天空之上的秩序。它究竟是谁，游戏里还没有直接回答。"
+  },
+  {
+   "id": "primordial",
+   "name": "原初者",
+   "kind": "being",
+   "gate": 2,
+   "x": 470,
+   "y": 60,
+   "blurb": "《日月前事》里随永恒王座降临的那一位。"
+  },
+  {
+   "id": "shades",
+   "name": "四影",
+   "kind": "being",
+   "gate": 2,
+   "x": 300,
+   "y": 70,
+   "blurb": "原初者创造的四个影子。"
+  },
+  {
+   "id": "dragons",
+   "name": "七龙王",
+   "kind": "being",
+   "gate": 2,
+   "x": 780,
+   "y": 190,
+   "blurb": "旧世界的七位龙王，在《日月前事》里败给了原初者。"
+  },
+  {
+   "id": "war",
+   "name": "葬火之战",
+   "kind": "event",
+   "gate": 6,
+   "x": 230,
+   "y": 450,
+   "blurb": "龙王归来后的那场战争。“葬火”是后世起的名字。"
+  },
+  {
+   "id": "frostmoon",
+   "name": "霜月",
+   "kind": "place",
+   "gate": 6,
+   "x": 470,
+   "y": 520,
+   "blurb": "三个月亮里被抛出世界的那一轮。"
+  },
+  {
+   "id": "columbina",
+   "name": "哥伦比娅",
+   "kind": "being",
+   "gate": 6,
+   "x": 620,
+   "y": 390,
+   "blurb": "在尼伯龙根的囚牢里见到了三位月神。"
+  },
+  {
+   "id": "ship",
+   "name": "双子的飞船",
+   "kind": "place",
+   "gate": 6,
+   "x": 700,
+   "y": 560,
+   "blurb": "旅行者和血亲来到提瓦特时乘坐的船。"
+  },
+  {
+   "id": "traveler",
+   "name": "旅行者",
+   "kind": "being",
+   "gate": 0,
+   "x": 840,
+   "y": 470,
+   "blurb": "从世界之外来的人，也就是你。"
+  },
+  {
+   "id": "sibling",
+   "name": "血亲",
+   "kind": "being",
+   "gate": 0,
+   "x": 820,
+   "y": 620,
+   "blurb": "和旅行者一同来到提瓦特的另一位。"
+  },
+  {
+   "id": "abyssgate",
+   "name": "深渊之门",
+   "kind": "event",
+   "gate": 7,
+   "x": 120,
+   "y": 560,
+   "blurb": "莱茵多特提到的一次“开门”。"
+  },
+  {
+   "id": "third",
+   "name": "第三降临者",
+   "kind": "being",
+   "gate": 7,
+   "x": 800,
+   "y": 330,
+   "blurb": "痕迹被世界树抹去的一位降临者。"
+  },
+  {
+   "id": "deadline",
+   "name": "四十二天",
+   "kind": "event",
+   "gate": 7,
+   "x": 850,
+   "y": 60,
+   "blurb": "「诺迦法」在神之座宣布的最后期限。"
+  },
+  {
+   "id": "barbatos",
+   "name": "巴巴托斯",
+   "kind": "being",
+   "gate": 0,
+   "x": 1300,
+   "y": 90,
+   "blurb": "风神。蒙德人更熟悉他的另一个名字：温迪。"
+  },
+  {
+   "id": "decarabian",
+   "name": "迭卡拉庇安",
+   "kind": "being",
+   "gate": 0,
+   "x": 1130,
+   "y": 40,
+   "blurb": "旧蒙德的高塔君王。"
+  },
+  {
+   "id": "newmond",
+   "name": "新蒙德",
+   "kind": "place",
+   "gate": 0,
+   "x": 1480,
+   "y": 40,
+   "blurb": "推翻高塔之后建立的城。"
+  },
+  {
+   "id": "vennessa",
+   "name": "温妮莎",
+   "kind": "being",
+   "gate": 0,
+   "x": 1500,
+   "y": 180,
+   "blurb": "一千年前带领蒙德人推翻贵族的少女。"
+  },
+  {
+   "id": "knights",
+   "name": "西风骑士团",
+   "kind": "place",
+   "gate": 0,
+   "x": 1640,
+   "y": 110,
+   "blurb": "温妮莎之后承担蒙德公共事务的组织。"
+  },
+  {
+   "id": "dvalin",
+   "name": "特瓦林",
+   "kind": "being",
+   "gate": 0,
+   "x": 1180,
+   "y": 230,
+   "blurb": "蒙德的风龙，后来被叫作风魔龙。"
+  },
+  {
+   "id": "durin",
+   "name": "杜林",
+   "kind": "being",
+   "gate": 0,
+   "x": 1040,
+   "y": 160,
+   "blurb": "五百年前袭击蒙德的魔龙。"
+  },
+  {
+   "id": "morax",
+   "name": "摩拉克斯",
+   "kind": "being",
+   "gate": 1,
+   "x": 1300,
+   "y": 560,
+   "blurb": "岩神。璃月人更熟悉他的另一个名字：钟离。"
+  },
+  {
+   "id": "liyue",
+   "name": "璃月",
+   "kind": "place",
+   "gate": 1,
+   "x": 1150,
+   "y": 640,
+   "blurb": "三千七百年前建立的城。"
+  },
+  {
+   "id": "archonwar",
+   "name": "魔神战争",
+   "kind": "event",
+   "gate": 1,
+   "x": 1420,
+   "y": 430,
+   "blurb": "魔神之间争夺尘世的战争，两千年前结束。"
+  },
+  {
+   "id": "sevenseats",
+   "name": "七神之座",
+   "kind": "place",
+   "gate": 1,
+   "x": 1560,
+   "y": 520,
+   "blurb": "魔神战争的胜者登上的七个位置。"
+  },
+  {
+   "id": "qixing",
+   "name": "璃月七星",
+   "kind": "being",
+   "gate": 1,
+   "x": 1280,
+   "y": 730,
+   "blurb": "代代接替的璃月治理者。"
+  },
+  {
+   "id": "ganyu",
+   "name": "甘雨",
+   "kind": "being",
+   "gate": 1,
+   "x": 1440,
+   "y": 680,
+   "blurb": "参加过魔神战争，后来成为初代七星的秘书。"
+  },
+  {
+   "id": "enkanomiya",
+   "name": "白夜国",
+   "kind": "place",
+   "gate": 2,
+   "x": 1900,
+   "y": 150,
+   "blurb": "沉入海渊的古国，也就是渊下宫。"
+  },
+  {
+   "id": "sun",
+   "name": "人工太阳",
+   "kind": "place",
+   "gate": 2,
+   "x": 2060,
+   "y": 60,
+   "blurb": "白夜国人为了在地下活下去造的太阳。"
+  },
+  {
+   "id": "sunchild",
+   "name": "太阳之子",
+   "kind": "being",
+   "gate": 2,
+   "x": 2190,
+   "y": 170,
+   "blurb": "被立为白夜国君主的孩子。"
+  },
+  {
+   "id": "orobashi",
+   "name": "海祇大御神",
+   "kind": "being",
+   "gate": 2,
+   "x": 2050,
+   "y": 280,
+   "blurb": "带渊下之民重返海面的大蛇。"
+  },
+  {
+   "id": "watatsumi",
+   "name": "海祇岛",
+   "kind": "place",
+   "gate": 2,
+   "x": 2200,
+   "y": 330,
+   "blurb": "渊下之民回到海面后建起的岛。"
+  },
+  {
+   "id": "makoto",
+   "name": "雷电真",
+   "kind": "being",
+   "gate": 2,
+   "x": 1820,
+   "y": 330,
+   "blurb": "前代雷电将军。"
+  },
+  {
+   "id": "ei",
+   "name": "雷电影",
+   "kind": "being",
+   "gate": 2,
+   "x": 1700,
+   "y": 250,
+   "blurb": "现在的雷电将军。"
+  },
+  {
+   "id": "rukkha",
+   "name": "大慈树王",
+   "kind": "being",
+   "gate": 3,
+   "x": 1800,
+   "y": 650,
+   "blurb": "须弥的前代草神。"
+  },
+  {
+   "id": "nahida",
+   "name": "纳西妲",
+   "kind": "being",
+   "gate": 3,
+   "x": 1950,
+   "y": 560,
+   "blurb": "现在的草神。"
+  },
+  {
+   "id": "irminsul",
+   "name": "世界树",
+   "kind": "place",
+   "gate": 3,
+   "x": 1950,
+   "y": 740,
+   "blurb": "记录世界上一切信息的树。"
+  },
+  {
+   "id": "deshret",
+   "name": "赤王",
+   "kind": "being",
+   "gate": 3,
+   "x": 1640,
+   "y": 740,
+   "blurb": "沙漠的王。"
+  },
+  {
+   "id": "flower",
+   "name": "花神",
+   "kind": "being",
+   "gate": 3,
+   "x": 1560,
+   "y": 640,
+   "blurb": "三位神王之一，死得最早。"
+  },
+  {
+   "id": "gurabad",
+   "name": "居尔",
+   "kind": "place",
+   "gate": 3,
+   "x": 1500,
+   "y": 820,
+   "blurb": "沙漠里凡人国度的首都。"
+  },
+  {
+   "id": "aaru",
+   "name": "阿如",
+   "kind": "place",
+   "gate": 3,
+   "x": 1700,
+   "y": 880,
+   "blurb": "赤王用来保存人民的工程。"
+  },
+  {
+   "id": "forbidden",
+   "name": "禁忌知识",
+   "kind": "event",
+   "gate": 3,
+   "x": 1820,
+   "y": 800,
+   "blurb": "来自深渊、世界无法理解的信息。"
+  },
+  {
+   "id": "egeria",
+   "name": "厄歌莉娅",
+   "kind": "being",
+   "gate": 4,
+   "x": 1300,
+   "y": 1040,
+   "blurb": "枫丹的前代水神。"
+  },
+  {
+   "id": "neuvillette",
+   "name": "那维莱特",
+   "kind": "being",
+   "gate": 4,
+   "x": 1150,
+   "y": 960,
+   "blurb": "枫丹的最高审判官，水之龙。"
+  },
+  {
+   "id": "primordialsea",
+   "name": "原始胎海",
+   "kind": "place",
+   "gate": 4,
+   "x": 1080,
+   "y": 1090,
+   "blurb": "原生生命的发源地。"
+  },
+  {
+   "id": "oceanids",
+   "name": "纯水精灵",
+   "kind": "being",
+   "gate": 4,
+   "x": 1230,
+   "y": 1170,
+   "blurb": "后来成为枫丹人的那些生命。"
+  },
+  {
+   "id": "focalors",
+   "name": "芙卡洛斯",
+   "kind": "being",
+   "gate": 4,
+   "x": 1420,
+   "y": 1130,
+   "blurb": "接替厄歌莉娅的水神。"
+  },
+  {
+   "id": "remus",
+   "name": "雷穆斯",
+   "kind": "being",
+   "gate": 4,
+   "x": 1470,
+   "y": 960,
+   "blurb": "雷穆利亚的建立者，原是绿洲的歌者。"
+  },
+  {
+   "id": "remuria",
+   "name": "雷穆利亚",
+   "kind": "place",
+   "gate": 4,
+   "x": 1620,
+   "y": 1040,
+   "blurb": "沉入海底的帝国。"
+  },
+  {
+   "id": "phobos",
+   "name": "福波斯",
+   "kind": "being",
+   "gate": 4,
+   "x": 1590,
+   "y": 1150,
+   "blurb": "把所有人的旋律编进同一乐章的那个存在。"
+  },
+  {
+   "id": "xbalanque",
+   "name": "希巴拉克",
+   "kind": "being",
+   "gate": 5,
+   "x": 700,
+   "y": 1020,
+   "blurb": "纳塔的初代火神。"
+  },
+  {
+   "id": "mavuika",
+   "name": "玛薇卡",
+   "kind": "being",
+   "gate": 5,
+   "x": 560,
+   "y": 1100,
+   "blurb": "纳塔的火神。"
+  },
+  {
+   "id": "flame",
+   "name": "圣火",
+   "kind": "place",
+   "gate": 5,
+   "x": 640,
+   "y": 1200,
+   "blurb": "纳塔人保存古名与生命的火。"
+  },
+  {
+   "id": "nightlord",
+   "name": "夜神",
+   "kind": "being",
+   "gate": 5,
+   "x": 800,
+   "y": 1150,
+   "blurb": "夜神之国的主人。"
+  },
+  {
+   "id": "capitano",
+   "name": "队长",
+   "kind": "being",
+   "gate": 5,
+   "x": 900,
+   "y": 1060,
+   "blurb": "愚人众执行官。"
+  },
+  {
+   "id": "dragonlords",
+   "name": "古龙统治者",
+   "kind": "being",
+   "gate": 5,
+   "x": 820,
+   "y": 930,
+   "blurb": "统治纳塔兰提亚的至高领主们。"
+  },
+  {
+   "id": "khaenriah",
+   "name": "坎瑞亚",
+   "kind": "place",
+   "gate": 3,
+   "x": 200,
+   "y": 960,
+   "blurb": "没有神明的地下王国。"
+  },
+  {
+   "id": "cataclysm",
+   "name": "五百年前的灾变",
+   "kind": "event",
+   "gate": 0,
+   "x": 420,
+   "y": 860,
+   "blurb": "一场同时波及各国的灾难。"
+  },
+  {
+   "id": "chlothar",
+   "name": "克洛达尔",
+   "kind": "being",
+   "gate": 3,
+   "x": 120,
+   "y": 1090,
+   "blurb": "坎瑞亚人，深渊教团的创立者。"
+  },
+  {
+   "id": "order",
+   "name": "深渊教团",
+   "kind": "place",
+   "gate": 0,
+   "x": 300,
+   "y": 1150,
+   "blurb": "与七国为敌的组织。"
+  },
+  {
+   "id": "dainsleif",
+   "name": "戴因斯雷布",
+   "kind": "being",
+   "gate": 0,
+   "x": 430,
+   "y": 1060,
+   "blurb": "自称见证者的坎瑞亚人。"
+  }
+ ],
+ "edges": [
+  {
+   "a": "nibelung",
+   "b": "moons",
+   "label": "创造",
+   "level": "fact",
+   "text": "创造了三月，随后远行宇宙",
+   "ev": "A003",
+   "quote": "在亘古的往昔创造了我们"
+  },
+  {
+   "a": "nibelung",
+   "b": "war",
+   "label": "率龙族反抗",
+   "level": "fact",
+   "text": "带着漆黑的力量归来，率领龙族反抗",
+   "ev": "A005",
+   "quote": "带领我们反抗外来者定义的秩序"
+  },
+  {
+   "a": "war",
+   "b": "moons",
+   "label": "月亮成了武器",
+   "level": "fact",
+   "text": "尼伯龙根囚禁三月，把月亮改造成对抗天理的武器",
+   "ev": "A006",
+   "quote": "将月亮改造成了对抗天理的武器"
+  },
+  {
+   "a": "war",
+   "b": "frostmoon",
+   "label": "被抛出世界",
+   "level": "fact",
+   "text": "战争里两轮月亮被击碎，另一轮被抛出世界",
+   "ev": "A006",
+   "quote": "将月亮改造成了对抗天理的武器"
+  },
+  {
+   "a": "columbina",
+   "b": "moons",
+   "label": "接过权能",
+   "level": "fact",
+   "text": "在囚牢中与三月相见，接过三月的权能",
+   "ev": "A008",
+   "quote": "我们已将三月的权能"
+  },
+  {
+   "a": "moons",
+   "b": "primordial",
+   "label": "等来降临者",
+   "level": "fact",
+   "text": "等待多个千年后，迎来有翼的降临者",
+   "ev": "I9005",
+   "quote": "千年"
+  },
+  {
+   "a": "primordial",
+   "b": "heaven",
+   "label": "是同一位？",
+   "level": "hypothesis",
+   "text": "纳西妲把“第一降临者就是今天的天理”明说成现阶段的假说",
+   "ev": "G015",
+   "quote": "current hypothesis"
+  },
+  {
+   "a": "primordial",
+   "b": "shades",
+   "label": "创造",
+   "level": "fact",
+   "text": "创造了四个影子",
+   "ev": "W001",
+   "quote": "数量是四"
+  },
+  {
+   "a": "primordial",
+   "b": "dragons",
+   "label": "击败",
+   "level": "fact",
+   "text": "开战四十余年后，七个王国俯首称臣",
+   "ev": "A001",
+   "quote": "俯首称臣"
+  },
+  {
+   "a": "heaven",
+   "b": "ship",
+   "label": "藏起飞船",
+   "level": "fact",
+   "text": "哥伦比娅说，飞船是被天理藏起来的",
+   "ev": "J1005",
+   "quote": "霜月"
+  },
+  {
+   "a": "ship",
+   "b": "frostmoon",
+   "label": "藏在霜月",
+   "level": "fact",
+   "text": "双子的飞船如今在霜月上",
+   "ev": "J1005",
+   "quote": "霜月"
+  },
+  {
+   "a": "traveler",
+   "b": "ship",
+   "label": "乘它而来",
+   "level": "fact",
+   "text": "飞船在远古掠过提瓦特，长期航行后才迫降",
+   "ev": "J1003",
+   "quote": "掠过"
+  },
+  {
+   "a": "sibling",
+   "b": "ship",
+   "label": "从船外出现",
+   "level": "fact",
+   "text": "迫降后的记忆里，血亲是从船外出现的",
+   "ev": "J1004",
+   "quote": "迫降之后"
+  },
+  {
+   "a": "third",
+   "b": "heaven",
+   "label": "痕迹被抹去",
+   "level": "fact",
+   "gate": 7,
+   "text": "莱茵多特据天空岛档案说，世界树抹去了第三降临者的痕迹",
+   "ev": "U620",
+   "quote": "世界树"
+  },
+  {
+   "a": "abyssgate",
+   "b": "third",
+   "label": "开门之后",
+   "level": "fact",
+   "gate": 7,
+   "text": "莱茵多特把开门与此后千年的深渊灾祸连在一起",
+   "ev": "C018",
+   "quote": "此后千年来"
+  },
+  {
+   "a": "deadline",
+   "b": "traveler",
+   "label": "最后期限",
+   "level": "fact",
+   "gate": 7,
+   "text": "「诺迦法」宣布最后的 42 天，并要求各国选出一位神之眼持有者",
+   "ev": "D043",
+   "quote": "最后的42天"
+  },
+  {
+   "a": "barbatos",
+   "b": "decarabian",
+   "label": "推翻",
+   "level": "fact",
+   "text": "反抗高塔君王的战争结束后，巴巴托斯得到了神力",
+   "ev": "D003"
+  },
+  {
+   "a": "barbatos",
+   "b": "newmond",
+   "label": "建立",
+   "level": "fact",
+   "text": "那时尘世还没有划归七神；战争之后，新蒙德建立",
+   "ev": "D001"
+  },
+  {
+   "a": "vennessa",
+   "b": "barbatos",
+   "label": "并肩",
+   "level": "fact",
+   "text": "一千年前，温妮莎与巴巴托斯一起推翻了贵族统治",
+   "ev": "D004",
+   "quote": "距今一千年前"
+  },
+  {
+   "a": "vennessa",
+   "b": "knights",
+   "label": "建立",
+   "level": "fact",
+   "text": "革命之后，建立西风骑士团、重振蒙德",
+   "ev": "D005"
+  },
+  {
+   "a": "dvalin",
+   "b": "durin",
+   "label": "击败",
+   "level": "fact",
+   "text": "特瓦林击败了杜林，却咽下毒血，陷入长眠",
+   "ev": "D015"
+  },
+  {
+   "a": "barbatos",
+   "b": "dvalin",
+   "label": "净化",
+   "level": "fact",
+   "text": "龙灾结束时，特瓦林身上的毒血被净化",
+   "ev": "D023"
+  },
+  {
+   "a": "morax",
+   "b": "liyue",
+   "label": "建立",
+   "level": "fact",
+   "text": "三千七百年前，摩拉克斯与仙人一起建立了璃月",
+   "ev": "D006"
+  },
+  {
+   "a": "morax",
+   "b": "archonwar",
+   "label": "亲历",
+   "level": "fact",
+   "text": "钟离说自己已经度过了六千余岁，比璃月建城还早",
+   "ev": "R003"
+  },
+  {
+   "a": "archonwar",
+   "b": "sevenseats",
+   "label": "终结",
+   "level": "fact",
+   "text": "两千年前魔神战争结束，最后七位魔神各自登上神之座",
+   "ev": "D002"
+  },
+  {
+   "a": "barbatos",
+   "b": "sevenseats",
+   "label": "登上",
+   "level": "fact",
+   "text": "最初的七神曾在璃月相聚",
+   "ev": "X001"
+  },
+  {
+   "a": "morax",
+   "b": "sevenseats",
+   "label": "登上",
+   "level": "fact",
+   "text": "最后七位魔神各自登上神之座",
+   "ev": "D002"
+  },
+  {
+   "a": "ganyu",
+   "b": "qixing",
+   "label": "辅佐",
+   "level": "fact",
+   "text": "战争结束后，初代璃月七星需要辅佐，甘雨成了秘书",
+   "ev": "D010"
+  },
+  {
+   "a": "qixing",
+   "b": "morax",
+   "label": "接过权力",
+   "level": "fact",
+   "text": "七星从神手中接管了璃月的权力",
+   "ev": "D026"
+  },
+  {
+   "a": "enkanomiya",
+   "b": "sun",
+   "label": "建造",
+   "level": "fact",
+   "text": "地下没有光，一切连方法都只能自己摸索；人工太阳改善了生存条件",
+   "ev": "B006"
+  },
+  {
+   "a": "sunchild",
+   "b": "enkanomiya",
+   "label": "名义上统治",
+   "level": "fact",
+   "text": "太阳之子只是听凭大人摆布的傀儡",
+   "ev": "B008"
+  },
+  {
+   "a": "orobashi",
+   "b": "enkanomiya",
+   "label": "回应",
+   "level": "fact",
+   "text": "孩子问大蛇：你能做我们渊下之民的神吗",
+   "ev": "B007"
+  },
+  {
+   "a": "orobashi",
+   "b": "watatsumi",
+   "label": "带回海面",
+   "level": "fact",
+   "text": "珊瑚成岛，神宫统领政事与祭典",
+   "ev": "B010"
+  },
+  {
+   "a": "orobashi",
+   "b": "ei",
+   "label": "东征",
+   "level": "fact",
+   "text": "大蛇受天京敕令，必须舍身成仁；它向东作战而死",
+   "ev": "B012"
+  },
+  {
+   "a": "ei",
+   "b": "makoto",
+   "label": "继任",
+   "level": "fact",
+   "text": "真死后，影武者成为了真正的雷电将军",
+   "ev": "D013"
+  },
+  {
+   "a": "primordial",
+   "b": "enkanomiya",
+   "label": "陆沉之前",
+   "level": "fact",
+   "text": "白夜国落入海渊以前，整个世界都在统一的文化之下",
+   "ev": "B001"
+  },
+  {
+   "a": "rukkha",
+   "b": "deshret",
+   "label": "盟约",
+   "level": "fact",
+   "text": "三位神王立下誓言",
+   "ev": "B028"
+  },
+  {
+   "a": "flower",
+   "b": "deshret",
+   "label": "盟约",
+   "level": "fact",
+   "text": "三位神王立下誓言",
+   "ev": "B028"
+  },
+  {
+   "a": "deshret",
+   "b": "forbidden",
+   "label": "牺牲自己",
+   "level": "fact",
+   "text": "禁忌知识扩散，赤王最后选择了自我牺牲",
+   "ev": "B047"
+  },
+  {
+   "a": "forbidden",
+   "b": "irminsul",
+   "label": "污染",
+   "level": "fact",
+   "text": "世界对这种信息会产生“排异”",
+   "ev": "W024"
+  },
+  {
+   "a": "rukkha",
+   "b": "irminsul",
+   "label": "从中抹去自己",
+   "level": "fact",
+   "text": "大慈树王安排后人，把被污染的自己从世界树中彻底抹除",
+   "ev": "D019"
+  },
+  {
+   "a": "rukkha",
+   "b": "nahida",
+   "label": "创造",
+   "level": "fact",
+   "text": "五百年前，大慈树王创造了纳西妲",
+   "ev": "D019"
+  },
+  {
+   "a": "gurabad",
+   "b": "deshret",
+   "label": "毁于大疫",
+   "level": "fact",
+   "text": "居尔城因一场漆黑大疫而亡",
+   "ev": "B041"
+  },
+  {
+   "a": "deshret",
+   "b": "aaru",
+   "label": "建造",
+   "level": "fact",
+   "text": "居尔的难民之子被拔擢为阿如的建筑师",
+   "ev": "B043"
+  },
+  {
+   "a": "heaven",
+   "b": "irminsul",
+   "label": "改造",
+   "level": "fact",
+   "text": "世界树先于天理存在，后来被改造成记录一切信息的存续装置",
+   "ev": "W004",
+   "gate": 6
+  },
+  {
+   "a": "primordialsea",
+   "b": "neuvillette",
+   "label": "发源",
+   "level": "fact",
+   "text": "原生的生命无不发源于原始大海",
+   "ev": "A002"
+  },
+  {
+   "a": "egeria",
+   "b": "oceanids",
+   "label": "变成人",
+   "level": "fact",
+   "text": "厄歌莉娅把纯水精灵转化成了人形",
+   "ev": "B066"
+  },
+  {
+   "a": "egeria",
+   "b": "primordialsea",
+   "label": "新的心脏",
+   "level": "fact",
+   "text": "她并不是这个世界的本来之物，却承担了胎海心脏的职责",
+   "ev": "B056"
+  },
+  {
+   "a": "focalors",
+   "b": "neuvillette",
+   "label": "归还权能",
+   "level": "fact",
+   "text": "水神的神座被摧毁，力量汇聚注入那维莱特体内",
+   "ev": "D030"
+  },
+  {
+   "a": "neuvillette",
+   "b": "oceanids",
+   "label": "赦免",
+   "level": "fact",
+   "text": "审判之后，枫丹人成了“真正的人类”",
+   "ev": "D049"
+  },
+  {
+   "a": "remus",
+   "b": "remuria",
+   "label": "建立",
+   "level": "fact",
+   "text": "居尔的王座兴起又倾覆之后，雷穆斯降临高海，引来离散之民建立新邦",
+   "ev": "B054"
+  },
+  {
+   "a": "gurabad",
+   "b": "remus",
+   "label": "故国",
+   "level": "fact",
+   "text": "雷穆斯原是绿洲的歌者",
+   "ev": "B053"
+  },
+  {
+   "a": "phobos",
+   "b": "remuria",
+   "label": "失控",
+   "level": "fact",
+   "text": "所有旋律被编入最宏大的乐章；最后福波斯的力量失控",
+   "ev": "B062"
+  },
+  {
+   "a": "egeria",
+   "b": "remuria",
+   "label": "之后",
+   "level": "fact",
+   "text": "帝国覆亡后，厄歌莉娅开启了律法的统治",
+   "ev": "B064"
+  },
+  {
+   "a": "dragons",
+   "b": "neuvillette",
+   "label": "其中一位",
+   "level": "fact",
+   "text": "复仇战争之后，为了镇压世界的不甘与愤恨，七神被分授了力量",
+   "ev": "A007"
+  },
+  {
+   "a": "xbalanque",
+   "b": "dragonlords",
+   "label": "反抗",
+   "level": "fact",
+   "text": "希巴拉克的军队突破了“天火之冠”",
+   "ev": "C006"
+  },
+  {
+   "a": "xbalanque",
+   "b": "flame",
+   "label": "立下规则",
+   "level": "fact",
+   "text": "初代火神也是人类，借神座建立了纳塔的规则",
+   "ev": "C008"
+  },
+  {
+   "a": "mavuika",
+   "b": "flame",
+   "label": "存入生命",
+   "level": "fact",
+   "text": "玛薇卡把生命存入了圣火，跨过了五百年",
+   "ev": "D022"
+  },
+  {
+   "a": "capitano",
+   "b": "nightlord",
+   "label": "融合",
+   "level": "fact",
+   "text": "队长和夜神融为一体，接纳流散的灵魂",
+   "ev": "D050"
+  },
+  {
+   "a": "mavuika",
+   "b": "xbalanque",
+   "label": "继承",
+   "level": "fact",
+   "text": "初代火神也是人类",
+   "ev": "C008"
+  },
+  {
+   "a": "cataclysm",
+   "b": "khaenriah",
+   "label": "毁灭",
+   "level": "fact",
+   "text": "灾后，不同血统的国民分别承受了不死和变成魔物的诅咒",
+   "ev": "C019"
+  },
+  {
+   "a": "cataclysm",
+   "b": "durin",
+   "label": "波及蒙德",
+   "level": "fact",
+   "text": "特瓦林击败杜林，却咽下了毒血",
+   "ev": "D015"
+  },
+  {
+   "a": "cataclysm",
+   "b": "makoto",
+   "label": "波及稻妻",
+   "level": "fact",
+   "text": "真在灾变中死去，影武者成了真正的雷电将军",
+   "ev": "D013",
+   "gate": 2
+  },
+  {
+   "a": "cataclysm",
+   "b": "rukkha",
+   "label": "波及须弥",
+   "level": "fact",
+   "text": "大慈树王应对世界树的污染，留下抹除自己的安排",
+   "ev": "D019",
+   "gate": 3
+  },
+  {
+   "a": "cataclysm",
+   "b": "mavuika",
+   "label": "波及纳塔",
+   "level": "fact",
+   "text": "玛薇卡说，那时候所有国家都遭到了深渊的入侵",
+   "ev": "D014",
+   "gate": 5
+  },
+  {
+   "a": "chlothar",
+   "b": "order",
+   "label": "创立",
+   "level": "fact",
+   "text": "克洛达尔创立了深渊教团",
+   "ev": "C030",
+   "gate": 3
+  },
+  {
+   "a": "chlothar",
+   "b": "khaenriah",
+   "label": "国民",
+   "level": "fact",
+   "text": "离开原有神明的人，也会被接纳为国民",
+   "ev": "C019"
+  },
+  {
+   "a": "sibling",
+   "b": "order",
+   "label": "领导",
+   "level": "fact",
+   "text": "戴因追述教团的创立时，谈到了血亲在教团里的身份",
+   "ev": "C030",
+   "gate": 3
+  },
+  {
+   "a": "dainsleif",
+   "b": "chlothar",
+   "label": "追述",
+   "level": "fact",
+   "text": "戴因追述克洛达尔创教，以及约一百年后的失踪",
+   "ev": "C030",
+   "gate": 3
+  },
+  {
+   "a": "dainsleif",
+   "b": "khaenriah",
+   "label": "故国",
+   "level": "fact",
+   "text": "灾变前夕，五人瓜分了深渊之力",
+   "ev": "C026",
+   "gate": 5
+  },
+  {
+   "a": "abyssgate",
+   "b": "khaenriah",
+   "label": "开门",
+   "level": "fact",
+   "text": "据莱茵多特转述的天空岛档案，开门被放在此后千年灾祸的起点",
+   "ev": "C018",
+   "quote": "此后千年来",
+   "gate": 7
+  }
+ ],
+ "questions": [
+  {
+   "id": "mondstadt",
+   "title": "蒙德为什么没有王？",
+   "short": "蒙德的王呢？",
+   "group": "七国的来历",
+   "gate": 0,
+   "start": "barbatos",
+   "nodes": [
+    "barbatos",
+    "decarabian",
+    "newmond",
+    "vennessa",
+    "knights"
+   ],
+   "answer": "因为蒙德人两次推翻了统治者：先是高塔里的君王，再是贵族。之后接手公共事务的是骑士团。",
+   "steps": [
     {
-      "id": "tianli", "title": "天理到底是谁？", "short": "天理是谁？", "group": "天理与降临者", "gate": 3, "start": "heaven",
-      "nodes": ["heaven", "primordial", "shades", "dragons", "moons"],
-      "answer": "游戏还没有直接回答。古书《日月前事》写的是“原初的那一位”；把祂等同于今天的天理，纳西妲明说只是现阶段的假说。",
-      "steps": [
-        { "era": "《日月前事》", "title": "天上来了一位“原初者”", "text": "白夜国保存的古书记载：永恒的王座降临，原初的那一位创造了四个影子。", "level": "fact", "ev": "W001", "quote": "数量是四", "gate": 2 },
-        { "era": "衔枝后四十余年", "title": "七位龙王败了", "text": "原初者与七位龙王开战。四十余年后，七个王国俯首称臣，祂开始整治天地。", "level": "fact", "ev": "A001", "quote": "俯首称臣", "gate": 2 },
-        { "era": "须弥主线之后", "title": "“原初者就是天理”只是假说", "text": "纳西妲转述降临者的说法时，把“第一降临者就是今天的天理”明确说成现阶段的假说。这句引的是英文文本。", "level": "hypothesis", "ev": "G015", "quote": "current hypothesis", "gate": 3 },
-        { "era": "月神的回忆", "title": "月神等来的是一位降临者", "text": "三位月神等了多个千年，迎来的是一位有翼的降临者。", "level": "fact", "ev": "I9005", "quote": "千年", "gate": 6 }
-      ],
-      "open": { "text": "天理如今在哪里、为什么不再出面？游戏里目前只有人物的推测，没有定论。" }
+     "era": "约两千六百年前",
+     "title": "高塔里的君王",
+     "text": "旧蒙德被风墙围着。君王觉得自己给了臣民一座没有苦寒的城市。",
+     "level": "fact",
+     "ev": "D003"
     },
     {
-      "id": "moon", "title": "月亮发生了什么？", "short": "月亮发生了什么？", "group": "天理与降临者", "gate": 6, "start": "moons",
-      "nodes": ["moons", "nibelung", "war", "frostmoon", "columbina", "primordial"],
-      "answer": "提瓦特原本有三个月亮。它们是尼伯龙根造的三位月神；在葬火之战中，两轮被击碎，一轮被抛出世界，就是今天的霜月。",
-      "teaser": "提瓦特原本有三个月亮。葬火之战中，两轮被击碎，一轮被抛出世界，就是现在的霜月。",
-      "steps": [
-        { "era": "古龙时代", "title": "三位月神诞生", "text": "尼伯龙根创造了三位月神，让她们维护星球的运行，随后远行宇宙。三月在多个千年里等待他归来。", "level": "fact", "ev": "A003", "quote": "在亘古的往昔创造了我们" },
-        { "era": "降临者到来以后", "title": "天上来了新的秩序", "text": "三月迎来了有翼的降临者。这之后，原初的那一位击败七位龙王，开始整治天地。", "level": "fact", "ev": "I9005", "quote": "千年" },
-        { "era": "葬火之战", "title": "月亮变成了武器", "text": "尼伯龙根带着漆黑之力归来。他囚禁三月，把月亮改造成对抗天理的武器。战争中两轮月亮被击碎，另一轮被抛出世界。", "level": "fact", "ev": "A006", "quote": "将月亮改造成了对抗天理的武器" },
-        { "era": "现在", "title": "有人见到了她们", "text": "哥伦比娅在尼伯龙根的囚牢里与三月相见，接过了三月的权能。", "level": "fact", "ev": "A008", "quote": "我们已将三月的权能" }
-      ],
-      "open": { "text": "双子的飞船为什么被藏在霜月上？哥伦比娅说是天理藏的，至于原因，她也只是推测。" }
+     "era": "同一时期",
+     "title": "尘世还不属于七神",
+     "text": "那时魔神战争还没结束。反抗高塔的战争之后，巴巴托斯得到神力，建立了新蒙德。",
+     "level": "fact",
+     "ev": "D001"
     },
     {
-      "id": "ship", "title": "旅行者的飞船去哪了？", "short": "飞船去哪了？", "group": "旅行者与血亲", "gate": 6, "start": "ship",
-      "nodes": ["ship", "frostmoon", "heaven", "traveler", "sibling", "columbina"],
-      "answer": "在霜月上。哥伦比娅说是天理把它藏在那里的；至于为什么藏，她也只是推测。",
-      "steps": [
-        { "era": "远古", "title": "飞船曾经路过提瓦特", "text": "月面的飞行日志显示，飞船在远古掠过提瓦特，之后继续航行。", "level": "fact", "ev": "J1003", "quote": "掠过" },
-        { "era": "很久以后", "title": "漫长的航行，然后迫降", "text": "日志有损毁。旅行者估计中间隔了以千年计的时间，飞船才迫降。这个数字是旅行者自己的推估。", "level": "inference", "ev": "J1003", "quote": "千年" },
-        { "era": "迫降之后", "title": "血亲从船外出现", "text": "哥伦比娅展示的记忆里，飞船刚落地时，血亲是从外面出现的。", "level": "fact", "ev": "J1004", "quote": "迫降之后" },
-        { "era": "现在", "title": "飞船在霜月上", "text": "哥伦比娅说明，双子的飞船被天理藏在了霜月。", "level": "fact", "ev": "J1005", "quote": "霜月" }
-      ],
-      "open": { "text": "天理为什么要藏起飞船？哥伦比娅用的词是“或许”：也许船上有不该被提瓦特知道的东西。", "ev": "J1005", "quote": "或许" }
+     "era": "一千年前",
+     "title": "第二次：推翻贵族",
+     "text": "新城建立一千六百年后，贵族和奴隶制成了新的压迫。奴隶少女温妮莎带人反抗。",
+     "level": "fact",
+     "ev": "D004",
+     "quote": "奴隶少女温妮莎"
     },
     {
-      "id": "abyss", "title": "深渊是从哪里来的？", "short": "深渊从哪来？", "group": "深渊", "gate": 7, "start": "abyssgate",
-      "nodes": ["abyssgate", "third", "heaven"],
-      "answer": "还没有完整的答案。能确定的是：五百年前所有国家都遭到深渊入侵；莱茵多特则把一次“开门”与此后千年的深渊灾祸连在一起。",
-      "steps": [
-        { "era": "五百年前", "title": "所有国家都被入侵", "text": "玛薇卡回顾：那时候所有国家都遭到了深渊的入侵。", "level": "fact", "ev": "D014", "quote": "所有国家都遭到了深渊的入侵" },
-        { "era": "世界树的记忆", "title": "禁忌知识来自深渊", "text": "大慈树王把禁忌知识描述为来自深渊、世界无法理解的信息，世界会对它“排异”。", "level": "fact", "ev": "W024", "quote": "「排异」" },
-        { "era": "更早", "title": "一次“开门”", "text": "莱茵多特把开门的行为，与此后漫长的深渊灾祸连在一起。", "level": "fact", "ev": "C018", "quote": "此后千年来" }
-      ],
-      "open": { "text": "深渊本身是什么、门后是哪里，游戏文本目前没有给出定论。" }
-    },
-    {
-      "id": "deadline", "title": "“四十二天”是什么？", "short": "四十二天？", "group": "终幕", "gate": 7, "start": "deadline",
-      "nodes": ["deadline", "traveler", "heaven"],
-      "answer": "是「诺迦法」在神之座宣布的最后期限：42 天。",
-      "steps": [
-        { "era": "七国会议", "title": "圣土化", "text": "心海把圣土化解释为光界力过强、土地回归原初的现象。", "level": "fact", "ev": "Y025", "quote": "圣土化" },
-        { "era": "神之座", "title": "最后的 42 天", "text": "「诺迦法」宣布限期，并要求各国选出一位神之眼持有者。", "level": "fact", "ev": "D043", "quote": "最后的42天" },
-        { "era": "之后", "title": "各国的回答", "text": "女皇离开神之座后提出共同反抗，各国代表随即表态。", "level": "fact", "ev": "D047", "quote": "我们唯有反抗到底" }
-      ],
-      "open": { "text": "期限到了会发生什么？目前的文本还没有写到。" }
+     "era": "革命之后",
+     "title": "骑士团接手",
+     "text": "温妮莎建立西风骑士团，由它承担蒙德的公共事务。",
+     "level": "fact",
+     "ev": "D005"
     }
-  ]
+   ],
+   "open": {
+    "text": "风神自己为什么不留下来统治？角色故事写了他的做法，没有替他给出唯一的理由。"
+   }
+  },
+  {
+   "id": "dvalin",
+   "title": "风魔龙身上发生了什么？",
+   "short": "风魔龙怎么了？",
+   "group": "七国的来历",
+   "gate": 0,
+   "start": "dvalin",
+   "nodes": [
+    "dvalin",
+    "durin",
+    "barbatos",
+    "cataclysm"
+   ],
+   "answer": "五百年前他为蒙德打败了魔龙杜林，却咽下了杜林的毒血，沉睡至今。",
+   "steps": [
+    {
+     "era": "五百年前",
+     "title": "一场胜利，一口毒血",
+     "text": "蒙德的歌谣记着：特瓦林击败了杜林，却咽下了毒血。",
+     "level": "fact",
+     "ev": "D015"
+    },
+    {
+     "era": "龙灾",
+     "title": "净化",
+     "text": "旅行者与温迪等人净化了他身上所有的毒血。",
+     "level": "fact",
+     "ev": "D023"
+    },
+    {
+     "era": "之后",
+     "title": "他可以自己选",
+     "text": "温迪说，特瓦林能自己选择、自己理解。",
+     "level": "fact",
+     "ev": "D024"
+    }
+   ],
+   "open": {
+    "text": "杜林是从哪里来的？这要到后面的剧情才有交代。"
+   }
+  },
+  {
+   "id": "liyue",
+   "title": "璃月是怎么交到人手里的？",
+   "short": "璃月怎么交给人的？",
+   "group": "七国的来历",
+   "gate": 1,
+   "start": "morax",
+   "nodes": [
+    "morax",
+    "liyue",
+    "archonwar",
+    "sevenseats",
+    "qixing",
+    "ganyu"
+   ],
+   "answer": "岩神建了城、打完了魔神战争，三千多年后，七星把治理权接了过去。",
+   "steps": [
+    {
+     "era": "三千七百年前",
+     "title": "建城",
+     "text": "钟离说，璃月是三千七百年前他与仙人一起建立的。",
+     "level": "fact",
+     "ev": "D006"
+    },
+    {
+     "era": "两千年前",
+     "title": "魔神战争结束",
+     "text": "甘雨回忆：两千年前魔神战争结束，最初的七神曾在璃月相聚。",
+     "level": "fact",
+     "ev": "X001"
+    },
+    {
+     "era": "战争之后",
+     "title": "七星出现",
+     "text": "初代璃月七星需要辅佐，参加过战争的甘雨成了秘书。",
+     "level": "fact",
+     "ev": "D010"
+    },
+    {
+     "era": "送仙",
+     "title": "接过权力",
+     "text": "七星从神手中接管了璃月的权力。",
+     "level": "fact",
+     "ev": "D026"
+    }
+   ],
+   "open": {
+    "text": "七星接管的范围比钟离预想的更大。这是意外，还是他乐见的结果？文本只写到“预想之外”。"
+   }
+  },
+  {
+   "id": "enkanomiya",
+   "title": "渊下宫的人为什么要造太阳？",
+   "short": "为什么造太阳？",
+   "group": "七国的来历",
+   "gate": 2,
+   "start": "enkanomiya",
+   "nodes": [
+    "enkanomiya",
+    "sun",
+    "sunchild",
+    "orobashi",
+    "watatsumi",
+    "primordial"
+   ],
+   "answer": "因为他们的国土沉进了没有光的海渊。太阳造出来以后，又成了大人们掌权的工具。",
+   "steps": [
+    {
+     "era": "陆沉以前",
+     "title": "同一个世界",
+     "text": "乌帽子说，白夜国落入海渊之前，整个世界都在统一的文化之下。",
+     "level": "fact",
+     "ev": "B001"
+    },
+    {
+     "era": "陆沉以后",
+     "title": "在黑暗里摸索",
+     "text": "海渊里的人研究地貌、水流和风向，连方法都只能自己摸索。",
+     "level": "fact",
+     "ev": "B006"
+    },
+    {
+     "era": "太阳之后",
+     "title": "太阳之子",
+     "text": "人工太阳完成后，孩子被立为君主。实际掌权的是幕后的成年人。",
+     "level": "fact",
+     "ev": "B008"
+    },
+    {
+     "era": "大蛇到来",
+     "title": "“你能做我们的神吗”",
+     "text": "一个孩子遇见了大蛇，问出了这句话。",
+     "level": "fact",
+     "ev": "B007"
+    },
+    {
+     "era": "重返海面",
+     "title": "海祇岛",
+     "text": "珊瑚成岛，神宫统领政事与祭典。",
+     "level": "fact",
+     "ev": "B010"
+    }
+   ],
+   "open": {
+    "text": "是谁不让渊下之民回到地面？《日月前事》记了他们受阻，没有写明阻拦者。"
+   }
+  },
+  {
+   "id": "raiden",
+   "title": "雷电将军换过人吗？",
+   "short": "将军换过人吗？",
+   "group": "七国的来历",
+   "gate": 2,
+   "start": "ei",
+   "nodes": [
+    "ei",
+    "makoto",
+    "cataclysm"
+   ],
+   "answer": "换过。最初的将军是姐姐真；五百年前真死后，影武者影成了真正的雷电将军。",
+   "steps": [
+    {
+     "era": "真在位的时候",
+     "title": "影是“影武者”",
+     "text": "影武者就是替身。姐姐真是将军的时候，影站在她的影子里。",
+     "level": "fact",
+     "ev": "D013"
+    },
+    {
+     "era": "五百年前",
+     "title": "替身成了将军",
+     "text": "真在灾变中死去，影武者成为了真正的“雷电将军”。",
+     "level": "fact",
+     "ev": "D013"
+    },
+    {
+     "era": "很久以后",
+     "title": "一棵回到过去的树",
+     "text": "影后来做的一件事，落在了过去：神樱在过去的稻妻发了芽。",
+     "level": "fact",
+     "ev": "D028"
+    }
+   ],
+   "open": {
+    "text": "真死在哪里、怎么死的？角色故事只写了结果。"
+   }
+  },
+  {
+   "id": "desert",
+   "title": "沙漠里的王国是怎么没的？",
+   "short": "沙漠王国呢？",
+   "group": "七国的来历",
+   "gate": 3,
+   "start": "deshret",
+   "nodes": [
+    "deshret",
+    "flower",
+    "rukkha",
+    "gurabad",
+    "aaru",
+    "forbidden"
+   ],
+   "answer": "先是三神的盟约散了，再是居尔毁于大疫，最后禁忌知识带走了赤王。",
+   "steps": [
+    {
+     "era": "最早",
+     "title": "三位神王",
+     "text": "草木、鲜花与沙海的三位神王立下誓言。",
+     "level": "fact",
+     "ev": "B028"
+    },
+    {
+     "era": "凡人的国度",
+     "title": "居尔建城",
+     "text": "利露帕尔帮牧人奥尔玛兹建国，居尔成为凡人国度的首都。",
+     "level": "fact",
+     "ev": "B034"
+    },
+    {
+     "era": "覆亡",
+     "title": "漆黑大疫",
+     "text": "居尔城因一场漆黑大疫而亡。",
+     "level": "fact",
+     "ev": "B041"
+    },
+    {
+     "era": "之后",
+     "title": "阿如",
+     "text": "居尔的难民之子被拔擢为阿如的建筑师，参与赤王保存人民的工程。",
+     "level": "fact",
+     "ev": "B043"
+    },
+    {
+     "era": "终局",
+     "title": "赤王的牺牲",
+     "text": "禁忌知识扩散，赤王选择了自我牺牲。",
+     "level": "fact",
+     "ev": "B047"
+    }
+   ],
+   "open": {
+    "text": "花神是怎么死的？文本对此始终语焉不详。"
+   }
+  },
+  {
+   "id": "fontaine",
+   "title": "枫丹人原本是什么？",
+   "short": "枫丹人是什么？",
+   "group": "七国的来历",
+   "gate": 4,
+   "start": "egeria",
+   "nodes": [
+    "egeria",
+    "oceanids",
+    "primordialsea",
+    "neuvillette",
+    "focalors"
+   ],
+   "answer": "是纯水精灵。前代水神把他们变成了人形；直到那场审判之后，他们才成为真正的人类。",
+   "steps": [
+    {
+     "era": "最早",
+     "title": "生命从胎海来",
+     "text": "那维莱特的记忆里，原生的生命无不发源于原始大海。",
+     "level": "fact",
+     "ev": "A002"
+    },
+    {
+     "era": "厄歌莉娅",
+     "title": "她不是这里的本来之物",
+     "text": "厄歌莉娅被造出来，承担胎海新心脏的职责。",
+     "level": "fact",
+     "ev": "B056"
+    },
+    {
+     "era": "罪",
+     "title": "把精灵变成人",
+     "text": "她回应纯水精灵的愿望，把她们转化成了人形。",
+     "level": "fact",
+     "ev": "B066"
+    },
+    {
+     "era": "审判日",
+     "title": "神座被毁",
+     "text": "水神的神座被摧毁，力量归还给那维莱特。",
+     "level": "fact",
+     "ev": "D030"
+    },
+    {
+     "era": "之后",
+     "title": "真正的人类",
+     "text": "赦免之后，枫丹人便成为了“真正的人类”。",
+     "level": "fact",
+     "ev": "D049"
+    }
+   ],
+   "open": {
+    "text": "厄歌莉娅是被谁、为什么囚禁的？现有文本只写了她受囚的状态。"
+   }
+  },
+  {
+   "id": "remuria",
+   "title": "雷穆利亚为什么沉了？",
+   "short": "雷穆利亚呢？",
+   "group": "七国的来历",
+   "gate": 4,
+   "start": "remus",
+   "nodes": [
+    "remus",
+    "remuria",
+    "phobos",
+    "egeria",
+    "gurabad"
+   ],
+   "answer": "因为它把所有人的旋律都编进了同一首乐章，最后那股力量失控了。",
+   "steps": [
+    {
+     "era": "来历",
+     "title": "一个失乡的歌者",
+     "text": "雷穆斯原是绿洲的歌者。",
+     "level": "fact",
+     "ev": "B053"
+    },
+    {
+     "era": "建国",
+     "title": "金色的航船",
+     "text": "居尔的王座兴起又倾覆之后，他来到高海，聚拢离散之民建立新邦。",
+     "level": "fact",
+     "ev": "B054"
+    },
+    {
+     "era": "秩序",
+     "title": "同一首乐章",
+     "text": "所有的旋律都被编入了最为宏大的乐章。",
+     "level": "fact",
+     "ev": "B061"
+    },
+    {
+     "era": "覆亡",
+     "title": "失控",
+     "text": "最后“福波斯”的力量失控，王城沉没。",
+     "level": "fact",
+     "ev": "B062"
+    },
+    {
+     "era": "之后",
+     "title": "律法",
+     "text": "厄歌莉娅弥合纷争，开启了律法的统治。",
+     "level": "fact",
+     "ev": "B064"
+    }
+   ],
+   "open": {
+    "text": "雷穆斯听到的预言，究竟是谁的预言？"
+   }
+  },
+  {
+   "id": "natlan",
+   "title": "纳塔的火神为什么是人？",
+   "short": "火神为什么是人？",
+   "group": "七国的来历",
+   "gate": 5,
+   "start": "xbalanque",
+   "nodes": [
+    "xbalanque",
+    "mavuika",
+    "flame",
+    "dragonlords",
+    "nightlord",
+    "capitano"
+   ],
+   "answer": "因为从第一位开始就是。初代火神希巴拉克是人类，火神的位置靠规则传下来，而不是靠血统。",
+   "steps": [
+    {
+     "era": "反抗",
+     "title": "突破天火之冠",
+     "text": "古龙统治者的铭文记着希巴拉克的行军。",
+     "level": "fact",
+     "ev": "C006"
+    },
+    {
+     "era": "立规则",
+     "title": "初代火神也是人类",
+     "text": "玛薇卡说，初代火神借神座的力量建立了纳塔的规则。",
+     "level": "fact",
+     "ev": "C008"
+    },
+    {
+     "era": "五百年前",
+     "title": "把生命存进圣火",
+     "text": "玛薇卡用这个办法跨过了五百年。",
+     "level": "fact",
+     "ev": "D022"
+    },
+    {
+     "era": "战争结束",
+     "title": "队长与夜神",
+     "text": "队长和夜神融为一体，接纳流散的灵魂。",
+     "level": "fact",
+     "ev": "D050"
+    }
+   ],
+   "open": {
+    "text": "希巴拉克借来的那份力量，代价是什么？"
+   }
+  },
+  {
+   "id": "cataclysm",
+   "title": "五百年前发生了什么？",
+   "short": "五百年前？",
+   "group": "五百年前",
+   "gate": 0,
+   "start": "cataclysm",
+   "nodes": [
+    "cataclysm",
+    "durin",
+    "dvalin",
+    "makoto",
+    "rukkha",
+    "mavuika",
+    "khaenriah"
+   ],
+   "answer": "一场同时波及各国的灾变。每个国家都留下了自己的伤口：你走到哪一国，这里就多亮一步。",
+   "steps": [
+    {
+     "era": "蒙德",
+     "title": "风龙咽下毒血",
+     "text": "特瓦林击败了袭来的杜林，却咽下了毒血。",
+     "level": "fact",
+     "ev": "D015",
+     "gate": 0
+    },
+    {
+     "era": "稻妻",
+     "title": "将军换了人",
+     "text": "真在灾变中死去，影武者成为了真正的雷电将军。",
+     "level": "fact",
+     "ev": "D013",
+     "gate": 2
+    },
+    {
+     "era": "须弥",
+     "title": "世界树被污染",
+     "text": "大慈树王留下了把自己从世界树中抹除的安排。",
+     "level": "fact",
+     "ev": "D019",
+     "gate": 3
+    },
+    {
+     "era": "纳塔",
+     "title": "生命存入圣火",
+     "text": "玛薇卡把生命存入圣火，等待五百年后。",
+     "level": "fact",
+     "ev": "D022",
+     "gate": 5
+    },
+    {
+     "era": "全貌",
+     "title": "不是一国的事",
+     "text": "玛薇卡说：那时候所有国家都遭到了深渊的入侵。",
+     "level": "fact",
+     "ev": "D014",
+     "gate": 5
+    }
+   ],
+   "open": {
+    "text": "灾变是怎么开始的？这是整个故事最大的问题之一，答案在更后面。"
+   }
+  },
+  {
+   "id": "order",
+   "title": "深渊教团是谁建的？",
+   "short": "教团是谁建的？",
+   "group": "五百年前",
+   "gate": 3,
+   "start": "order",
+   "nodes": [
+    "order",
+    "chlothar",
+    "khaenriah",
+    "sibling",
+    "dainsleif"
+   ],
+   "answer": "是坎瑞亚人克洛达尔。他把儿子身上发生的事当成了深渊的启示。",
+   "steps": [
+    {
+     "era": "灾变之后",
+     "title": "两种诅咒",
+     "text": "不同血统的坎瑞亚国民，分别承受了不死和变成魔物的诅咒。",
+     "level": "fact",
+     "ev": "C019"
+    },
+    {
+     "era": "一个父亲",
+     "title": "“唯有罪人才能拯救罪人”",
+     "text": "克洛达尔为儿子寻找解除诅咒的办法，最后把儿子的经历解释成深渊的启示。",
+     "level": "fact",
+     "ev": "C031"
+    },
+    {
+     "era": "创教",
+     "title": "深渊教团",
+     "text": "戴因追述：他创立了深渊教团，约一百年后在诅咒的折磨里失踪。",
+     "level": "fact",
+     "ev": "C030"
+    }
+   ],
+   "open": {
+    "text": "血亲是怎么成为教团领导者的？戴因谈到了这个身份，经过还不完整。"
+   }
+  },
+  {
+   "id": "rukkha",
+   "title": "大慈树王去哪了？",
+   "short": "大慈树王呢？",
+   "group": "世界树与记忆",
+   "gate": 3,
+   "start": "rukkha",
+   "nodes": [
+    "rukkha",
+    "nahida",
+    "irminsul",
+    "forbidden",
+    "deshret"
+   ],
+   "answer": "她被禁忌知识污染了，于是安排后人把自己从世界树里彻底抹掉。",
+   "steps": [
+    {
+     "era": "赤王末期",
+     "title": "第一次：沙漠里的灾难",
+     "text": "禁忌知识扩散，大慈树王前去救援，赤王最后选择了自我牺牲。",
+     "level": "fact",
+     "ev": "B047"
+    },
+    {
+     "era": "须弥的解释",
+     "title": "世界会“排异”",
+     "text": "大慈树王把禁忌知识描述为来自深渊、世界无法理解的信息。",
+     "level": "fact",
+     "ev": "W024"
+    },
+    {
+     "era": "五百年前",
+     "title": "留下一个安排",
+     "text": "世界树再次被污染。她创造了纳西妲，并留下了清除污染的办法。",
+     "level": "fact",
+     "ev": "D019"
+    }
+   ],
+   "open": {
+    "text": "被抹掉的人，还算存在过吗？这是须弥主线留给玩家的问题，不是考据能回答的。"
+   }
+  },
+  {
+   "id": "tianli",
+   "title": "天理到底是谁？",
+   "short": "天理是谁？",
+   "group": "天理与降临者",
+   "gate": 3,
+   "start": "heaven",
+   "nodes": [
+    "heaven",
+    "primordial",
+    "shades",
+    "dragons",
+    "moons"
+   ],
+   "answer": "游戏还没有直接回答。古书《日月前事》写的是“原初的那一位”；把祂等同于今天的天理，纳西妲明说只是现阶段的假说。",
+   "steps": [
+    {
+     "era": "《日月前事》",
+     "title": "天上来了一位“原初者”",
+     "text": "白夜国保存的古书记载：永恒的王座降临，原初的那一位创造了四个影子。",
+     "level": "fact",
+     "ev": "W001",
+     "quote": "数量是四",
+     "gate": 2
+    },
+    {
+     "era": "衔枝后四十余年",
+     "title": "七位龙王败了",
+     "text": "原初者与七位龙王开战。四十余年后，七个王国俯首称臣，祂开始整治天地。",
+     "level": "fact",
+     "ev": "A001",
+     "quote": "俯首称臣",
+     "gate": 2
+    },
+    {
+     "era": "须弥主线之后",
+     "title": "“原初者就是天理”只是假说",
+     "text": "纳西妲转述降临者的说法时，把“第一降临者就是今天的天理”明确说成现阶段的假说。这句引的是英文文本。",
+     "level": "hypothesis",
+     "ev": "G015",
+     "quote": "current hypothesis",
+     "gate": 3
+    },
+    {
+     "era": "月神的回忆",
+     "title": "月神等来的是一位降临者",
+     "text": "三位月神等了多个千年，迎来的是一位有翼的降临者。",
+     "level": "fact",
+     "ev": "I9005",
+     "quote": "千年",
+     "gate": 6
+    }
+   ],
+   "open": {
+    "text": "天理如今在哪里、为什么不再出面？游戏里目前只有人物的推测，没有定论。"
+   }
+  },
+  {
+   "id": "moon",
+   "title": "月亮发生了什么？",
+   "short": "月亮发生了什么？",
+   "group": "天理与降临者",
+   "gate": 6,
+   "start": "moons",
+   "nodes": [
+    "moons",
+    "nibelung",
+    "war",
+    "frostmoon",
+    "columbina",
+    "primordial"
+   ],
+   "answer": "提瓦特原本有三个月亮。它们是尼伯龙根造的三位月神；在葬火之战中，两轮被击碎，一轮被抛出世界，就是今天的霜月。",
+   "teaser": "提瓦特原本有三个月亮。葬火之战中，两轮被击碎，一轮被抛出世界，就是现在的霜月。",
+   "steps": [
+    {
+     "era": "古龙时代",
+     "title": "三位月神诞生",
+     "text": "尼伯龙根创造了三位月神，让她们维护星球的运行，随后远行宇宙。三月在多个千年里等待他归来。",
+     "level": "fact",
+     "ev": "A003",
+     "quote": "在亘古的往昔创造了我们"
+    },
+    {
+     "era": "降临者到来以后",
+     "title": "天上来了新的秩序",
+     "text": "三月迎来了有翼的降临者。这之后，原初的那一位击败七位龙王，开始整治天地。",
+     "level": "fact",
+     "ev": "I9005",
+     "quote": "千年"
+    },
+    {
+     "era": "葬火之战",
+     "title": "月亮变成了武器",
+     "text": "尼伯龙根带着漆黑之力归来。他囚禁三月，把月亮改造成对抗天理的武器。战争中两轮月亮被击碎，另一轮被抛出世界。",
+     "level": "fact",
+     "ev": "A006",
+     "quote": "将月亮改造成了对抗天理的武器"
+    },
+    {
+     "era": "现在",
+     "title": "有人见到了她们",
+     "text": "哥伦比娅在尼伯龙根的囚牢里与三月相见，接过了三月的权能。",
+     "level": "fact",
+     "ev": "A008",
+     "quote": "我们已将三月的权能"
+    }
+   ],
+   "open": {
+    "text": "双子的飞船为什么被藏在霜月上？哥伦比娅说是天理藏的，至于原因，她也只是推测。"
+   }
+  },
+  {
+   "id": "ship",
+   "title": "旅行者的飞船去哪了？",
+   "short": "飞船去哪了？",
+   "group": "旅行者与血亲",
+   "gate": 6,
+   "start": "ship",
+   "nodes": [
+    "ship",
+    "frostmoon",
+    "heaven",
+    "traveler",
+    "sibling",
+    "columbina"
+   ],
+   "answer": "在霜月上。哥伦比娅说是天理把它藏在那里的；至于为什么藏，她也只是推测。",
+   "steps": [
+    {
+     "era": "远古",
+     "title": "飞船曾经路过提瓦特",
+     "text": "月面的飞行日志显示，飞船在远古掠过提瓦特，之后继续航行。",
+     "level": "fact",
+     "ev": "J1003",
+     "quote": "掠过"
+    },
+    {
+     "era": "很久以后",
+     "title": "漫长的航行，然后迫降",
+     "text": "日志有损毁。旅行者估计中间隔了以千年计的时间，飞船才迫降。这个数字是旅行者自己的推估。",
+     "level": "inference",
+     "ev": "J1003",
+     "quote": "千年"
+    },
+    {
+     "era": "迫降之后",
+     "title": "血亲从船外出现",
+     "text": "哥伦比娅展示的记忆里，飞船刚落地时，血亲是从外面出现的。",
+     "level": "fact",
+     "ev": "J1004",
+     "quote": "迫降之后"
+    },
+    {
+     "era": "现在",
+     "title": "飞船在霜月上",
+     "text": "哥伦比娅说明，双子的飞船被天理藏在了霜月。",
+     "level": "fact",
+     "ev": "J1005",
+     "quote": "霜月"
+    }
+   ],
+   "open": {
+    "text": "天理为什么要藏起飞船？哥伦比娅用的词是“或许”：也许船上有不该被提瓦特知道的东西。",
+    "ev": "J1005",
+    "quote": "或许"
+   }
+  },
+  {
+   "id": "abyss",
+   "title": "深渊是从哪里来的？",
+   "short": "深渊从哪来？",
+   "group": "深渊",
+   "gate": 7,
+   "start": "abyssgate",
+   "nodes": [
+    "abyssgate",
+    "third",
+    "heaven"
+   ],
+   "answer": "还没有完整的答案。能确定的是：五百年前所有国家都遭到深渊入侵；莱茵多特则把一次“开门”与此后千年的深渊灾祸连在一起。",
+   "steps": [
+    {
+     "era": "五百年前",
+     "title": "所有国家都被入侵",
+     "text": "玛薇卡回顾：那时候所有国家都遭到了深渊的入侵。",
+     "level": "fact",
+     "ev": "D014",
+     "quote": "所有国家都遭到了深渊的入侵"
+    },
+    {
+     "era": "世界树的记忆",
+     "title": "禁忌知识来自深渊",
+     "text": "大慈树王把禁忌知识描述为来自深渊、世界无法理解的信息，世界会对它“排异”。",
+     "level": "fact",
+     "ev": "W024",
+     "quote": "「排异」"
+    },
+    {
+     "era": "更早",
+     "title": "一次“开门”",
+     "text": "莱茵多特把开门的行为，与此后漫长的深渊灾祸连在一起。",
+     "level": "fact",
+     "ev": "C018",
+     "quote": "此后千年来"
+    }
+   ],
+   "open": {
+    "text": "深渊本身是什么、门后是哪里，游戏文本目前没有给出定论。"
+   }
+  },
+  {
+   "id": "deadline",
+   "title": "“四十二天”是什么？",
+   "short": "四十二天？",
+   "group": "终幕",
+   "gate": 7,
+   "start": "deadline",
+   "nodes": [
+    "deadline",
+    "traveler",
+    "heaven"
+   ],
+   "answer": "是「诺迦法」在神之座宣布的最后期限：42 天。",
+   "steps": [
+    {
+     "era": "七国会议",
+     "title": "圣土化",
+     "text": "心海把圣土化解释为光界力过强、土地回归原初的现象。",
+     "level": "fact",
+     "ev": "Y025",
+     "quote": "圣土化"
+    },
+    {
+     "era": "神之座",
+     "title": "最后的 42 天",
+     "text": "「诺迦法」宣布限期，并要求各国选出一位神之眼持有者。",
+     "level": "fact",
+     "ev": "D043",
+     "quote": "最后的42天"
+    },
+    {
+     "era": "之后",
+     "title": "各国的回答",
+     "text": "女皇离开神之座后提出共同反抗，各国代表随即表态。",
+     "level": "fact",
+     "ev": "D047",
+     "quote": "我们唯有反抗到底"
+    }
+   ],
+   "open": {
+    "text": "期限到了会发生什么？目前的文本还没有写到。"
+   }
+  }
+ ]
 }

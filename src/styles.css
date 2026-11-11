@@ -363,21 +363,20 @@ figcaption strong { color: var(--ink); margin-right: 8px; }
 .sky-hint { position: absolute; right: 20px; top: 16px; max-width: 240px; font-size: 13px; line-height: 20px; color: var(--muted); text-align: right; z-index: 2; }
 .sky-svg { flex: 1; display: flex; min-height: 0; }
 #sky-svg { display: block; width: 100%; height: 100%; }
-#sky-svg .edge { stroke: #41557E; stroke-width: 1.6; }
-#sky-svg .edge.hot { stroke: var(--gold); stroke-width: 3; }
+#sky-svg .edge { stroke: #41557E; }
+#sky-svg .edge.hot { stroke: var(--gold); }
 #sky-svg .edge.fogged { stroke: #2E3B57; }
-#sky-svg .edge.hyp { stroke-dasharray: 6 5; }
 #sky-svg .elabel rect { fill: var(--surface); stroke: var(--gold); stroke-opacity: .6; }
-#sky-svg .elabel text { font-size: 13px; fill: var(--ink); text-anchor: middle; font-family: var(--sans); }
+#sky-svg .elabel text { fill: var(--ink); text-anchor: middle; font-family: var(--sans); }
 #sky-svg .node { cursor: pointer; }
 #sky-svg .node circle.body.k-being { fill: var(--being); } #sky-svg .node circle.body.k-event { fill: var(--event); } #sky-svg .node circle.body.k-place { fill: var(--place); }
-#sky-svg .node .ring { fill: none; stroke: var(--gold); stroke-opacity: .7; stroke-width: 2; }
-#sky-svg .node text { font-size: 14px; font-weight: 500; fill: var(--ink); stroke: #0D1424; stroke-width: 4px; paint-order: stroke; text-anchor: middle; font-family: var(--sans); }
-#sky-svg .node.sel text { font-size: 16px; font-weight: 700; }
+#sky-svg .node .ring { fill: none; stroke: var(--gold); stroke-opacity: .7; }
+#sky-svg .node text { font-weight: 500; fill: var(--ink); stroke: #0D1424; paint-order: stroke; text-anchor: middle; font-family: var(--sans); }
+#sky-svg .node.sel text { font-weight: 700; }
 #sky-svg .node:focus-visible { outline: none; }
 #sky-svg .node:focus-visible .body { stroke: #fff; stroke-width: 2; }
-#sky-svg .fognode circle { fill: var(--fog); fill-opacity: .6; stroke: #55627F; stroke-dasharray: 3 3; }
-#sky-svg .fognode text { font-size: 14px; fill: var(--muted); text-anchor: middle; font-family: var(--sans); }
+#sky-svg .fognode circle { fill: var(--fog); fill-opacity: .6; stroke: #55627F; }
+#sky-svg .fognode text { fill: var(--muted); text-anchor: middle; font-family: var(--sans); }
 #sky-svg .node, #sky-svg .edge, #sky-svg .fognode, #sky-svg .elabel { animation: grow .35s ease-out; }
 @keyframes grow { from { opacity: 0; } }
 .sky-legend { padding: 0 20px 16px; display: flex; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
@@ -568,3 +567,21 @@ figcaption strong { color: var(--ink); margin-right: 8px; }
 }
 .results .libsearch { flex: none; }
 .tablebox td:nth-child(3) { white-space: nowrap; }
+
+/* 问题很多时：左栏分组、可滚动 */
+.qlist { overflow-y: auto; max-height: calc(100vh - 73px); position: sticky; top: 0; align-self: flex-start; }
+.detail { max-height: calc(100vh - 73px); position: sticky; top: 0; align-self: flex-start; }
+.explore { align-items: stretch; }
+.sky { height: calc(100vh - 73px); position: sticky; top: 0; }
+#qlist h3 { font-size: 12px; line-height: 18px; font-weight: 500; color: var(--muted); margin: 10px 0 0; letter-spacing: .06em; }
+#qlist h3:first-child { margin-top: 0; }
+.qteaser { order: -1; margin: 0 0 6px; }
+.qlist h2 { order: -2; }
+@media (max-width: 1100px) {
+  .qlist, .detail, .sky { position: static; max-height: none; }
+  .sky { height: 56vh; }
+  #qlist h3 { display: none; }
+}
+@media (max-width: 720px) { .sky { height: 46vh; } }
+.detail { min-height: calc(100vh - 73px); }
+@media (max-width: 1100px) { .detail { min-height: 0; } }
