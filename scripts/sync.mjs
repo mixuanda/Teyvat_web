@@ -4,6 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { execSync } from 'node:child_process';
 import sharp from 'sharp';
+import { resolveOriginals } from './originals.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..');
 const src = path.resolve(process.env.RESEARCH_DIR || path.join(root, '..', 'teyvat-research'));
@@ -31,7 +32,11 @@ writeJSON('parts.json', structure.map((p) => ({
 
 // 证据：只保留网站要展示的字段
 const str = (v) => (typeof v === 'string' && v ? v : undefined);
-writeJSON('evidence.json', readJSON('cited_evidence.json').map((e) => ({
+const fullEvidence = readJSON('cited_evidence.json');
+const corpusCommit = readJSON('timeline_constraints.json').corpus_commit;
+const originals = await resolveOriginals(fullEvidence, corpusCommit);
+writeJSON('sources.json', originals.sources);
+writeJSON('evidence.json', fullEvidence.map((e) => ({
   id: e.id,
   n: e.note_number,
   quotes: (e.quote ? [e.quote] : (e.fragments || [])).map((q) => (typeof q === 'string' ? q : q.text || q.quote || '')).filter(Boolean),
@@ -42,6 +47,8 @@ writeJSON('evidence.json', readJSON('cited_evidence.json').map((e) => ({
   path: str(e.source_path),
   locator: str(e.locator),
   url: (Array.isArray(e.source_urls) && e.source_urls[0]) || str(e.source_url),
+  src: originals.links[e.id]?.src,
+  hits: originals.links[e.id]?.hits,
 })));
 
 // 年表约束：事件之间的类型化关系

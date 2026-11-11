@@ -115,6 +115,36 @@
   document.addEventListener('themechange', () => { readTheme(); if (reduce) draw(40000); });
   document.addEventListener('visibilitychange', () => { if (document.hidden) cancelAnimationFrame(raf); else start(); });
 
+  // ── 星图入口：把真实的星图画成一张小图 ──
+  const sc = document.getElementById('skycard-canvas');
+  if (sc) fetch(`${window.Site.base}data/stars.json`).then((r) => r.json()).then(({ stars, lines, consts }) => {
+    const COLORS = { 书籍与可读文本: '#f4d07a', 对白与任务: '#a9c9ff', '角色、物品与资料': '#8fe3c2', 现实文献: '#dba8f5' };
+    const paint = () => {
+      const d = Math.min(devicePixelRatio || 1, 2), w = sc.clientWidth, h = sc.clientHeight;
+      sc.width = w * d; sc.height = h * d;
+      const c = sc.getContext('2d'); c.setTransform(d, 0, 0, d, 0, 0);
+      const g = c.createRadialGradient(w * 0.6, h * 0.5, 0, w * 0.6, h * 0.5, w * 0.7);
+      g.addColorStop(0, '#162033'); g.addColorStop(1, '#080b12');
+      c.fillStyle = g; c.fillRect(0, 0, w, h);
+      const xs = stars.map((s) => s.x), ys = stars.map((s) => s.y);
+      const k = Math.min(w / (Math.max(...xs) - Math.min(...xs)), h / (Math.max(...ys) - Math.min(...ys))) * 1.25;
+      const X = (x) => x * k + w * 0.7, Y = (y) => y * k + h * 0.5;
+      c.lineWidth = 0.7;
+      for (const [a, b] of lines) { c.strokeStyle = `hsla(${consts[stars[a].p].hue},45%,68%,.35)`; c.beginPath(); c.moveTo(X(stars[a].x), Y(stars[a].y)); c.lineTo(X(stars[b].x), Y(stars[b].y)); c.stroke(); }
+      for (const s of stars) {
+        const r = 0.6 + Math.sqrt(s.m) * 0.55;
+        c.fillStyle = COLORS[s.k]; c.shadowColor = COLORS[s.k]; c.shadowBlur = r * 4;
+        c.beginPath(); c.arc(X(s.x), Y(s.y), r, 0, 6.283); c.fill();
+      }
+      c.shadowBlur = 0;
+      const fade = c.createLinearGradient(0, 0, w * 0.62, 0);
+      fade.addColorStop(0, 'rgba(8,11,18,.96)'); fade.addColorStop(0.45, 'rgba(8,11,18,.8)'); fade.addColorStop(1, 'rgba(8,11,18,0)');
+      c.fillStyle = fade; c.fillRect(0, 0, w, h);
+    };
+    paint();
+    addEventListener('resize', paint);
+  });
+
   // ── 数字滚动 ──
   const nums = document.querySelectorAll('[data-count]');
   const io = new IntersectionObserver((es) => es.forEach((e) => {

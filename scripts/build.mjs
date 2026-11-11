@@ -21,6 +21,28 @@ const chronology = readJSON('chronology.json');
 const relations = readJSON('relations.json');
 const plates = readJSON('plates.json');
 const partsDef = readJSON('parts.json');
+const sources = readJSON('sources.json');
+const SRC = Object.fromEntries(sources.map((x) => [x.id, x]));
+// 引文在原文中的上下文：命中的整行（过长则截取引文周围）
+for (const e of evidenceList) {
+  const src = SRC[e.src];
+  if (!src) continue;
+  const byLine = new Map();
+  e.quotes.forEach((q, i) => { const l = e.hits?.[i]; if (l >= 0) (byLine.get(l) || byLine.set(l, []).get(l)).push(q); });
+  e.ctx = [...byLine].sort((a, b) => a[0] - b[0]).map(([l, qs]) => {
+    const [who, full] = src.lines[l];
+    const idx = qs.map((q) => full.indexOf(q)).filter((i) => i >= 0);
+    let t = full;
+    if (full.length > 170 && idx.length) {
+      const from = Math.max(0, Math.min(...idx) - 55);
+      const to = Math.min(full.length, Math.max(...idx.map((i, k) => i + qs[k].length)) + 55);
+      t = (from ? '…' : '') + full.slice(from, to) + (to < full.length ? '…' : '');
+    } else if (full.length > 170) t = `${full.slice(0, 170)}…`;
+    return { l, s: who, t, qs };
+  });
+  e.loose = e.quotes.filter((q, i) => !(e.hits?.[i] >= 0));
+  delete e.hits;
+}
 const groupByTex = Object.fromEntries(plates.groups.map((g) => [g.tex, g]));
 
 // 每卷一个色相（取自壁画的石青与赭金之间）
@@ -37,6 +59,7 @@ const partOfTitle = new Map(parts.flatMap((p) => p.titles.map((t) => [t, p])));
 
 // ───────────────────────── 正文解析 ─────────────────────────
 const backrefs = {}; // 证据 id → 引用位置
+const paraCites = []; // 每段引用的证据组（星图的共引关系）
 let figureCounter = 0;
 const figureIndex = []; // {no, id, chapter, title}
 
@@ -135,6 +158,7 @@ const chapters = md.split(/^## /m).slice(1).map((raw, ci) => {
         continue;
       }
       const ids = [...new Set([...line.matchAll(/\[@([A-Za-z0-9]+)\]/g)].map((m) => m[1]))];
+      if (ids.length) paraCites.push({ no, sec: sec.id, ids });
       sec.html.push(`<p class="para"${ids.length ? ` data-evs="${ids.join(' ')}"` : ''}>${inline(line, ctx)}</p>`);
       const t = plain(line);
       sec.text.push(t);
@@ -150,6 +174,7 @@ figureIndex.forEach((f) => f.chapter.figures.push(f));
 const NAV = [
   ['read/', '读本', '读'],
   ['timeline/', '年表', '年'],
+  ['starmap/', '星图', '星'],
   ['evidence/', '证据', '证'],
   ['plates/', '图版', '图'],
   ['about/', '关于', '记'],
@@ -193,7 +218,7 @@ ${body}
 <p>非官方同人研究。《原神》及其文本、图像的权利归 HoYoverse / miHoYo 所有；图像来源与上传者逐幅列于<a href="${base}plates/">图版</a>页。</p>
 </div>
 </footer>
-<nav class="tabbar" aria-label="底部导航">${[['', '首页', '首'], ...NAV].map(([u, t, g]) => `<a href="${base}${u}"${(section || '') === u.replace('/', '') ? ' aria-current="page"' : ''}><i>${g}</i><span>${t}</span></a>`).join('')}</nav>
+<nav class="tabbar" aria-label="底部导航">${[['', '首页', '首'], ...NAV.slice(0, 5)].map(([u, t, g]) => `<a href="${base}${u}"${(section || '') === u.replace('/', '') ? ' aria-current="page"' : ''}><i>${g}</i><span>${t}</span></a>`).join('')}</nav>
 ${Object.entries(data).map(([k, v]) => `<script type="application/json" id="${k}">${JSON.stringify(v).replace(/</g, '\\u003c')}</script>`).join('\n')}
 <script src="${base}assets/app.js" defer></script>
 ${scripts.map((s) => `<script src="${base}assets/${s}" defer></script>`).join('\n')}
@@ -273,7 +298,7 @@ ${eraAnchors.map(([d, t, y], i) => `<a class="era-pt ${i % 2 ? 'up' : 'down'}" s
 <p class="hero-lede">年代、元素、循环、图像与多语对读。<br>一部每句话都能追到游戏原文的长篇研究——在这里，它可以被读、被查、被质疑。</p>
 <div class="hero-cta">
 <a class="btn primary" href="${base}read/01/">从第一章读起</a>
-<a class="btn" href="${base}timeline/">沿年表进入</a>
+<a class="btn" href="${base}starmap/">打开星图 ✦</a>
 </div>
 </div>
 <a class="hero-scroll" href="#numbers" aria-label="向下">↓</a>
@@ -281,6 +306,18 @@ ${eraAnchors.map(([d, t, y], i) => `<a class="era-pt ${i % 2 ? 'up' : 'down'}" s
 
 <section class="numbers" id="numbers">
 ${statItems.map(([n, l]) => `<div class="num"><b data-count="${n}">${fmt(n)}</b><span>${l}</span></div>`).join('')}
+</section>
+
+<section class="block">
+<a class="skycard" href="${base}starmap/">
+<canvas id="skycard-canvas" aria-hidden="true"></canvas>
+<div class="skycard-text">
+<p class="eyebrow">Star Chart</p>
+<h2>星图</h2>
+<p>研究引用过的每一篇原文都是一颗星。在同一段论述里被一起引用的文本连成星座——从任何一颗星出发，可以读到它的全文，也能看到它照亮了哪些论断。</p>
+<span class="btn small">进入星图 ✦</span>
+</div>
+</a>
 </section>
 
 <section class="block ways">
@@ -471,7 +508,7 @@ const KIND = (e) => (!e.path ? '教程与外部原典' : e.path.startsWith('Read
 <header class="page-head">
 <p class="eyebrow">Evidence</p>
 <h1>证据</h1>
-<p class="page-lede">${stats.evidence} 条短引，出自 ${stats.source_titles} 种来源题名。每条都能点回固定版本的原件，也能反查它在正文与年表里被用在了哪里。</p>
+<p class="page-lede">${stats.evidence} 条短引，出自 ${stats.source_titles} 种来源题名。每条都连着它所在的<a href="../text/">原文全文</a>（共 ${sources.length} 篇），也能反查它在正文与年表里被用在了哪里。</p>
 </header>
 <div class="ev-controls">
 <input type="search" id="ev-q" placeholder="搜索引文、来源题名、编号…" aria-label="搜索证据">
@@ -486,6 +523,185 @@ const KIND = (e) => (!e.path ? '教程与外部原典' : e.path.startsWith('Read
   fs.writeFileSync(path.join(dist, 'data', 'evidence.json'), JSON.stringify(evidenceList.map((e) => ({
     ...e, kind: KIND(e), refs: backrefs[e.id] || [], events: eventRefs[e.id] || [],
   }))));
+}
+
+// ───────────────────────── 原文（文库） ─────────────────────────
+const KIND_GLYPH = { 书籍与可读文本: '书', 对白与任务: '言', '角色、物品与资料': '物', 现实文献: '典' };
+const markFrags = (text, qs) => {
+  let h = esc(text);
+  for (const q of [...new Set(qs)].sort((a, b) => b.length - a.length)) {
+    const eq = esc(q);
+    if (eq) h = h.split(eq).join(`\u0001${eq}\u0002`);
+  }
+  return h.replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>');
+};
+for (const s of sources) {
+  const base = '../../';
+  const evs = s.evidence.map((id) => EV[id]).filter(Boolean);
+  const lineEv = new Map(); // 行 → [{e, qs}]
+  for (const e of evs) for (const c of e.ctx || []) (lineEv.get(c.l) || lineEv.set(c.l, []).get(c.l)).push({ e, qs: c.qs });
+  const dialog = s.lines.some((l) => l[0]);
+  const body = `
+<header class="chapter-head text-head">
+<p class="crumbs"><a href="${base}text/">原文</a><span>/</span><span>${esc(s.kind)}</span></p>
+<h1>${esc(s.title)}</h1>
+${s.heading ? `<p class="text-sub">${esc(s.heading)}</p>` : ''}
+<p class="chapter-meta"><span>${s.lines.length} 行</span><span>${evs.length} 条引证取自此篇</span><span>${esc(s.lang)}</span><span><a href="${esc(s.url)}" target="_blank" rel="noopener">固定版本原件 ↗</a></span><span><a href="${base}starmap/#${s.id}">在星图中 ✦</a></span></p>
+</header>
+<div class="reader text-reader">
+<article class="original${dialog ? ' dialog' : ''}">
+${s.lines.map(([who, t], i) => {
+    const hit = lineEv.get(i);
+    if (t.startsWith('＊')) return `<p class="oline sep" id="L${i}">${esc(t.replace(/^＊\s*/, '') || '＊')}</p>`;
+    return `<p class="oline${hit ? ' hit' : ''}" id="L${i}">${dialog ? `<span class="who">${esc(who)}</span>` : ''}<span class="otext">${hit ? markFrags(t, hit.flatMap((h) => h.qs)) : esc(t)}${hit ? citeRun(hit.map((h) => h.e.id), base) : ''}</span></p>`;
+  }).join('\n')}
+<p class="original-end">—— 全文完 · 文本取自《原神》${esc(source.corpus_version || '')} 固定语料 ——</p>
+</article>
+<aside class="evrail text-rail" aria-label="引用处">
+<p class="rail-title">这篇原文被用在</p>
+${evs.map((e) => `<div class="use"><p class="use-q"><a class="cite" data-ev="${e.id}" href="${base}evidence/#${e.id}">${e.n}</a>${e.quotes.map((q) => `<a href="#L${(e.ctx?.find((c) => c.qs.includes(q)) || {}).l ?? 0}">「${esc(q)}」</a>`).join('')}</p>
+<div class="ev-refs">${(backrefs[e.id] || []).map(([no, sec, title]) => `<a href="${base}read/${pad(no)}/#${sec}" title="${esc(title)}"><b>${pad(no)}</b>${esc(title)}</a>`).join('')}${(eventRefs[e.id] || []).map((id) => `<a href="${base}timeline/#${id}"><b>年表</b>${id}</a>`).join('')}</div></div>`).join('\n')}
+</aside>
+</div>`;
+  page({ url: `text/${s.id}/`, title: s.title, desc: s.lines.slice(0, 3).map((l) => l[1]).join(' ').slice(0, 110), body, cls: 'chapter text-page', data: { 'ev-data': Object.fromEntries(evs.map((e) => [e.id, e])) } });
+}
+{
+  const base = '../';
+  const kinds = [...new Set(sources.map((s) => s.kind))];
+  const body = `
+<header class="page-head">
+<p class="eyebrow">Library</p>
+<h1>原文</h1>
+<p class="page-lede">研究引用过的 ${sources.length} 篇原文全文：书籍、对白、角色故事与物品说明，均取自固定版本语料。被引用的句子在文中标出，并连回引用它的论述。</p>
+</header>
+<div class="ev-controls"><input type="search" id="lib-q" placeholder="按题名筛选…" aria-label="筛选原文"><span class="tl-count" id="lib-count">${sources.length} 篇</span></div>
+<div class="library">
+${kinds.map((k) => `<section class="lib-kind"><h2><i>${KIND_GLYPH[k]}</i>${k}<span>${sources.filter((s) => s.kind === k).length}</span></h2>
+<ul>${sources.filter((s) => s.kind === k).sort((a, b) => b.evidence.length - a.evidence.length || a.title.localeCompare(b.title, 'zh')).map((s) => `<li><a href="${base}text/${s.id}/"><span>${esc(s.title)}</span><em>${s.evidence.length} 引 · ${s.lines.length} 行</em></a></li>`).join('')}</ul></section>`).join('\n')}
+</div>
+<script>(()=>{const q=document.getElementById('lib-q'),c=document.getElementById('lib-count'),li=[...document.querySelectorAll('.library li')];q.addEventListener('input',()=>{const k=q.value.trim().toLowerCase();let n=0;li.forEach(l=>{const ok=!k||l.textContent.toLowerCase().includes(k);l.hidden=!ok;n+=ok});c.textContent=n+' 篇'})})()</script>`;
+  page({ url: 'text/', title: '原文', body, cls: 'library-page' });
+}
+
+// ───────────────────────── 星图 ─────────────────────────
+// 每篇被引用的文本是一颗星；同一段落里被一起引用的文本连成星座；星座按“卷”分布。
+{
+  const works = new Map(); // key → work
+  const workOfEv = {};
+  for (const e of evidenceList) {
+    const key = e.src || `x:${e.title}`;
+    let w = works.get(key);
+    if (!w) works.set(key, w = { id: e.src || `x${works.size}`, t: e.src ? SRC[e.src].title : e.title, k: e.src ? SRC[e.src].kind : '现实文献', src: !!e.src, url: e.src ? null : e.url, evs: [], paras: 0, partCount: {}, refs: new Map(), nb: new Map() });
+    w.evs.push(e);
+    workOfEv[e.id] = w;
+  }
+  const chapterPart = Object.fromEntries(chapters.map((c) => [c.no, c.part.idx]));
+  for (const pc of paraCites) {
+    const ws = [...new Set(pc.ids.map((id) => workOfEv[id]).filter(Boolean))];
+    for (const w of ws) { w.paras++; const p = chapterPart[pc.no]; w.partCount[p] = (w.partCount[p] || 0) + 1; }
+    for (let i = 0; i < ws.length; i++) for (let j = i + 1; j < ws.length; j++) {
+      ws[i].nb.set(ws[j], (ws[i].nb.get(ws[j]) || 0) + 1);
+      ws[j].nb.set(ws[i], (ws[j].nb.get(ws[i]) || 0) + 1);
+    }
+  }
+  const all = [...works.values()];
+  for (const w of all) {
+    for (const e of w.evs) for (const r of backrefs[e.id] || []) w.refs.set(`${r[0]}#${r[1]}`, r);
+    if (!w.paras) { w.paras = 1; const r = [...w.refs.values()][0]; w.partCount[r ? chapterPart[r[0]] : 0] = 1; }
+    w.part = Number(Object.entries(w.partCount).sort((a, b) => b[1] - a[1] || a[0] - b[0])[0][0]);
+  }
+  // 布局：十二个星座绕成一环，星座内部用力导向
+  let seed = 20261111;
+  const rnd = () => (seed = (seed * 48271) % 2147483647) / 2147483647;
+  const consts = parts.map((p, i) => {
+    const members = all.filter((w) => w.part === i);
+    return { idx: i, label: p.label, name: p.name, hue: p.hue, r: members.length ? 90 + Math.sqrt(members.length) * 50 : 0, members };
+  });
+  // 沿一个大环依次排开，弧长与星座大小成正比
+  const GAP = 120;
+  const circumference = consts.reduce((a, c) => a + (c.r ? 2 * c.r + GAP : 0), 0);
+  const RING = circumference / (2 * Math.PI);
+  let arc = 0;
+  for (const c of consts) {
+    if (!c.r) { c.x = 0; c.y = 0; continue; }
+    const a = ((arc + c.r + GAP / 2) / circumference) * Math.PI * 2 - Math.PI / 2;
+    arc += 2 * c.r + GAP;
+    const ring = RING + (c.idx % 2 ? 110 : -110);
+    c.x = Math.cos(a) * ring; c.y = Math.sin(a) * ring;
+  }
+  const lines = [];
+  for (const c of consts) {
+    const m = c.members;
+    m.forEach((w) => { const a = rnd() * 6.283, r = Math.sqrt(rnd()) * c.r; w.x = c.x + Math.cos(a) * r; w.y = c.y + Math.sin(a) * r; });
+    const edges = [];
+    m.forEach((w, i) => w.nb.forEach((wt, o) => { if (o.part === c.idx && m.indexOf(o) > i) edges.push([w, o, wt]); }));
+    for (let it = 0; it < 320; it++) {
+      const k = 1 - it / 320;
+      for (const w of m) { w.fx = (c.x - w.x) * 0.02; w.fy = (c.y - w.y) * 0.02; }
+      for (let i = 0; i < m.length; i++) for (let j = i + 1; j < m.length; j++) {
+        const a = m[i], b = m[j];
+        let dx = a.x - b.x, dy = a.y - b.y;
+        const d2 = dx * dx + dy * dy + 4;
+        const f = 60 / d2;
+        dx *= f; dy *= f;
+        a.fx += dx; a.fy += dy; b.fx -= dx; b.fy -= dy;
+      }
+      for (const [a, b, wt] of edges) {
+        const dx = b.x - a.x, dy = b.y - a.y;
+        const d = Math.hypot(dx, dy) || 1;
+        const f = ((d - 42) / d) * 0.03 * Math.min(3, wt);
+        a.fx += dx * f; a.fy += dy * f; b.fx -= dx * f; b.fy -= dy * f;
+      }
+      for (const w of m) { w.x += Math.max(-9, Math.min(9, w.fx)) * k; w.y += Math.max(-9, Math.min(9, w.fy)) * k; }
+    }
+    // 星座连线：共引关系的最大生成森林
+    const parent = new Map(m.map((w) => [w, w]));
+    const find = (w) => { while (parent.get(w) !== w) { parent.set(w, parent.get(parent.get(w))); w = parent.get(w); } return w; };
+    edges.sort((a, b) => b[2] - a[2] || Math.hypot(a[0].x - a[1].x, a[0].y - a[1].y) - Math.hypot(b[0].x - b[1].x, b[0].y - b[1].y));
+    for (const [a, b] of edges) { const ra = find(a), rb = find(b); if (ra !== rb) { parent.set(ra, rb); lines.push([a, b]); } }
+    if (m.length) c.r = Math.max(...m.map((w) => Math.hypot(w.x - c.x, w.y - c.y)), 60) + 40;
+  }
+  all.forEach((w, i) => { w.i = i; });
+  const secTitles = {};
+  const stars = all.map((w) => {
+    const refs = [...w.refs.values()].sort((a, b) => a[0] - b[0]);
+    refs.forEach((r) => { secTitles[`${r[0]}#${r[1]}`] = r[2]; });
+    return {
+      id: w.id, t: w.t, k: w.k, p: w.part, x: Math.round(w.x), y: Math.round(w.y), m: w.paras,
+      q: w.evs.flatMap((e) => e.quotes).slice(0, 4),
+      ev: w.evs.map((e) => e.id), src: w.src ? 1 : 0, url: w.url || undefined,
+      refs: refs.map((r) => `${r[0]}#${r[1]}`),
+      nc: w.nb.size,
+      nb: [...w.nb].sort((a, b) => b[1] - a[1]).slice(0, 14).map(([o, wt]) => [o.i, wt]),
+    };
+  });
+  fs.writeFileSync(path.join(dist, 'data', 'stars.json'), JSON.stringify({
+    stars, lines: lines.map(([a, b]) => [a.i, b.i]), secTitles,
+    consts: consts.map((c) => ({ label: c.label, name: c.name, hue: c.hue, x: Math.round(c.x), y: Math.round(c.y), r: Math.round(c.r), n: c.members.length })),
+  }));
+  const kindsCount = (k) => all.filter((w) => w.k === k).length;
+  const body = `
+<div class="sky" id="sky">
+<canvas id="sky-canvas" aria-label="星图：每颗星是一篇被引用的原文"></canvas>
+<div class="sky-head">
+<p class="eyebrow">Star Chart</p>
+<h1>星图</h1>
+<p>${all.length} 颗星，是这部研究引用过的 ${all.length} 篇文本。在同一段论述里被一起引用的文本，连成星座；十二个星座对应全书的导论与十一卷。越亮的星，被引用得越多。</p>
+<div class="sky-search"><input type="search" id="sky-q" placeholder="寻找一颗星：书名、人物、任务…" aria-label="寻找一颗星" autocomplete="off"><ul id="sky-hits" hidden></ul></div>
+</div>
+<div class="sky-legend">
+<span><i class="sp sp-book"></i>书籍与可读文本 ${kindsCount('书籍与可读文本')}</span>
+<span><i class="sp sp-talk"></i>对白与任务 ${kindsCount('对白与任务')}</span>
+<span><i class="sp sp-item"></i>角色、物品与资料 ${kindsCount('角色、物品与资料')}</span>
+<span><i class="sp sp-real"></i>现实文献 ${kindsCount('现实文献')}</span>
+</div>
+<div class="sky-zoom"><button type="button" id="sky-in" aria-label="放大">＋</button><button type="button" id="sky-out" aria-label="缩小">－</button><button type="button" id="sky-home" aria-label="全图">◎</button></div>
+<ol class="sky-consts" id="sky-consts">${consts.map((c, i) => (c.members.length ? `<li><button type="button" data-c="${i}" style="--part-h:${c.hue}"><b>${c.label}</b>${esc(c.name.replace(/^导论：/, ''))}</button></li>` : '')).join('')}</ol>
+<aside class="sky-panel" id="sky-panel" hidden></aside>
+<div class="sky-tip" id="sky-tip" hidden></div>
+<p class="sky-hint" id="sky-hint">拖动漫游 · 滚轮缩放 · 点一颗星</p>
+</div>`;
+  page({ url: 'starmap/', title: '星图', desc: '每篇被引用的原文是一颗星，被一起引用的文本连成星座。', body, cls: 'starmap', scripts: ['starmap.js'] });
 }
 
 // ───────────────────────── 关于 ─────────────────────────
@@ -511,11 +727,11 @@ const KIND = (e) => (!e.path ? '教程与外部原典' : e.path.startsWith('Read
 <section>
 <h2>文本从哪里来</h2>
 <p>全部游戏文本固定于同一份语料快照（版本 ${esc(source.corpus_version || '')}，提交 <code>${esc((source.corpus_commit || '').slice(0, 12))}</code>），引文以中文为主，关键段落作中、英、日、韩四语对读，数字与称谓的异文单独记录。</p>
-<p>网站只展示短引、分析与出处。完整的游戏原件、视频与字幕不随站发布。</p>
+<p>被引用的书籍、对白与角色故事在<a href="${base}text/">原文</a>页给出全文，引用的句子在其中标出；视频与字幕不随站发布。</p>
 </section>
 <section>
 <h2>怎样读</h2>
-<p><a href="${base}read/">读本</a>适合从头到尾读；<a href="${base}timeline/">年表</a>适合带着“某件事发生在何时”的问题进入；<a href="${base}evidence/">证据</a>适合反过来查——从一句原文出发，看它支撑了哪些论述。任何页面按 <kbd>/</kbd> 都可以全文搜索。</p>
+<p><a href="${base}starmap/">星图</a>把被引用的 ${sources.length} 余篇文本画成星空，适合漫游；<a href="${base}read/">读本</a>适合从头到尾读；<a href="${base}timeline/">年表</a>适合带着“某件事发生在何时”的问题进入；<a href="${base}evidence/">证据</a>适合反过来查——从一句原文出发，看它支撑了哪些论述。任何页面按 <kbd>/</kbd> 都可以全文搜索。</p>
 </section>
 <section>
 <h2>声明</h2>
@@ -534,6 +750,7 @@ const KIND = (e) => (!e.path ? '教程与外部原典' : e.path.startsWith('Read
   }
   for (const e of chronology) if (e.event_id) idx.push(['事', `${e.date} · ${e.region}`, `timeline/#${e.event_id}`, e.event]);
   for (const e of evidenceList) idx.push(['证', e.title, `evidence/#${e.id}`, e.quotes.join(' / ')]);
+  for (const x of sources) idx.push(['文', x.title, `text/${x.id}/`, x.lines.slice(0, 4).map((l) => l[1]).join(' ').slice(0, 160)]);
   fs.writeFileSync(path.join(dist, 'data', 'search.json'), JSON.stringify(idx));
 }
 

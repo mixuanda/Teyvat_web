@@ -28,13 +28,20 @@
     await loadAll();
     return evMap[id];
   };
+  const markQ = (t, qs) => {
+    let out = esc(t);
+    for (const q of [...new Set(qs)].sort((a, b) => b.length - a.length)) out = out.split(esc(q)).join(`\u0001${esc(q)}\u0002`);
+    return out.replace(/\u0001/g, '<mark>').replace(/\u0002/g, '</mark>');
+  };
   const evCard = (e, { refs = false, hl = null } = {}) => {
     const h = (s) => (hl ? hl(esc(s)) : esc(s));
     return `<article class="evcard" id="${refs ? e.id : `card-${e.id}`}" data-id="${e.id}">
 <header><span class="ev-n">${e.n}</span><span class="ev-title">${h(e.title)}</span><span class="ev-id">${e.id}</span></header>
-<blockquote>${e.quotes.map((q) => `<span>${h(q)}</span>`).join('')}</blockquote>
+<blockquote>${e.ctx?.length
+      ? e.ctx.map((c) => `<a class="ctx" href="${base}text/${e.src}/#L${c.l}" title="在原文中查看这一行">${c.s ? `<i>${esc(c.s)}</i>` : ''}${markQ(c.t, c.qs)}</a>`).join('') + (e.loose || []).map((q) => `<span>${h(q)}</span>`).join('')
+      : e.quotes.map((q) => `<span>${h(q)}</span>`).join('')}</blockquote>
 ${e.note ? `<p class="ev-note">${h(e.note)}</p>` : ''}
-<footer>${e.speaker ? `<span>${esc(e.speaker)}</span>` : ''}${e.lang && e.lang !== 'CHS' ? `<span>${esc(e.lang)}</span>` : ''}${e.locator ? `<span>${esc(e.locator)}</span>` : ''}${e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">固定版本原件 ↗</a>` : ''}${refs ? '' : `<a href="${base}evidence/#${e.id}">反查引用处 →</a>`}</footer>
+<footer>${e.speaker ? `<span>${esc(e.speaker)}</span>` : ''}${e.lang && e.lang !== 'CHS' ? `<span>${esc(e.lang)}</span>` : ''}${e.locator ? `<span>${esc(e.locator)}</span>` : ''}${e.src ? `<a href="${base}text/${e.src}/${e.ctx?.[0] ? `#L${e.ctx[0].l}` : ''}">读全文 →</a><a href="${base}starmap/#${e.src}">星图 ✦</a>` : e.url ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">出处 ↗</a>` : ''}${refs ? '' : `<a href="${base}evidence/#${e.id}">反查引用处 →</a>`}</footer>
 ${refs ? refsHTML(e) : ''}
 </article>`;
   };
@@ -103,7 +110,7 @@ ${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d
   // ── 全文搜索 ──
   let index = null;
   let searchEl = null;
-  const KIND = { 章: '章', 节: '节', 事: '年', 证: '证' };
+  const KIND = { 章: '章', 节: '节', 事: '年', 证: '证', 文: '文' };
   const openSearch = async () => {
     if (searchEl) return;
     searchEl = document.createElement('div');
