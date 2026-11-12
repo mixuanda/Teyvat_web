@@ -1,0 +1,2461 @@
+{
+ "corpus": {
+  "title": "全量语料、资产清单与逐项复核记录",
+  "blocks": [
+   {
+    "type": "p",
+    "segs": [
+     [
+      "本文使用《原神》7.2.0固定文本快照，版本记录为CNRELWin7.2.0_R49086080_S49291486_D49291486，来自",
+      null
+     ],
+     [
+      "AnimeGameData固定提交",
+      "https://github.com/DimbreathBot/AnimeGameData/tree/d7f2135c7eb0052e842e0f187f4e5bb88c304737"
+     ],
+     [
+      "。文件目录、来源关联、语义阅读和像素查看分别使用独立账本，记录各自已经完成的范围。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "h",
+    "text": "固定提交的全文件扫描"
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "固定提交的156,131个跟踪文件已全部取得、读取并扫描，合计4,151,856,376字节，读取及解析失败数为零。范围包括119,803份BinOutput文件、2,279份Excel配置、29,175份各语言可读文件、4,839份字幕、34份文本表及版本说明。递归扫描保留原字段和完整定位；资源名、路径、数字交叉引用及重复关系分别登记。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "文本来源图进一步逐份核验122,082份配置JSON和4,839份字幕，连同中文文本表共126,923份来源文件均与固定Git对象相合。来源图含57,643份对白文件、507份任务见闻，以及主任务、子任务、物品、角色和场景之间的关联。主任务配置中有312项魔神任务来源，其中239项具有Codex见闻，另73项没有对应Codex；配置条目与归档任务分别保留。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "全部57,643份Talk文件的原件、数据库与固定版本清单逐项相合，含438,876个结构对白位置。按完整原文件范围继承的已读场景为1,071份，其中74份具有完整四语阅读；7,059份为空对白列表，其余49,513份仍须继续闭合整场阅读。已核引文、单条字符串和Codex覆盖的对白分别保留局部范围，全局共享容器保留实际已读的节点选择子。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "table",
+    "head": [
+     [
+      [
+       "lrrr@{}}语言",
+       null
+      ]
+     ],
+     [
+      [
+       "文本表条目",
+       null
+      ]
+     ],
+     [
+      [
+       "可读文件",
+       null
+      ]
+     ],
+     [
+      [
+       "可读字符数",
+       null
+      ]
+     ]
+    ],
+    "rows": [
+     [
+      [
+       [
+        "简体中文",
+        null
+       ]
+      ],
+      [
+       [
+        "886,217",
+        null
+       ]
+      ],
+      [
+       [
+        "1,945",
+        null
+       ]
+      ],
+      [
+       [
+        "943,929",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "英文",
+        null
+       ]
+      ],
+      [
+       [
+        "854,601",
+        null
+       ]
+      ],
+      [
+       [
+        "1,945",
+        null
+       ]
+      ],
+      [
+       [
+        "3,402,014",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "日文",
+        null
+       ]
+      ],
+      [
+       [
+        "854,481",
+        null
+       ]
+      ],
+      [
+       [
+        "1,945",
+        null
+       ]
+      ],
+      [
+       [
+        "1,285,606",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "韩文",
+        null
+       ]
+      ],
+      [
+       [
+        "854,661",
+        null
+       ]
+      ],
+      [
+       [
+        "1,945",
+        null
+       ]
+      ],
+      [
+       [
+        "1,499,978",
+        null
+       ]
+      ]
+     ]
+    ],
+    "caption": [
+     [
+      "论文主要使用的四语语料。常规文本表与Medium表合并统计；可读文件字符数统一换行后计量，保留题名、标记和图像引用。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "中文文本表按完全相同的字符串去重后为574,592项、15,302,484字符。其中551,128项已经连接到明确字段或字面相同的来源，23,464项仍无此类关联；未定型数值匹配另列候选。候选中的121条角色、物件、语音及玩法相关字符串已逐条通读，共16,807字符。两条数值匹配被核定为物件ID或语音文件ID的偶合；三项课业评语则通过完整配置记录恢复来源，并完成四语对读。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "全局对白容器另作逐节点关联。只因某任务调用其中一条语句，就把整份容器的11,792条对白全部分配给该任务的做法，已在来源图中修正。本稿保留对白节点、文本标识与明确后继边，使补充对白的归属能够逐项重建。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "第七次增订进一步核对Talk配置的载入类型与编号空间。活动、场景与主任务中出现相同数字时，分别按各自类型处理；627项缺乏独立任务连接的关联从魔神任务附属表中撤去，涉及19个主任务编号，其中15项具有魔神任务Codex。原文、文件指纹和实际阅读记录全部保留为各自来源。已刊632项引文来源与这627项错关联文件没有交集；修订结果以新覆盖表和关系补丁保存。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "h",
+    "text": "中文全文阅读已经闭合的集合"
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "固定快照中的1,945份中文可读文件已全部逐份检查，共943,929个统一换行后的字符。每份文献具有独立摘要、来源路径、文件指纹及内容分类。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "table",
+    "head": [
+     [
+      [
+       "lr@{}}中文可读文件的互斥主分类",
+       null
+      ]
+     ],
+     [
+      [
+       "数量",
+       null
+      ]
+     ]
+    ],
+    "rows": [
+     [
+      [
+       [
+        "含正文",
+        null
+       ]
+      ],
+      [
+       [
+        "1,788",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "单独归类的重复文件",
+        null
+       ]
+      ],
+      [
+       [
+        "1",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "仅含图片引用",
+        null
+       ]
+      ],
+      [
+       [
+        "98",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "空白",
+        null
+       ]
+      ],
+      [
+       [
+        "22",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "测试标记或测试占位",
+        null
+       ]
+      ],
+      [
+       [
+        "19",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "其他占位",
+        null
+       ]
+      ],
+      [
+       [
+        "10",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "仅题名或索引",
+        null
+       ]
+      ],
+      [
+       [
+        "7",
+        null
+       ]
+      ]
+     ],
+     [
+      [
+       [
+        "合计",
+        null
+       ]
+      ],
+      [
+       [
+        "1,945",
+        null
+       ]
+      ]
+     ]
+    ],
+    "caption": [
+     [
+      "中文可读文献的逐份复核。正文中的测试标记与重复关系另有独立字段。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "角色资料的124个配置组已逐组全文阅读，包含角色详细、故事、特殊条目、神之眼及条件变化后的成对文本。这些组含2,119个去重非空文本标识；按组计量为598,079字符。两个旅行者配置组分别保留，因此此处的124是资料组数。前后两份阅读账本各覆盖62组，经清单核对没有遗漏或重叠。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "第七章的23项Codex主任务全部完成正文、选项、分支及补充对白阅读。主干共6,863个结构位置、171,924字符；补充对白共1,259个位置、29,842字符。全239项Codex另有逐项状态表：第七次增订新增80项完整任务阅读，连同此前23项，累计103项；其余136项保留来源及后续全文阅读分组。新增任务按六个连续批次读取，覆盖从旅程开始到稻妻废除眼狩令后的答疑，包含原分配的全部选项和补充文本。编号碰撞而误列的活动及场景材料另行登记实际阅读，不计入相应魔神任务的历史。既有章节中已完成的单个场景精读按场景登记，不自动换算为整项任务完成。其他世界任务、传说任务、活动对白和角色语音按具体来源保留已读记录，全语料的逐段语义阅读仍有未完成部分。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "图像相关的2,834条去重中文候选已全部通读，共175,455字符。其主分类为剧情线索892条、史料性描述455条、普通装饰588条、界面899条。壁画、图案、家纹、涂鸦、地图、织卷、刻录与教程操作均保留具体语境；测试和隐藏标记另列。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "h",
+    "text": "完整来源的多语对读"
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "既有精读清单核对368项游戏材料的四语对应，并记录19部可读文献、26个对白场景、6项角色故事及6项物品或知识说明的完整四语阅读。对白场景共1,277个结构位置，保留选项与占位；《调律师的笔记·上》另核读法文与德文全文。画师连续手记、《千夜故事集》六卷、《石素人》三卷、避难所日志及古月记录等，又按完整组文核读英文或其他对应语种。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "第六次增订另完成37项角色条目的完整中英日韩对读，以及22个第七章完整对白场景、共916个结构位置的四语对读。这些项目包括对既有来源的重新通读；各项以文本标识与来源文件去重核算。《魔女的谕示》三项完整配置记录的可恢复四语文字另行阅读；《旁白的注脚》17句会话完成中英全文对读。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "第七次增订新增26个完整场景的中英日韩对读，共923个对白位置，均包含原文件中提供的互选分支。材料依次连接蒙德元素循环、璃月接权与工艺、深渊教团早期方案、稻妻愿望访谈及政治行动；佳酿节和学院庆典的独立会话另用于记忆媒介与历史重复的比较。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "多语账本分别记录主体、动作方向、时间关系、情态和省略。例如菲谢尔设定集的英文改变了世界之兽一处的主宾关系；纳西妲成对资料在匿名来信动机上出现语种差别；七变技术的韩文没有中英日的负向压力限定；三月相关对白在破碎月亮的名称上保留不同指称。这些差异均随完整段落进入论证。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "第八次增订以19篇作品为单位，重新完整对读76份中英日韩原件，另完整复核《雷穆利亚衰亡史》卷一中英两份。这些文献涵盖沙漠工程记录、雷穆利亚与金蜂叙事、鲁杰罗研究、水仙十字院后的实验书页及雅各布的重构记录。中文作品均属于此前已读文献的复核；本轮整篇阅读和语种覆盖逐文件记录，重取与复读分别保留。新增22条短引，与既有3条来源说明的修订逐字对照恢复原件；其余引文以未改变的记录继承前次固定来源核验。跨语言同源合并计算引文长度。支线、活动、NPC、大世界与非标准对白字段的全来源队列继续保留。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "第九次增订以21篇作品为单位，重新完整对读84份中英日韩固定原件，重点为《介绍》、祭礼冠、《霜辰》《晨星与月的晓歌》《船工的颂诗》及北地保存记录。另对人格重构、愿望与法图纳、古月保存和认知实验的中文全文作交叉复核；按路径与内容指纹去重，本轮合计完整复读90份语言文件、27部作品。遗址专题的四项新增引文，分别核对《古代生物调查》的两次海迪夫交谈、《日轮与菅名山》的迷雾和家史分段，以及《颠倒古城》的完整地理志条目。上述四项使用公开游戏原文转录并记录读取范围，地理志的资源关联另由7.2配置核实。新增八项固定原件短引与四项游戏转录短引分别验证，旧注释的一处发言人归属修正，另有一处既核原句缩短。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "第十次增订对双子衣装与《降临之翼》两篇作品的八份四语全文、六场对白的四语完整场景、三篇人物故事及原石说明的四语全文作交叉精读，共四十八个作品或场景的语言单位。六场对白合计四百二十个配置位置，包含分支和性别变体；航行日志的发生时间与当前读取时间分别编年。固定版本的八份主表与中型文本表均恢复完整字节并核对历史内容指纹，新增引文直接解析对白配置与文本哈希。四份新视频的完整公开字幕及一份中文视频的全时段逐秒字幕采样用于提出研究问题，随后回到游戏原件和实际画面逐项核查。中文采样的一千二百六十六帧形成五百七十一个去重字幕段，九个完整画面另作观察；其来源与读取方式保留独立登记。新增十项引证含九项游戏证据和一组原典比较；原型对读区分《光辉之书》的现代译注与Mathers一八八七年导论。既有全文阅读账本、支线与大世界队列及全部图像待审清单继续按原状态保存。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "h",
+    "text": "图像引用与原件配对"
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "中文Readable直接引用209个不同图片资源名。已有109项与旧资源档案配对并查看；本轮原100项待配对清单中，50项取得精确原件并查看，14项取得内容对应的公开转存图，35项尚无可取得的对应内容图，1项为占位。因此中文清单当前有159项精确原件、14项内容对应图；资源名和内容相合分别记录。所有语言Readable的原始标签共210种写法；差集中的意大利语、土耳其语标签在茶博士刘苏的资源名中插入空格，形成截词变体，其图像归属与中文同项比较，不增加一幅已证明存在的独立图像。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "公开3.2档案固定树有29,880条PNG路径；其中已取得29,600条路径、28,017个不同图像像素身份。公开4.6档案固定树有48,512条PNG路径；其中已取得47,864条路径、46,631个不同图像像素身份。两套档案实际在场图像均完成全部像素解码和文件、像素指纹核验，失败数为零；按尺寸与RGBA内容合并为54,909个像素身份。3.2仍缺270个Git对象、280条路径，4.6仍缺640个对象、648条路径。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "旧档案既有语义查看账本覆盖467条路径，对应445个文件及像素身份。与前次已经实际查看的3,358个图像身份交叉后，其中1,763项也在旧档案中，两个既读集合有19项重合，故可准确继承的旧档案已看集合为2,189项。第七次增订再逐页、逐图观察512个此前未看像素，使用43张联页并对细节另作放大，累计旧档案已看2,701项。第八次增订又逐幅查看六个此前未看像素，并复看同系列雷符文与既有约印、界面徽记，旧档案独立已看数因此为2,707项。第九次增订逐项复看27项已刊图像输入，并查看颠倒古城两个原始分辨率版本；两者均对应此前目录内的未看像素，累计已看2,709项，其余52,200项保留逐像素待审记录。全部54,909项都保留在队列中，图案、地形、材质、角色、怪物、特效、界面与技术通道分别记录；文件观察、场景用途和具体历史解释使用不同状态字段。图像范围包含壁画候选、阅读物插图、元素及键纹图标；版本PV、官方漫画、实机截图和原典馆藏图版另有来源账本。重复取得的六符印画格与既有文件内容完全相同，作为再次核查登记，不增加独立图像数量。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "官方5.5资源包中，本轮取得并查看43个目标资源名对应的53条纹理记录；同名不同尺寸与版本分别保留。正式图版选用的新增材料为13幅包内原件及1幅公开游戏内容转存图，分别呈现家纹、六页绘卷、路线、工程草图、当代纪念图、家庭画像和部族故事。第八次增订增加一组七元素符文原图对照；第九次增订再加入颠倒古城原图，并重组鹤观、三月与纳塔圆形母题的比较图版。正文展示图像总计76幅，组成29组图版，另有2幅结构图；图源目录逐项给出载体、来源和版面处理。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "h",
+    "text": "官方当前资源与独立图像输入的全清单"
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "官方启动器当前发布分支确认版本7.2.0，Sophon主资源清单含2,795个文件。清单内2,033个资源块合计61,342,745,030字节，279个预制影像合计45,903,762,528字节；其他客户端资源单列。已完成分片与整文件校验并解码的3个资源块共95,560,418字节，包含812条Texture2D记录及相应精灵引用。其余2,030块、279个预制影像及其他未取得文件均保留准确名称、大小、校验值和取得状态。此前取得流程在GitHub与官方资源端记录CONNECT 403，失败位置与待取得对象保存在逐项账本中。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "固定开源角色工具图像档案另取得2,749个文件并核验Git对象。该目录包含游戏图像与自定义内容，来源归属通过资源名、文件路径、实际图像和跨源像素比较分别确认。Somnia及QuantumCatalyst的自定义图像单独登记；名称相同本身只作为定位线索。这批2,749个文件与812条当前官方纹理合计3,561条来源记录，按尺寸和RGBA内容合并为3,358个不同像素身份，全部解码成功。73张联页全部实际查看，覆盖全部3,358个像素身份和3,561条来源记录；另对26张原图放大复核。开源角色工具的2,749条记录按互斥关系分为：与本轮官方块同像素62项、与旧公共档案同像素1,815项、仅与配置资源同名818项、尚无配置或像素来源归属39项、自定义图像15项。逐页观看、原图观察与来源归属分别记录。",
+      null
+     ]
+    ]
+   },
+   {
+    "type": "h",
+    "text": "随附复核材料"
+   },
+   {
+    "type": "p",
+    "segs": [
+     [
+      "源码包保留逐条短引、原文定位、版本指纹、角色与任务阅读账本、图像来源目录、像素核验摘要和未取得资产清单。来源图与资产扫描的紧凑审计材料保留文件级指纹、资源定位及关联关系。编年继续区分事件发生、文献制作和保存、当代发现三种时间，跨时事件同时登记人物亲历顺序。",
+      null
+     ]
+    ]
+   }
+  ]
+ },
+ "images": {
+  "title": "图像来源与版面处理目录",
+  "intro": [
+   [
+    "图版逐项注明游戏场景、作品载体、保存者和原图地址。游戏壁画、教程、道具和版本PV画格分别按其实际出处登记；现实原典图版另列作者与馆藏。公开资源档案以固定提交和所属版本定位，游戏文本中的资源引用用于配对。保留全幅的图像按原件展示，白色透明界面徽记统一置于深灰底；截取画格或移除空白边缘的图片保留准确像素坐标。完整来源页、文件指纹及逐图观察另见随附的图像目录。",
+    null
+   ]
+  ],
+  "rows": [
+   {
+    "id": "SPACE1",
+    "scene": [
+     [
+      "《画中天》教程第1页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "BWIKI《原神》社区档案",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://patchwiki.biligame.com/images/ys/a/a2/5g06sxs78sizc0v5sz6ow8fcs9r1o2n.png"
+     ],
+     [
+      "；教程图整幅保留，无裁切。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "SPACE2",
+    "scene": [
+     [
+      "《画中天》教程第2页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "BWIKI《原神》社区档案",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://patchwiki.biligame.com/images/ys/3/3f/fq9h3h9ljbef3j17qbxiekb5fql3unh.png"
+     ],
+     [
+      "；教程图整幅保留，无裁切。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "SPACE3",
+    "scene": [
+     [
+      "《画中天》教程第3页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "BWIKI《原神》社区档案",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://patchwiki.biligame.com/images/ys/d/d4/0wcf0wqz3z4fspj50u02nhlugvq5z38.png"
+     ],
+     [
+      "；教程图整幅保留，无裁切。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "SCROLL1",
+    "scene": [
+     [
+      "《「炽空的绘卷」》物品展示图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "BWIKI《原神》社区档案",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://patchwiki.biligame.com/images/ys/9/93/726em6pi7wzejpyzken4ecf2nya9l3a.png"
+     ],
+     [
+      "；原图整幅保留；物品图保留原有背景。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "MOON1",
+    "scene": [
+     [
+      "《名于何处？》三月壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Fiona Spear",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2026/02/22/43486162/083a53bce57c6b213bee8d81b6a63109_8453401854467906569.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "MOON2",
+    "scene": [
+     [
+      "《名于何处？》三月壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Fiona Spear",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2026/02/22/43486162/52d66a78dd0f3ca1ad4910ea1d9faec0_1085285094205559530.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "SNOW1",
+    "scene": [
+     [
+      "龙脊雪山古城壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ハルヴァタット学院の劣等生",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2024/05/03/7859162/3c2f2fc3b039d660751552ee44c925db_6883501523729468392.jpg"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "TSU5",
+    "scene": [
+     [
+      "鹤观知比山地下遗迹壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "X-Law86（截图署名 Lexa）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/1c3c90b90ac98b847a78ca6463331922_1286106089974566537.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "TSU6",
+    "scene": [
+     [
+      "鹤观仪式壁画平面图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoWiki 上传者 237301566",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/04/07/237301566/18fd7bca4fe23e07356d57303a6a6284_6096084426888266003.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "TSU1",
+    "scene": [
+     [
+      "鹤观知比山地下遗迹壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "X-Law86（截图署名 Lexa）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/91eb3347d5766ebee1f738145fad65cf_5304879189811642467.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "TSU7",
+    "scene": [
+     [
+      "鹤观遗迹高处壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Sportskeeda 文章所载实机图",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://staticg.sportskeeda.com/editor/2021/10/e690a-16344211296164-1920.jpg"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "TSU2",
+    "scene": [
+     [
+      "鹤观知比山地下遗迹壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "X-Law86（截图署名 Lexa）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/cf027bbd000dc711a7e59a572d6a0289_1754053671078240406.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "TSU3",
+    "scene": [
+     [
+      "鹤观知比山地下遗迹壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "X-Law86（截图署名 Lexa）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/3c03ca255a3668c0cb46dd73cd67f05c_2124354285679240032.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "TSU4",
+    "scene": [
+     [
+      "鹤观知比山地下遗迹壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "X-Law86（截图署名 Lexa）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2021/10/14/139806851/758ce32971ecc7fbda150e630223fc70_6896080753814540418.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "CHEN1",
+    "scene": [
+     [
+      "沉玉谷古壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Stardustine",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2024/02/02/246516657/df9ed16863a8422c4eb731a537d29a27_7579729952487275409.jpg"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "GUR1",
+    "scene": [
+     [
+      "居尔城遗迹双人壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Aether Ezriel（截图署名 Ezriel）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2024/05/03/20619958/c913dc62d77cc65c73985f717b6ea8a5_7049215120839754078.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "REM1",
+    "scene": [
+     [
+      "褪色城堡航海曲谱壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "sanda888",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2024/04/30/161005147/f09bb9aaaacb7c8b10fa6a24ee6b0901_3853367284720970226.jpeg"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "NAT1",
+    "scene": [
+     [
+      "奥奇卡纳塔：人形覆盖层",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoWiki 上传者 237301566",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/04/11/237301566/4c3b65f258e8510e957ae0e66a315751_1225196187870442325.png"
+     ],
+     [
+      "；裁切框 [0, 416, 4096, 1993]；坐标单位为像素",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "NAT2",
+    "scene": [
+     [
+      "奥奇卡纳塔：显露的龙形旧层",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoWiki 上传者 237301566",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/04/11/237301566/f6ba6a3e7bdbfa5edb50df930a07d9a0_8777173053661942926.png"
+     ],
+     [
+      "；裁切框 [0, 208, 2048, 996]；坐标单位为像素",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "NAT4",
+    "scene": [
+     [
+      "纳塔大黑龙壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoWiki 上传者 170306649",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/01/06/170306649/5997fa20dc470865640c2d4095f0a19a_4973715591977100209.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "NAT3",
+    "scene": [
+     [
+      "奥奇卡纳塔：演化壁画",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoWiki 上传者 237301566",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2025/04/11/237301566/60c4ab1854061e6aaef7246fe3c46931_8751326884804268545.png"
+     ],
+     [
+      "；裁切框 [0, 174, 2048, 1026]；坐标单位为像素",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ARA1",
+    "scene": [
+     [
+      "往昔的桓那兰那壁画后续状态",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Fiona Spear",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2023/01/01/43486162/821e5cfd862df9d61a09674ff77d380c_7736297326598081399.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "MANGA1",
+    "scene": [
+     [
+      "官方漫画序章《风之歌》，官方阅读器序列第71张图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoverse 官方漫画",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://webstatic.hoyoverse.com/upload/uploadstatic/contentweb/20181211/2018121116310279054.png"
+     ],
+     [
+      "；裁切框 [0, 0, 800, 670]；坐标单位为像素",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "MANGA2",
+    "scene": [
+     [
+      "官方漫画序章《风之歌》，官方阅读器序列第72张图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoverse 官方漫画",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://webstatic.hoyoverse.com/upload/uploadstatic/contentweb/20181211/2018121116310446759.png"
+     ],
+     [
+      "；裁切框 [0, 260, 800, 760]；坐标单位为像素",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ROOT1",
+    "scene": [
+     [
+      "根源之轮任务道具图标，第1片",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoWiki 上传者 35428890",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2024/05/01/35428890/a169f3a8a71fa1cd9be2aceb12837059_6028347167252633932.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ROOT2",
+    "scene": [
+     [
+      "根源之轮任务道具图标，第2片",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoWiki 上传者 35428890",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2024/05/01/35428890/4b7716bc1a72d242b78d77080651b738_4086989871740546757.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ROOT3",
+    "scene": [
+     [
+      "根源之轮任务道具图标，第3片",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "HoYoWiki 上传者 35428890",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://act-upload.hoyoverse.com/event-ugc-hoyowiki/2024/05/01/35428890/835e9aa023705d1ffa15701ccb9a02bc_8888885717223210459.png"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "SEAL1",
+    "scene": [
+     [
+      "《神秘的书页·其一》与《大师鲁杰罗的研究笔记》内嵌图像",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/ReadPic/Tactical/UI_ReadPic_Tactical.png"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "KIR1",
+    "scene": [
+     [
+      "基歇尔《埃及的俄狄浦斯》：十神名之流溢体系图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "From The New York Public Library",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://iiif-prod.nypl.org/index.php?id=1526785&t=v"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本1652–1654",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "KEY1",
+    "scene": [
+     [
+      "渊下宫键纹道具图标",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100937.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "KEY2",
+    "scene": [
+     [
+      "渊下宫键纹道具图标",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100936.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "KEY3",
+    "scene": [
+     [
+      "渊下宫键纹道具图标",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100935.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "KEY4",
+    "scene": [
+     [
+      "渊下宫键纹道具图标",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100938.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "KEY5",
+    "scene": [
+     [
+      "渊下宫键纹道具图标",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/ItemIcon/UI_ItemIcon_100934.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "KEY6",
+    "scene": [
+     [
+      "渊下宫键纹探索知识配图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/AbyssalPalaceTutorial/Orb/UI_AbyssalPalaceTutorial_Orb.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ELM1",
+    "scene": [
+     [
+      "风元素界面徽记",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Wind/UI_Icon_Element_Wind.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ELM2",
+    "scene": [
+     [
+      "岩元素界面徽记",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Rock/UI_Icon_Element_Rock.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ELM3",
+    "scene": [
+     [
+      "雷元素界面徽记",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Electric/UI_Icon_Element_Electric.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ELM4",
+    "scene": [
+     [
+      "草元素界面徽记",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Grass/UI_Icon_Element_Grass.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ELM5",
+    "scene": [
+     [
+      "水元素界面徽记",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Water/UI_Icon_Element_Water.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ELM6",
+    "scene": [
+     [
+      "火元素界面徽记",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Fire/UI_Icon_Element_Fire.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "ELM7",
+    "scene": [
+     [
+      "冰元素界面徽记",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/ylyking/GenshinTextures-full/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Icon/Element/Ice/UI_Icon_Element_Ice.png"
+     ],
+     [
+      "；原图不修改；白色界面图标由LaTeX置于深灰底以保持对比。；档案版本3.2.0",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "PV7B",
+    "scene": [
+     [
+      "六个带独立纹样的发光标记",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Monsoon Flower（版本PV画面转载）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/465966798/23984532c7a967bf38d238ae0fc3ee60_7012433394200301669.PNG"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "PV7E",
+    "scene": [
+     [
+      "重叠星形、环形与多向光束",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Monsoon Flower（版本PV画面转载）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/465966798/47bc20e50268ebde836f1bc9d6a33c5c_1513502885270120219.PNG"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "PV7A",
+    "scene": [
+     [
+      "蒙德风神像与天空中的发光轴线",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Monsoon Flower（版本PV画面转载）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2026/10/27/465966798/5f8f5276e3455d6975e67925e1f3753f_7900262942670379886.PNG"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "PV7C",
+    "scene": [
+     [
+      "温迪面前的金色浮游构件",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Monsoon Flower（版本PV画面转载）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2026/10/25/465966798/fdda2bdc9c075c25f6ac27ee1fedaa7f_6474613053289341779.PNG"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "PV7D",
+    "scene": [
+     [
+      "蓝色柱体的断裂与菱形外饰",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "Monsoon Flower（版本PV画面转载）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://upload-os-bbs.hoyolab.com/upload/2026/10/26/465966798/53aba86b583110c0be52f0453c6f2392_7546762283413535980.PNG"
+     ],
+     [
+      "；全图",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "DRUM1",
+    "scene": [
+     [
+      "俱利鼓谱·火",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Fire/UI_DrumPic_Fire.png"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "DRUM2",
+    "scene": [
+     [
+      "俱利鼓谱·水",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Water/UI_DrumPic_Water.png"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "DRUM3",
+    "scene": [
+     [
+      "俱利鼓谱·草",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Grass/UI_DrumPic_Grass.png"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "DRUM4",
+    "scene": [
+     [
+      "俱利鼓谱·雷",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Thunder/UI_DrumPic_Thunder.png"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "DRUM5",
+    "scene": [
+     [
+      "俱利鼓谱·冰",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/DrumPic/Ice/UI_DrumPic_Ice.png"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "WORK1",
+    "scene": [
+     [
+      "《夹在笔记中的示意图》配图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/UndergroundVestige/Map/UI_UndergroundVestige_Map_02.png"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "WORK2",
+    "scene": [
+     [
+      "《雷内的调查笔记》配图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full（公开游戏资源档案）",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "原始图像",
+      "https://raw.githubusercontent.com/umaichanuwu/gi-tex-4.6-full/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/UI/UndergroundVestige/Map/UI_UndergroundVestige_Map.png"
+     ],
+     [
+      "；原图整幅保留，无裁切。；档案版本4.6",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_01",
+    "scene": [
+     [
+      "《旁白的注脚》·勇敢之形",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，380 × 548像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_02",
+    "scene": [
+     [
+      "《旁白的注脚》·智慧之形",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，380 × 548像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_03",
+    "scene": [
+     [
+      "《旁白的注脚》·同理心之形",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，380 × 548像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_04",
+    "scene": [
+     [
+      "《「邪龙」绘卷》第1页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_05",
+    "scene": [
+     [
+      "《「邪龙」绘卷》第2页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_06",
+    "scene": [
+     [
+      "《「邪龙」绘卷》第3页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_07",
+    "scene": [
+     [
+      "《「邪龙」绘卷》第4页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_08",
+    "scene": [
+     [
+      "《「邪龙」绘卷》第5页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_09",
+    "scene": [
+     [
+      "《「邪龙」绘卷》第6页",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/14085494.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_10",
+    "scene": [
+     [
+      "《回火之路》配图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_11",
+    "scene": [
+     [
+      "特帕尔的浮空装置草图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_12",
+    "scene": [
+     [
+      "希诺宁唱片纪念图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/06286806.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_13",
+    "scene": [
+     [
+      "《勇敢的特奎》配图",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "官方5.5资源包",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://autopatchhk.yuanshen.com/client_app/download/pc_zip/20250314110016_HcIQuDGRmsbByeAE/ScatteredFiles/GenshinImpact_Data/StreamingAssets/AssetBundles/blocks/00/07711961.blk"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "AS6_14",
+    "scene": [
+     [
+      "玛梅赫家庭画像",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "BWIKI游戏图像档案",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "取得来源",
+      "https://patchwiki.biligame.com/images/ys/c/c3/3e9h8ahj2d7co1clxwrqfvbguvpjzuh.png"
+     ],
+     [
+      "；整幅保留，640 × 360像素。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "RUNE1",
+    "scene": [
+     [
+      "风元素符文 Diffuse 资源",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "固定提交原图",
+      "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Wind/Diffuse/Item_Gear_Rune_Wind_Diffuse.png"
+     ],
+     [
+      "；全幅，未经颜色修改。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "RUNE2",
+    "scene": [
+     [
+      "岩元素符文 Diffuse 资源",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "固定提交原图",
+      "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Rock/Diffuse/Item_Gear_Rune_Rock_Diffuse.png"
+     ],
+     [
+      "；全幅，未经颜色修改。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "RUNE3",
+    "scene": [
+     [
+      "雷元素符文 Diffuse 资源",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "固定提交原图",
+      "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Electric/Diffuse/Item_Gear_Rune_Electric_Diffuse.png"
+     ],
+     [
+      "；全幅，未经颜色修改。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "RUNE4",
+    "scene": [
+     [
+      "草元素符文 Diffuse 资源",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "固定提交原图",
+      "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Grass/Diffuse/Item_Gear_Rune_Grass_Diffuse.png"
+     ],
+     [
+      "；全幅，未经颜色修改。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "RUNE5",
+    "scene": [
+     [
+      "水元素符文 Diffuse 资源",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "umaichanuwu/gi-tex-4.6-full",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "固定提交原图",
+      "https://github.com/umaichanuwu/gi-tex-4.6-full/blob/06c171c80bfe0512add8d65e32dc453be22693a9/Texture2D/Item/Gear/Rune/Water/Diffuse/Item_Gear_Rune_Water_Diffuse.png"
+     ],
+     [
+      "；全幅，未经颜色修改。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "RUNE6",
+    "scene": [
+     [
+      "火元素符文 Diffuse 资源",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "固定提交原图",
+      "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Fire/Diffuse/Item_Gear_Rune_Fire_Diffuse.png"
+     ],
+     [
+      "；全幅，未经颜色修改。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "RUNE7",
+    "scene": [
+     [
+      "冰元素符文 Diffuse 资源",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "固定提交原图",
+      "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/Item/Gear/Rune/Ice/Diffuse/Item_Gear_Rune_Ice_Diffuse.png"
+     ],
+     [
+      "；全幅，未经颜色修改。",
+      null
+     ]
+    ]
+   },
+   {
+    "id": "CHASM2",
+    "scene": [
+     [
+      "地理志《颠倒古城》",
+      null
+     ]
+    ],
+    "keeper": [
+     [
+      "ylyking/GenshinTextures-full",
+      null
+     ]
+    ],
+    "proc": [
+     [
+      "固定提交原图",
+      "https://github.com/ylyking/GenshinTextures-full/blob/fee4e82d54e51570d35977b5a0495161aacc1a41/Texture2D/UI/Codex/Scenery/JYDianDaoYiJiJieSuo/UI_Codex_Scenery_JYDianDaoYiJiJieSuo.png"
+     ],
+     [
+      "；全幅，1024 × 512像素，保留原有明暗。",
+      null
+     ]
+    ]
+   }
+  ]
+ },
+ "timeline": {
+  "intro": [
+   [
+    "年代栏保留文本的纪年、相对先后及当代叙事位置；推算年代在栏内注明。各组依照共同锚点与地域谱系排列，跨时事件另列其时空关系。",
+    null
+   ]
+  ]
+ }
+}

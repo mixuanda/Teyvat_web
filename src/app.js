@@ -87,7 +87,8 @@ ${refs ? refsHTML(e) : ''}
     box.innerHTML = `<div class="lightbox-img"><img src="${esc(d.full)}" alt="${esc(d.title)}"></div>
 <aside class="lightbox-side"><h3>${esc(d.title)}</h3>
 ${d.obs ? `<h4>观察记录</h4><p>${esc(d.obs)}</p>` : ''}
-${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d.page)}" target="_blank" rel="noopener">出处页面 ↗</a>` : ''}</p>` : ''}</aside>
+${d.credit ? `<h4>来源</h4><p>${esc(d.credit)}${d.page ? `<br><a href="${esc(d.page)}" target="_blank" rel="noopener">出处页面 ↗</a>` : ''}</p>` : ''}
+${d.proc ? `<h4>原图与版面处理</h4><p>${esc(d.proc)}</p>` : ''}</aside>
 <button class="lightbox-close" type="button" aria-label="关闭">×</button>`;
     const close = () => { box.remove(); document.removeEventListener('keydown', onKey); p.focus(); };
     const onKey = (e) => e.key === 'Escape' && close();
