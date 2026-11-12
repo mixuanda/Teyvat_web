@@ -654,3 +654,4 @@ td .pill { margin-left: 8px; }
 
 /* 只给读屏和搜索引擎看的文字 */
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.open > [data-gate] { display: flex; flex-direction: column; gap: 10px; }

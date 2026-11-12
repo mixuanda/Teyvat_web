@@ -94,10 +94,26 @@ for (const e of evidenceList) {
 // 主线进度：按出处的任务名和地区判定（规则在 content/curated/gates.json）
 const LAST = star.stages.length - 1;
 const RULES = gateRules.rules.map(([g, pat]) => [g, new RegExp(pat)]);
+// 魔神任务各章对应的篇章（stages 的下标）
+const ACT_GATE = [[/^序章/, 0], [/^第一章/, 1], [/^第二章/, 2], [/^第三章/, 3], [/^第四章/, 4], [/^第五章/, 5], [/^空月之歌/, 6], [/^第七章/, 7]];
+// 出处是魔神任务的对白时，直接按它所在的章定篇章：对白文件号去掉末两位是任务号，
+// 且证据题名要以该任务名或幕名开头，才算对上（世界任务、传说任务的文件号会撞上）
+const archonGate = (e) => {
+  const m = /^BinOutput\/Talk\/Quest\/(\d+)\.json$/.exec(SRC[e.src]?.path || '');
+  const q = m && SRC[`aq/${m[1].slice(0, -2)}`];
+  if (!q) return null;
+  const act = (q.heading || '').replace(/^\S+\s+\S+\s+/, '');
+  const t = e.title.replace(/^《/, '');
+  if (!t.startsWith(q.title) && !(act && t.startsWith(act))) return null;
+  for (const [re, g] of ACT_GATE) if (re.test(q.heading || '')) return g;
+  return null;
+};
 const evGate = (id) => {
   const e = EV[id];
   if (!e) return null;
   if (e.isNew) return LAST; // 本版本新增的出处，剧情上算最后一篇
+  const a = archonGate(e);
+  if (a != null) return a;
   for (const [g, re] of RULES) if (re.test(e.title)) return g;
   return null;
 };
@@ -487,6 +503,16 @@ star.questions.forEach((q, qi) => {
   const next = star.questions[(qi + 1) % star.questions.length];
   const maxGate = Math.max(q.gate, ...q.steps.map((s) => stepGate(q, s)));
   const quoteBox = (s) => quoteBlock(s.ev, s.quote, base, s.level);
+  // 答案随进度更新：answer 对应问题本身的进度，later 里是之后篇章能说出的更完整的答案；
+  // 每一版只在“到了它的进度、还没到下一版的进度”时显示
+  const ledes = [{ gate: q.gate, text: q.answer }, ...(q.later || [])];
+  ledes.forEach((a, i) => { if (i && !(a.gate > ledes[i - 1].gate)) { console.error(`问题 ${q.id} 的 later 必须按进度递增，且晚于问题本身`); process.exit(1); } });
+  const ledeHTML = ledes.map((a, i) => { const p = `<p class="lede" data-gate="${a.gate}">${esc(a.text)}</p>`; return ledes[i + 1] ? `<div data-fog="${ledes[i + 1].gate}">${p}</div>` : p; }).join('\n');
+  // 未解部分的进度：手写值，否则取所挂出处，至少等于问题本身
+  const openGate = Math.max(q.gate, q.open.gate ?? (q.open.ev ? evGate(q.open.ev) ?? q.gate : q.gate));
+  const openHTML = `<div class="open-head">${levelTag('hypothesis')}<h2>还没有答案的部分</h2></div>
+<p>${esc(q.open.text)}</p>
+${q.open.ev ? quoteBox({ ...q.open, level: 'hypothesis' }) : ''}`;
   const body = `
 <div class="answer wrap">
 <article>
@@ -495,7 +521,7 @@ star.questions.forEach((q, qi) => {
 <div data-gate="${q.gate}">
 <div class="answer-head">
 <h1>${esc(q.title)}</h1>
-<p class="lede">${esc(q.answer)}</p>
+${ledeHTML}
 <p class="meta">读完约 ${Math.max(1, Math.round((q.answer.length + q.steps.reduce((a, s) => a + s.text.length, 0)) / 250))} 分钟 · 涉及${esc(star.stages[maxGate])}篇剧情 · ${new Set(q.steps.map((s) => s.ev)).size} 条游戏原文</p>
 </div>
 <div class="stepbar" aria-hidden="true">${q.steps.map(() => '<span></span>').join('')}</div>
@@ -515,9 +541,10 @@ ${quoteBox(s)}
 </ol>
 <div class="stepnav"><button type="button" id="step-prev">上一步</button><button type="button" id="step-next" class="primary">下一步</button></div>
 <section class="open">
-<div class="open-head">${levelTag('hypothesis')}<h2>还没有答案的部分</h2></div>
-<p>${esc(q.open.text)}</p>
-${q.open.ev ? quoteBox({ ...q.open, level: 'hypothesis' }) : ''}
+${openGate > q.gate ? `<div class="fogbox" data-fog="${openGate}">${LOCK} 还没有答案的部分在迷雾里，${stageAfter(openGate)}。</div>
+<div data-gate="${openGate}">
+${openHTML}
+</div>` : openHTML}
 </section>
 <div class="answer-links">
 <a href="${base}q/${next.id}/">下一个问题：${esc(next.title)}</a>
