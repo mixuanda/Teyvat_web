@@ -433,6 +433,7 @@ const quoteBlock = (evId, quote, base, level) => {
 };
 {
   const body = `
+<h1 class="sr-only">提瓦特考据 · 星图</h1>
 <div class="explore" id="explore">
 <aside class="qlist" aria-label="问题">
 <h2>从一个问题开始</h2>
@@ -653,7 +654,7 @@ for (const s of sources) {
     const dialog = s.langs[L].some((l) => l[0]);
     return s.langs[L].map(([who, t], i) => {
       const a = anchorOf(L, i);
-      if (t.startsWith('＊')) return `<p class="sep">${esc(t.replace(/^＊\s*/, '') || '＊')}</p>`;
+      if (t.startsWith('＊')) return `<p id="${a}" class="sep">${esc(t.replace(/^＊\s*/, '') || '＊')}</p>`;
       const c = cited[`${L}:${i}`];
       return `<p id="${a}" class="para${c ? ' cited' : ''}"><a class="pn" href="#${a}">¶${i + 1}</a>${dialog && who ? `<span class="who">${esc(who)}</span>` : ''}${c ? markFrags(t, c.qs) : esc(t)}${c ? `<span class="pnote">被 ${useCount([...c.evs])} 处论述引用 · 锚点 ${s.short}#${a}${[...c.evs].map((id) => ` <a class="cite" href="${base}evidence/#${id}" data-ev="${id}">${EV[id].n}</a>`).join('')}</span>` : ''}</p>`;
     }).join('\n');
@@ -929,7 +930,8 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
   const flush = () => { if (cur.length) { fs.writeFileSync(path.join(dir, `${n++}.json`), JSON.stringify(cur)); cur = []; size = 0; } };
   for (const s of sources) {
     if (s.pending) continue;
-    const text = (s.langs.CHS || Object.values(s.langs)[0]).map((l) => l[1]).join('\n');
+    // 一行一段：行内的换行压成空格，搜全文按行号跳到 #p<行号> 才对得上
+    const text = (s.langs.CHS || Object.values(s.langs)[0]).map((l) => l[1].replace(/\n/g, ' ')).join('\n');
     if (size + text.length > 500000) flush();
     cur.push([s.id, s.title, text]);
     size += text.length;
