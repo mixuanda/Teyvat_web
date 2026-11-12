@@ -9,7 +9,7 @@ const cacheRoot = path.join(root, '.cache', 'corpus');
 
 export const TYPES = {
   book: '书籍与文书', relic: '圣遗物故事', weapon: '武器故事', story: '角色故事', voice: '角色语音',
-  aq: '魔神任务', lq: '传说任务', wq: '世界任务', iq: '委托任务', eq: '活动任务',
+  aq: '魔神任务', lq: '传说任务', wq: '世界任务', iq: '委托任务', eq: '活动任务', coop: '邀约事件', cutscene: '过场字幕',
   quest: '任务对白', npc: 'NPC 对白', event: '活动对白', talk: '其他对白', item: '物品与图鉴', misc: '其他资料',
 };
 
