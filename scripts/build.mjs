@@ -23,6 +23,12 @@ const EV = Object.fromEntries(evidenceList.map((e) => [e.id, e]));
 const chronology = readJSON('chronology.json');
 const relations = readJSON('relations.json');
 const plates = readJSON('plates.json');
+// 研究稿里只在 PDF 出现的附录（scripts/appendix.mjs 从 LaTeX 转出）
+const appendix = readJSON('appendix.json');
+const imgRow = Object.fromEntries(appendix.images.rows.map((r) => [r.id, r]));
+// 研究稿 PDF（在研究仓库用 compile.sh 编译，放在 content/pdf/）
+const PDF = 'teyvat_civilization_history.pdf';
+const pdfMB = (fs.statSync(C(`pdf/${PDF}`)).size / 1e6).toFixed(0);
 const partsDef = readJSON('parts.json');
 const sources = readJSON('sources.json'); // 研究引用过的原文（多语言、带引文定位）
 const citedCount = sources.length;
@@ -186,11 +192,14 @@ function inline(text, ctx) {
   });
 }
 const plain = (text) => text.replace(/\[@[A-Za-z0-9]+\]/g, '');
+// 附录的文本片段 [[文字, 链接?], …]
+const segsHTML = (sg) => sg.map(([t, u]) => (u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>` : esc(t))).join('');
+const segsText = (sg) => sg.map(([t]) => t).join('');
 
 function panelHTML(id, i, n, base) {
   const im = plates.images[id];
   const label = n > 1 ? `(${String.fromCharCode(97 + i)}) ` : '';
-  return `<button class="panel" type="button" data-full="${base}images/${im.file}" data-title="${esc(im.scene || '')}" data-obs="${esc(im.observation || '')}" data-credit="${esc(im.credit || '')}" data-page="${esc(im.page || '')}">
+  return `<button class="panel" type="button" data-full="${base}images/${im.file}" data-title="${esc(im.scene || '')}" data-obs="${esc(im.observation || '')}" data-credit="${esc(im.credit || '')}" data-page="${esc(im.page || '')}" data-proc="${esc(segsText(imgRow[id].proc))}">
 <img loading="lazy" src="${base}images/${im.file}" width="${im.w}" height="${im.h}" alt="${esc(im.scene || id)}">
 <span class="panel-label">${label}${esc(im.scene || id)}</span></button>`;
 }
@@ -356,6 +365,7 @@ fs.rmSync(dist, { recursive: true, force: true });
 fs.mkdirSync(path.join(dist, 'assets'), { recursive: true });
 fs.mkdirSync(path.join(dist, 'data'), { recursive: true });
 fs.cpSync(C('images'), path.join(dist, 'images'), { recursive: true });
+fs.copyFileSync(C(`pdf/${PDF}`), path.join(dist, PDF));
 for (const f of fs.readdirSync(path.join(root, 'src'))) fs.copyFileSync(path.join(root, 'src', f), path.join(dist, 'assets', f));
 {
   // 自托管 Noto Serif SC（按 unicode-range 切片，浏览器只取用到的片）
@@ -766,6 +776,8 @@ ${topics.map((t) => `<a class="card link" href="${base}topic/${t.id}/"><h2>${esc
 <div class="toc">
 ${parts.map((p) => `<section class="card"><h3><span>${p.label}</span>${esc(p.name)}</h3><ol>${p.chapters.map((c) => `<li><a href="${base}${chapterURL(c)}"><b>${pad(c.no)}</b><span>${esc(c.title)}</span><em>${fmt(c.chars)} 字 · ${c.cites.size} 证</em></a></li>`).join('')}</ol></section>`).join('\n')}
 </div>
+<p><a href="${base}${PDF}" download>下载全文 PDF（${stats.pdf_pages} 页，${pdfMB} MB）</a></p>
+<p><a href="${base}read/appendix/">附录 · ${esc(appendix.corpus.title)} →</a>　<a href="${base}plates/#image-catalog">附录 · ${esc(appendix.images.title)} →</a></p>
 </section></div>`;
   page({ url: 'topic/', title: '专题', body, cls: 'topics-page' });
 }
@@ -833,7 +845,7 @@ ${rels.length ? `<details class="rels"><summary>${rels.length} 条时间关系</
   };
   const gTitle = (t) => { const m = t.match(/^([^、：]{1,6})、(.+)$/); return m ? [m[1].replace('（续）', '·续'), m[2]] : ['', t]; };
   const body = `<div class="wrap stack">
-<div class="pagehead"><h1>年表</h1><p>${stats.chronology_events} 项事件。文本自己写明的纪年、换算得到的年数、只知先后的次序，三者分开显示：每项事件都标着它的时间是怎么定的。</p></div>
+<div class="pagehead"><h1>年表</h1><p>${stats.chronology_events} 项事件。文本自己写明的纪年、换算得到的年数、只知先后的次序，三者分开显示：每项事件都标着它的时间是怎么定的。</p><p class="muted">${segsHTML(appendix.timeline.intro)}</p></div>
 <div class="tl-controls" id="tl-controls">
 <label class="libsearch">筛选事件、地区、年代<input type="search" id="tl-q" autocomplete="off"></label>
 <div class="seg" role="group" aria-label="时间依据">
@@ -868,8 +880,33 @@ ${g.events.map(eventHTML).join('\n')}
 <div class="pagehead"><h1>图版</h1><p>${stats.image_assets} 幅图像组成 ${stats.image_plates} 组图版，另有 ${stats.diagram_figures} 幅结构图。每幅都记录了“看到了什么”与来源；点开任一幅查看观察记录。</p></div>
 <div class="plates">
 ${figureIndex.map((f) => (f.kind === 'plate' ? plateHTML(f.ref, f.no, base, { linkChapter: f.chapter }) : diagramHTML(f.ref, f.no, base, { linkChapter: f.chapter }))).join('\n')}
-</div></div>`;
+</div>
+<section class="stack-s" id="image-catalog">
+<h2>${esc(appendix.images.title)}</h2>
+<p>${segsHTML(appendix.images.intro)}</p>
+<div class="table-wrap"><table><thead><tr><th>图像编号</th><th>出处与场景</th><th>保存及上传者</th><th>原图与版面处理</th></tr></thead><tbody>
+${appendix.images.rows.map((r) => `<tr id="img-${esc(r.id)}"><td><code>${esc(r.id)}</code></td><td>${segsHTML(r.scene)}</td><td>${segsHTML(r.keeper)}</td><td>${segsHTML(r.proc)}</td></tr>`).join('\n')}
+</tbody></table></div>
+</section></div>`;
   page({ url: 'plates/', title: '图版', body, cls: 'plates-page' });
+}
+
+// ───────────────────────── 附录：全量语料、资产清单与逐项复核记录 ─────────────────────────
+{
+  const base = '../../';
+  let h = 0;
+  const blocks = appendix.corpus.blocks.map((b) => {
+    if (b.type === 'h') return `<h2 id="a${++h}">${esc(b.text)}</h2>`;
+    if (b.type === 'p') return `<p>${segsHTML(b.segs)}</p>`;
+    return `<figure class="table-wrap"><table><thead><tr>${b.head.map((c) => `<th>${segsHTML(c)}</th>`).join('')}</tr></thead><tbody>${b.rows.map((r) => `<tr>${r.map((c) => `<td>${segsHTML(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>${b.caption.length ? `<figcaption>${segsHTML(b.caption)}</figcaption>` : ''}</figure>`;
+  }).join('\n');
+  const body = `<div class="wrap stack">
+<nav class="crumbs" aria-label="位置"><a href="${base}topic/">专题</a> / <a href="${base}topic/#full">研究全文</a> / 附录</nav>
+<div class="pagehead"><h1>${esc(appendix.corpus.title)}</h1><p class="muted">研究稿的附录，说明本研究用的固定文本快照、各类文件的取得与阅读范围，以及仍待完成的部分。</p></div>
+<article class="prose">
+${blocks}
+</article></div>`;
+  page({ url: 'read/appendix/', title: appendix.corpus.title, body, cls: 'appendix-page' });
 }
 
 // ───────────────────────── 引证 ─────────────────────────
@@ -943,6 +980,9 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
     idx.push(['章', c.title, chapterURL(c), `${c.part.label} · 第 ${c.no} 章`]);
     for (const s of c.sections) idx.push(['节', s.title || c.title, `${chapterURL(c)}#${s.id}`, s.text.join(' ')]);
   }
+  // 附录：每小节一条，图像目录每幅一条
+  { let h = 0, cur = null; for (const b of appendix.corpus.blocks) { if (b.type === 'h') { cur = ['节', b.text, `read/appendix/#a${++h}`, '']; idx.push(cur); } else if (cur && b.type === 'p') cur[3] += segsText(b.segs); } }
+  for (const r of appendix.images.rows) idx.push(['节', `${r.id} · ${segsText(r.scene)}`, `plates/#img-${r.id}`, `${segsText(r.keeper)} ${segsText(r.proc)}`]);
   for (const e of chronology) if (e.event_id) idx.push(['年', `${e.date} · ${e.region}`, `timeline/#${e.event_id}`, e.event]);
   for (const e of evidenceList) idx.push(['证', e.title, `evidence/#${e.id}`, e.quotes.join(' / ')]);
   fs.writeFileSync(path.join(dist, 'data', 'search.json'), JSON.stringify(idx));
