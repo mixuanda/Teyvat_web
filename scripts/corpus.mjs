@@ -354,10 +354,10 @@ const usedTalk = new Set();
     const text = fs.readFileSync(path.join(dir, f), 'utf8').replace(/^﻿/, '');
     // srt：序号、时间轴、字幕正文、空行
     const lines = text.split(/\r?\n/).filter((l) => l.trim() && !/^\d+$/.test(l.trim()) && !/-->/.test(l)).flatMap((l) => split(l));
-    const m = stem.match(/^Cs_(\d+)/i);
-    const q = m && (questTitle[Math.floor(Number(m[1]) / 100)] || questTitle[Number(m[1])]);
+    // 文件名里的编号（Cs_102106、Cs_Inazuma_AQ202004、Cs_Activity_4001103）是子任务或任务号：依次试原号、去掉末两位、末四位
+    const q = (stem.match(/\d{4,}/g) || []).flatMap((d) => [Number(d), Math.floor(Number(d) / 100), Math.floor(Number(d) / 10000)]).map((n) => questTitle[n]).find((t) => t && !TEST.test(t));
     const variant = Object.entries(VARIANT).find(([k]) => new RegExp(`_${k}$`, 'i').test(stem))?.[1] || '';
-    const base = q ? `${q}·过场` : stem.replace(/_/g, ' ');
+    const base = q ? `${q}·过场` : `过场·${stem.replace(/^Cs_/i, '').replace(/_(Boy|Girl)$/i, '').replace(/_/g, ' ')}`;
     const n = (seenTitle[base + variant] = (seenTitle[base + variant] || 0) + 1);
     add({ id: `cutscene/${stem.toLowerCase()}`, type: 'cutscene', title: `${base}${n > 1 ? ` ${n}` : ''}${variant}`, group: q ? '任务过场' : '其他过场', path: `Subtitle/CHS/${f}`, first: prevTree.has(`Subtitle/CHS/${f}`) ? 'old' : 'new', lines });
   }

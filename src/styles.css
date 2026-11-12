@@ -119,7 +119,7 @@ td code { white-space: nowrap; }
 .source article { flex: 1; min-width: 320px; display: flex; flex-direction: column; gap: 20px; }
 .source aside { flex: 0 0 300px; display: flex; flex-direction: column; gap: 24px; }
 .source-head { display: flex; flex-direction: column; gap: 12px; }
-.source .source-head h1 { font-size: 38px; line-height: 52px; }
+.source .source-head h1 { font-size: 38px; line-height: 52px; overflow-wrap: anywhere; }
 .pills { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
 .tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
 .tabs button { height: 44px; padding: 0 18px; border: 0; border-bottom: 2px solid transparent; background: transparent; font-size: 16px; color: var(--ink); }
