@@ -657,3 +657,4 @@ td .pill { margin-left: 8px; }
 .open > [data-gate] { display: flex; flex-direction: column; gap: 10px; }
 .table-wrap figcaption { font-size: 13px; color: var(--muted); padding: 10px 14px; border-top: 1px solid var(--line); }
 .table-wrap td a { word-break: break-all; }
+code { overflow-wrap: anywhere; }
