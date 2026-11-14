@@ -18,12 +18,39 @@ const prevDir = fs.readdirSync(path.join(root, '.cache', 'corpus')).find((d) => 
 const prevTM = { ...cacheTM(`${prevDir}/TextMap/TextMapCHS.json`), ...cacheTM(`${prevDir}/TextMap/TextMap_MediumCHS.json`) };
 const prevTree = new Set(fs.readFileSync(path.join(root, '.cache', 'tree71.txt'), 'utf8').split('\n'));
 
-const clean = (s) => String(s ?? '')
-  .replace(/\\n/g, '\n').replace(/<[^>]+>/g, '').replace(/\{NICKNAME\}/g, '旅行者')
+const clean = (s, nick = '旅行者') => String(s ?? '')
+  .replace(/\\n/g, '\n').replace(/<[^>]+>/g, '').replace(/\{NICKNAME\}/g, nick)
   .replace(/\{M#([^}]*)\}\{F#([^}]*)\}/g, '$1/$2').replace(/\{F#([^}]*)\}\{M#([^}]*)\}/g, '$2/$1')
   .replace(/\{NON_BREAK_SPACE\}/g, ' ').replace(/\{RUBY#\[[A-Z]\][^}]*\}/g, '').replace(/\{[A-Z_]+#[^}]*\}/g, '').replace(/\{[A-Z_]+\}/g, '').replace(/^#/, '').trim();
 const T = (h) => (h && tm[h] ? clean(tm[h]) : '');
-const split = (text, who = '') => clean(text).split('\n').map((t) => t.trim()).filter(Boolean).map((t) => [who, t]);
+
+// ── 英文：同一固定版本的英文文本表 ──
+// 每段中文按它在文本表里的条目找到同一条目的英文，挂在这段的第一行上（行的第三项），add() 时收成 e.en。
+// 同一段中文对应多个条目时取第一个；句末 $HIDDEN 去掉后的写法也能查到
+const tmEN = { ...cacheTM('TextMap/TextMapEN.json'), ...cacheTM('TextMap/TextMap_MediumEN.json') };
+const zhToEn = new Map();
+for (const [h, s] of Object.entries(tm)) {
+  if (!tmEN[h]) continue;
+  const zh = clean(s);
+  const en = clean(tmEN[h], 'Traveler');
+  if (!zh || !en) continue;
+  if (!zhToEn.has(zh)) zhToEn.set(zh, en);
+  const bare = zh.replace(/\$HIDDEN\s*/g, '').trim();
+  if (bare !== zh && !zhToEn.has(bare)) zhToEn.set(bare, en.replace(/\$HIDDEN\s*/g, '').trim());
+}
+// 不在文本表里的署名和本站自己加的分隔说明
+const EN_LABEL = { 旅行者: 'Traveler', 称号: 'Title', 所属: 'Affiliation', 命之座: 'Constellation', 神之眼: 'Vision', 简介: 'Description', 任务回顾以外的对白: 'Dialogue not in the quest recap', 任务回顾简介: 'Quest recap summary', 任务中的其他对白: 'Other dialogue in the quest', 任务步骤: 'Quest steps' };
+const enOf = (zh) => (zh ? EN_LABEL[zh] || zhToEn.get(clean(zh)) || '' : '');
+const enLines = (zh, who = '') => { const t = enOf(zh); const w = who ? enOf(who) || who : ''; return t ? t.split('\n').map((x) => x.trim()).filter(Boolean).map((x) => [w, x]) : []; };
+const split = (text, who = '', en = enLines(text, who)) => {
+  const ls = clean(text).split('\n').map((t) => t.trim()).filter(Boolean).map((t) => [who, t]);
+  if (ls.length) ls[0][2] = en;
+  return ls;
+};
+// 分隔行：“＊”或“＊ 小标题”
+const SEP = (label = '') => ['', label ? `＊ ${label}` : '＊', [['', label && enOf(label) ? `＊ ${enOf(label)}` : '＊']]];
+// 英文版文件（阅读物、字幕）：按行切，不经文本表
+const splitFile = (text) => clean(text, 'Traveler').split('\n').map((t) => t.trim()).filter(Boolean).map((t) => ['', t]);
 // 测试与未上线内容的标记
 // 当前数据版本是否已确认开放（见 content/curated/release.json）
 const OPEN = JSON.parse(fs.readFileSync(path.join(root, 'content', 'curated', 'release.json'), 'utf8')).confirmed.includes('7.2');
@@ -33,13 +60,18 @@ const TEST = /([（(]\s*test\s*[)）]|\$UNRELEASED|\$HIDDEN|test用|临时文本
 // 正文的一行只看显式标记：“测试”“废弃”在故事里是普通的词（“废弃了许多失败品”），不能整句删掉
 // 以 test 开头的行（“test救命！”“*废弃 test”“TESTSUNKEN”）和单独的 test 一词是开发占位
 const LINE_TEST = /([（(]\s*test\s*[)）]|\$UNRELEASED|\$HIDDEN|test用|临时文本|^\s*[*＊]?\s*(废弃\s*)?test|\btest\b)/i;
+const EN_TEST = /([（(]\s*test\s*[)）]|\$UNRELEASED|\$HIDDEN|test用|临时文本)/i;
 const isNew = (hashes) => hashes.length > 0 && !hashes.some((h) => prevTM[h]);
 
 const entries = [];
 const terms = []; // [名词, 类别, 原文 id, 行号]
 const seen = new Set();
 const add = (e) => {
-  e.lines = e.lines.filter((l) => l[1] && !LINE_TEST.test(l[1]));
+  const keep = e.lines.filter((l) => l[1] && !LINE_TEST.test(l[1]));
+  // 英文里 test 是普通词（“test scores”“passed the Level 1 test”），只认显式标记；中文被滤掉的行，它的英文已随之去掉
+  const en = (e.en || keep.flatMap((l) => l[2] || [])).filter((l) => l[1] && !EN_TEST.test(l[1]));
+  e.lines = keep.map(([w, t]) => [w, t]);
+  if (en.length) e.en = en; else delete e.en;
   if (!e.lines.length || !e.title || TEST.test(e.title)) return null;
   let id = e.id;
   while (seen.has(id)) id += 'x';
@@ -78,7 +110,8 @@ const avatarName = Object.fromEntries(avatars.map((a) => [a.id, T(a.nameTextMapH
     const e = add({
       id: `${type}/${(type === 'item' ? stem : m[2]).toLowerCase()}`, type, title: title || `（无题）${stem}`,
       path: `Readable/CHS/${f}`, first: prevTree.has(`Readable/CHS/${f}`) ? 'old' : 'new',
-      lines: split(fs.readFileSync(path.join(dir, f), 'utf8')),
+      lines: split(fs.readFileSync(path.join(dir, f), 'utf8'), '', []),
+      en: (() => { const p = path.join(A, 'Readable', 'EN', `${stem}_EN.txt`); return fs.existsSync(p) ? splitFile(fs.readFileSync(p, 'utf8').replace(/^\uFEFF/, '')) : []; })(),
     });
     if (e && title) term(title.replace(/（\d+\/\d+）$/, ''), { book: '书籍', relic: '圣遗物', weapon: '武器' }[type] || '物品', e.id);
   }
@@ -144,7 +177,7 @@ const usedTalk = new Set();
       for (const s of d.subQuests || []) {
         const before = lines.length;
         const st = T(s.subQuestTitle?.textId);
-        if (st) lines.push(['', `＊ ${st}`]);
+        if (st) lines.push(SEP(st));
         for (const it of s.items || []) {
           const who = T(it.speakerText?.textId);
           const walk = (o, k) => {
@@ -161,7 +194,7 @@ const usedTalk = new Set();
     if (!lines.length) {
       for (const t of q.talks || []) {
         const ls = talkLines(`Quest/${t.id}.json`, hashes);
-        if (ls.length) { if (lines.length) lines.push(['', '＊']); lines.push(...ls); }
+        if (ls.length) { if (lines.length) lines.push(SEP()); lines.push(...ls); }
       }
     }
     // 只有步骤说明、没有对白的任务，按步骤说明判断是不是本版本新增
@@ -169,7 +202,7 @@ const usedTalk = new Set();
     const isNewQuest = isNew(hashes.length ? hashes : stepHashes);
     // 以下都接在已有内容之后，原有段落的锚点不动
     const seenText = new Set([...lines.map((l) => l[1]), ...split(T(q.descTextMapHash)).map((l) => l[1])]);
-    const more = (head, ls) => { const fresh = ls.filter((l) => !seenText.has(l[1])); fresh.forEach((l) => seenText.add(l[1])); if (fresh.length) lines.push(['', `＊ ${head}`], ...fresh); };
+    const more = (head, ls) => { const fresh = ls.filter((l) => !seenText.has(l[1])); fresh.forEach((l) => seenText.add(l[1])); if (fresh.length) lines.push(SEP(head), ...fresh); };
     if (codex) {
       // 任务回顾只收了主线对白；分支、选项后的对白在对白文件里
       const have = new Set(hashes.map(String));
@@ -191,7 +224,7 @@ const usedTalk = new Set();
       title += Object.entries(count).sort((a, b) => b[1] - a[1])[0]?.[0] || q.id;
     }
     const desc = T(q.descTextMapHash);
-    const e = add({ id: `${type}/${q.id}`, type, title, group: chapter[q.chapterId] || typeName, path: from, first: isNewQuest ? 'new' : 'old', lines: desc ? [['', desc], ...(lines[0][1].startsWith('＊') ? [] : [['', '＊']]), ...lines] : lines });
+    const e = add({ id: `${type}/${q.id}`, type, title, group: chapter[q.chapterId] || typeName, path: from, first: isNewQuest ? 'new' : 'old', lines: desc ? [['', desc, enLines(desc)], ...(lines[0][1].startsWith('＊') ? [] : [SEP()]), ...lines] : lines });
     if (e) term(title, typeName, e.id);
   }
 
@@ -210,7 +243,7 @@ const usedTalk = new Set();
       // 文件名不是编号的是汇总文件（如 GlobalDialog），里面的对白没有归到任何任务
       const who = !/^\d/.test(f) ? '未归入任务的对白' : Object.entries(count).sort((a, b) => b[1] - a[1])[0]?.[0] || (sub === 'Activity' ? '活动对白' : sub === 'Gadget' ? '物件与机关' : '旁白与其他');
       const g = byNpc.get(who) || byNpc.set(who, { lines: [], hashes: [], activity: 0, n: 0 }).get(who);
-      if (g.lines.length) g.lines.push(['', '＊']);
+      if (g.lines.length) g.lines.push(SEP());
       g.lines.push(...lines); g.hashes.push(...hashes); g.n++; if (sub === 'Activity') g.activity++;
     }
   }
@@ -245,7 +278,7 @@ const usedTalk = new Set();
       const lines = dialogsIn(`Coop/${f}`, true).flatMap(([who, h]) => { hashes.push(h); return split(tm[h], who); });
       if (!lines.length) continue;
       const c = chains.get(f.split('_')[0]) || chains.set(f.split('_')[0], { lines: [], hashes: [] }).get(f.split('_')[0]);
-      if (c.lines.length) c.lines.push(['', '＊']);
+      if (c.lines.length) c.lines.push(SEP());
       c.lines.push(...lines); c.hashes.push(...hashes);
     }
     const perWho = {};
@@ -268,7 +301,7 @@ const usedTalk = new Set();
       if (!lines.length) continue;
       const who = mainSpeaker(lines) || label;
       const g = byWho.get(who) || byWho.set(who, { lines: [], hashes: [] }).get(who);
-      if (g.lines.length) g.lines.push(['', '＊']);
+      if (g.lines.length) g.lines.push(SEP());
       g.lines.push(...lines); g.hashes.push(...hashes);
     }
     let n = 0;
@@ -301,7 +334,7 @@ const usedTalk = new Set();
     const hs = vs.map((v) => v.voiceFileTextTextMapHash);
     const e = add({ id: `voice/a${a.id}`, type: 'voice', title: `${name}·语音`, group: name, path: 'ExcelBinOutput/FettersExcelConfigData.json', first: isNew(hs) ? 'new' : 'old', lines: vs.flatMap((v) => split(tm[v.voiceFileTextTextMapHash] || '', T(v.voiceTitleTextMapHash))) });
     const i = info[a.id];
-    const prof = i ? [['称号', T(i.avatarTitleTextMapHash)], ['所属', T(i.avatarNativeTextMapHash)], ['命之座', T(i.avatarConstellationBeforTextMapHash)], ['神之眼', T(i.avatarVisionBeforTextMapHash)], ['简介', T(i.avatarDetailTextMapHash)], ['简介', T(a.descTextMapHash)]].filter((l) => l[1]) : [];
+    const prof = i ? [['称号', T(i.avatarTitleTextMapHash)], ['所属', T(i.avatarNativeTextMapHash)], ['命之座', T(i.avatarConstellationBeforTextMapHash)], ['神之眼', T(i.avatarVisionBeforTextMapHash)], ['简介', T(i.avatarDetailTextMapHash)], ['简介', T(a.descTextMapHash)]].filter((l) => l[1]).map(([k, v]) => [k, v, enLines(v, k)]) : [];
     const p = prof.length ? add({ id: `misc/avatar-${a.id}`, type: 'misc', title: `${name}·角色资料`, group: name, path: 'ExcelBinOutput/FetterInfoExcelConfigData.json', first: isNew([i.avatarDetailTextMapHash]) ? 'new' : 'old', lines: prof }) : null;
     term(name, '角色', (p || e)?.id);
   }
@@ -353,13 +386,16 @@ const usedTalk = new Set();
     const stem = f.replace(/_CHS\.srt$/i, '').replace(/\.srt$/i, '');
     const text = fs.readFileSync(path.join(dir, f), 'utf8').replace(/^﻿/, '');
     // srt：序号、时间轴、字幕正文、空行
-    const lines = text.split(/\r?\n/).filter((l) => l.trim() && !/^\d+$/.test(l.trim()) && !/-->/.test(l)).flatMap((l) => split(l));
+    const srt = (t) => t.split(/\r?\n/).filter((l) => l.trim() && !/^\d+$/.test(l.trim()) && !/-->/.test(l));
+    const lines = srt(text).flatMap((l) => split(l, '', []));
+    const enPath = path.join(A, 'Subtitle', 'EN', `${stem}_EN.srt`);
+    const en = fs.existsSync(enPath) ? srt(fs.readFileSync(enPath, 'utf8').replace(/^\uFEFF/, '')).flatMap((l) => splitFile(l)) : [];
     // 文件名里的编号（Cs_102106、Cs_Inazuma_AQ202004、Cs_Activity_4001103）是子任务或任务号：依次试原号、去掉末两位、末四位
     const q = (stem.match(/\d{4,}/g) || []).flatMap((d) => [Number(d), Math.floor(Number(d) / 100), Math.floor(Number(d) / 10000)]).map((n) => questTitle[n]).find((t) => t && !TEST.test(t));
     const variant = Object.entries(VARIANT).find(([k]) => new RegExp(`_${k}$`, 'i').test(stem))?.[1] || '';
     const base = q ? `${q}·过场` : `过场·${stem.replace(/^Cs_/i, '').replace(/_(Boy|Girl)$/i, '').replace(/_/g, ' ')}`;
     const n = (seenTitle[base + variant] = (seenTitle[base + variant] || 0) + 1);
-    add({ id: `cutscene/${stem.toLowerCase()}`, type: 'cutscene', title: `${base}${n > 1 ? ` ${n}` : ''}${variant}`, group: q ? '任务过场' : '其他过场', path: `Subtitle/CHS/${f}`, first: prevTree.has(`Subtitle/CHS/${f}`) ? 'old' : 'new', lines });
+    add({ id: `cutscene/${stem.toLowerCase()}`, type: 'cutscene', title: `${base}${n > 1 ? ` ${n}` : ''}${variant}`, group: q ? '任务过场' : '其他过场', path: `Subtitle/CHS/${f}`, first: prevTree.has(`Subtitle/CHS/${f}`) ? 'old' : 'new', lines, en });
   }
 }
 
@@ -408,11 +444,12 @@ const usedTalk = new Set();
       const key = body.map((x) => x[1]).join('\n');
       if (seenRow.has(key)) continue; // 同一段文字挂在多行上
       seenRow.add(key);
-      rows.push([label?.[1] || '', body.map((x) => x[1]).join('\n'), [...(label ? [label[2]] : []), ...body.map((x) => x[2])]]);
+      // 一行的几个字段拼成一段中文；英文按字段各自查
+      rows.push([label?.[1] || '', body.map((x) => x[1]).join('\n'), [...(label ? [label[2]] : []), ...body.map((x) => x[2])], body.flatMap(([, t]) => enLines(t, label?.[1] || ''))]);
     }
     const chunks = [];
     for (let i = 0; i < rows.length; i += 400) chunks.push(rows.slice(i, i + 400));
-    chunks.forEach((chunk, ci) => add({ id: `misc/t-${name.toLowerCase()}${chunks.length > 1 ? `-${ci + 1}` : ''}`, type: 'misc', title: chunks.length > 1 ? `${title}（${ci + 1}/${chunks.length}）` : title, group: '设定表', path: `ExcelBinOutput/${f}`, first: chunk.every((r) => isNew(r[2])) ? 'new' : 'old', lines: chunk.flatMap(([n, d]) => split(d, n)) }));
+    chunks.forEach((chunk, ci) => add({ id: `misc/t-${name.toLowerCase()}${chunks.length > 1 ? `-${ci + 1}` : ''}`, type: 'misc', title: chunks.length > 1 ? `${title}（${ci + 1}/${chunks.length}）` : title, group: '设定表', path: `ExcelBinOutput/${f}`, first: chunk.every((r) => isNew(r[2])) ? 'new' : 'old', lines: chunk.flatMap(([n, d, , en]) => split(d, n, en)) }));
   }
 }
 
@@ -430,6 +467,9 @@ fs.writeFileSync(path.join(outDir, 'terms.json.gz'), zlib.gzipSync(JSON.stringif
 const byT = {};
 entries.forEach((e) => { byT[e.type] = (byT[e.type] || 0) + 1; });
 const chars = entries.reduce((a, e) => a + e.lines.reduce((b, l) => b + l[1].length, 0), 0);
-fs.writeFileSync(path.join(outDir, 'index.json'), `${JSON.stringify({ parts, entries: entries.length, new: entries.filter((e) => e.first === 'new').length, chars, terms: uniq.size, byType: byT }, null, 1)}\n`);
+const withEn = entries.filter((e) => e.en).length;
+const enChars = entries.reduce((a, e) => a + (e.en || []).reduce((b, l) => b + l[1].length, 0), 0);
+fs.writeFileSync(path.join(outDir, 'index.json'), `${JSON.stringify({ parts, entries: entries.length, new: entries.filter((e) => e.first === 'new').length, chars, withEn, enChars, terms: uniq.size, byType: byT }, null, 1)}\n`);
+console.log(`英文：${withEn} 篇有英文，${(enChars / 1e6).toFixed(1)} 百万字符`);
 console.log(`全量语料：${entries.length} 篇，${(chars / 1e6).toFixed(1)} 百万字，本版本新增 ${entries.filter((e) => e.first === 'new').length} 篇；名词 ${uniq.size} 个；${parts.length} 个分片`);
 console.log(byT);

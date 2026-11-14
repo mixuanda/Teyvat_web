@@ -135,6 +135,8 @@ td code { white-space: nowrap; }
 mark { background: var(--mark); color: var(--ink); padding: 0 2px; }
 .parallel .prow { display: grid; grid-template-columns: 36px repeat(var(--n, 4), minmax(0, 1fr)); gap: 16px; padding: 12px 0; border-top: 1px solid var(--line); font-size: 15px; line-height: 26px; }
 .parallel .prow:first-child { border-top: 0; }
+/* 占位符、斜杠连写等没有断点的长串不能撑开网格列 */
+.parallel .prow p { min-width: 0; overflow-wrap: anywhere; }
 .parallel.n2 { --n: 2; }
 .parallel .pn { margin: 0; padding-top: 2px; }
 .pending-note { background: var(--amber-soft); border: 1px solid #E8D5A6; border-radius: 8px; padding: 24px; display: flex; flex-direction: column; gap: 8px; color: #5A3A00; }

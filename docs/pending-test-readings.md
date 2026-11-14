@@ -2,7 +2,7 @@
 
 In the pinned 7.2 snapshot, 39 readables under `Readable/CHS/` have `(test)` in their title. The import script skips every entry with a development marker (see `TEST` in `scripts/corpus.mjs`). Of those 39, 22 are placeholder text, or the same text is already in the source library under its proper title (for example Book603 matches `book/602` 「某人的备忘」, Book671 matches `book/639` 「灵光碑文」, and Book236's text appears in quest dialogue).
 
-The remaining 17 read like real content, but there is no way to confirm they were ever released in the game, so they are **not included for now**. Once evidence of release turns up, add them to the source library one by one.
+The remaining 17 read like real content, but there is no way to confirm they were ever released in the game. **Decision (2026-11-14, repository owner): they are not included.** The list is kept for reference only.
 
 | File | Document id | Title in the data | Body length (characters) | Content |
 | --- | --- | --- | --- | --- |
