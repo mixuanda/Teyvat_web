@@ -36,7 +36,7 @@ After deploying, open each of these and confirm (replace `<domain>` with the rea
 
 ## Size
 
-The build output is about 13,000 files and 285 MB, and the build itself takes only a dozen seconds or so. This is expected: the source library contains every Simplified Chinese text, one page each.
+The build output is about 13,000 files and 535 MB, and the build itself takes about half a minute. This is expected: the source library contains every Simplified Chinese text with its English, one page each.
 
 ## Do not
 

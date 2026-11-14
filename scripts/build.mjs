@@ -45,7 +45,7 @@ if (fs.existsSync(C('corpus/index.json'))) {
   for (const part of idx.parts) for (const e of gz(part)) {
     if (have.has(e.id) || havePath.has(e.path)) continue;
     have.add(e.id);
-    sources.push({ id: e.id, type: e.type, title: e.title, heading: e.group, path: e.path, url: `https://github.com/DimbreathBot/AnimeGameData/tree/${readJSON('source.json').corpus_commit}/${e.path}`, langs: { CHS: e.lines }, first: e.first, evidence: [], corpus: true });
+    sources.push({ id: e.id, type: e.type, title: e.title, heading: e.group, path: e.path, url: `https://github.com/DimbreathBot/AnimeGameData/tree/${readJSON('source.json').corpus_commit}/${e.path}`, langs: e.en ? { CHS: e.lines, EN: e.en } : { CHS: e.lines }, first: e.first, evidence: [], corpus: true });
   }
   corpusTerms = gz('terms.json.gz');
 }

@@ -48,7 +48,7 @@ npm run build
 
 ## Full corpus
 
-The source library contains every player-facing Simplified Chinese text in the pinned version (about 11,800 texts and 15 million characters, plus 507 texts cited by the research):
+The source library contains every player-facing Simplified Chinese text in the pinned version (about 11,800 texts and 15 million characters, plus 507 texts cited by the research), each with its English text from the same pinned version as a second tab (about 54 million characters; 11,790 texts have English):
 
 - Books and documents, artifact and weapon stories, character stories (including the alternate versions that replace them as the story progresses) and voice lines, and character profiles;
 - Quests: where a quest has a travel log, the log is used, supplemented with branch dialogue missing from the log, dialogue written directly in the quest file, the log summary, and each step's description and hints; quests without a log are assembled from the dialogue files. Hidden quests whose title the game never shows (their internal names often carry `(test)`, but their lines were released) are recorded as 「（隐藏任务）……」 (hidden quest);
@@ -56,6 +56,8 @@ The source library contains every player-facing Simplified Chinese text in the p
 - Descriptions of items, weapons, artifacts, furnishings, the living-beings archive, the geography archive, achievements and loading tips, plus the narrative text in the data tables (reminders, event summaries, domains, ley line bosses, mail, commissions, first-encounter introductions, anecdotes, Spiral Abyss epigraphs, Genius Invokation TCG players and dialogue, and so on; see `TABLES` in `scripts/corpus.mjs`). From mixed tables such as the handbook, tutorials, cards and Miliastra Wonderland cosmetics, only full sentences are kept.
 
 System text is left out: skill and talent values, equipment stats, buttons and labels, template sentences with parameter placeholders, editor asset names, and entries with development markers (`(test)`, `$UNRELEASED`, `test用`, placeholder lines starting with test, `NPC动作测试`, `（废弃）` and so on; proper names such as 「测试！「暝导游船」！」 and 「一把被废弃的刀」 are still kept).
+
+English is matched paragraph by paragraph through the text map: each Chinese paragraph is looked up by its text map entry and the same entry's English is attached to it. Readables and cutscene subtitles have their own English files (`Readable/EN`, `Subtitle/EN`) and are read from those. Full-text search and the term index stay Chinese only. English lines use a narrower development-marker filter, because "test" is an ordinary English word.
 
 The compressed snapshot lives in `content/corpus/`, and the build reads only that. Published short links stay the same across re-imports: new categories each get their own numbering, and content added to an existing text is always appended after its existing paragraphs.
 
@@ -65,15 +67,15 @@ Re-importing first needs the data for the pinned version and the previous versio
 git clone --filter=blob:none --no-checkout --depth 1 https://github.com/DimbreathBot/AnimeGameData .cache/agd-work
 cd .cache/agd-work
 git fetch --depth 1 origin d7f2135c7eb0052e842e0f187f4e5bb88c304737 && git checkout FETCH_HEAD
-git sparse-checkout set TextMap/TextMapCHS.json TextMap/TextMap_MediumCHS.json Readable/CHS ExcelBinOutput \
-  BinOutput/Quest BinOutput/CodexQuest BinOutput/Talk Subtitle/CHS
+git sparse-checkout set TextMap/TextMapCHS.json TextMap/TextMap_MediumCHS.json TextMap/TextMapEN.json TextMap/TextMap_MediumEN.json \
+  Readable/CHS Readable/EN ExcelBinOutput BinOutput/Quest BinOutput/CodexQuest BinOutput/Talk Subtitle/CHS Subtitle/EN
 PREV=c5ef717b77418e5a23234e990e7c0d3a829975ae
 git fetch --depth 1 origin $PREV
 mkdir -p ../corpus/TextMap ../corpus/@$PREV/TextMap
-cp TextMap/TextMapCHS.json TextMap/TextMap_MediumCHS.json ../corpus/TextMap/
+cp TextMap/TextMapCHS.json TextMap/TextMap_MediumCHS.json TextMap/TextMapEN.json TextMap/TextMap_MediumEN.json ../corpus/TextMap/
 for f in TextMapCHS TextMap_MediumCHS; do git show $PREV:TextMap/$f.json > ../corpus/@$PREV/TextMap/$f.json; done
 git ls-tree -r --name-only $PREV > ../tree71.txt
-cd ../.. && node --max-old-space-size=8000 scripts/corpus.mjs
+cd ../.. && CORPUS_DIR=.cache/agd-work node --max-old-space-size=12000 scripts/corpus.mjs
 ```
 
 The appendices that appear only in the research PDF (the full-corpus and review record, the catalogue of image sources and layout treatment, and the notes on the chronicle table headings) are converted from LaTeX into `content/appendix.json` by `scripts/appendix.mjs`:

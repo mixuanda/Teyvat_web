@@ -1,11 +1,18 @@
 {
  "parts": [
   "part-01.json.gz",
-  "part-02.json.gz"
+  "part-02.json.gz",
+  "part-03.json.gz",
+  "part-04.json.gz",
+  "part-05.json.gz",
+  "part-06.json.gz",
+  "part-07.json.gz"
  ],
  "entries": 11795,
  "new": 324,
  "chars": 14982245,
+ "withEn": 11790,
+ "enChars": 53710492,
  "terms": 21557,
  "byType": {
   "item": 124,
