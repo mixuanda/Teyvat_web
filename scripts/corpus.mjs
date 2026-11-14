@@ -27,14 +27,19 @@ const split = (text, who = '') => clean(text).split('\n').map((t) => t.trim()).f
 // 测试与未上线内容的标记
 // 当前数据版本是否已确认开放（见 content/curated/release.json）
 const OPEN = JSON.parse(fs.readFileSync(path.join(root, 'content', 'curated', 'release.json'), 'utf8')).confirmed.includes('7.2');
-const TEST = /([（(]\s*test\s*[)）]|\$UNRELEASED|\$HIDDEN|测试|test用|临时文本|废弃)/i;
+// 题名、人名、物品名的开发标记。不能单看“测试”“废弃”两个字：「测试！「暝导游船」！」「一把被废弃的刀」是正式内容，
+// 「NPC动作测试1-男」「废弃-奇玛」「（废弃）祝圣之滴」才是开发残留
+const TEST = /([（(]\s*test\s*[)）]|\$UNRELEASED|\$HIDDEN|test用|临时文本|\btest\b|测试用|动作测试|[（(]事件测试[)）]|测试礼包|[（(]\s*废弃\s*[)）]|废弃\s*[-－])/i;
+// 正文的一行只看显式标记：“测试”“废弃”在故事里是普通的词（“废弃了许多失败品”），不能整句删掉
+// 以 test 开头的行（“test救命！”“*废弃 test”“TESTSUNKEN”）和单独的 test 一词是开发占位
+const LINE_TEST = /([（(]\s*test\s*[)）]|\$UNRELEASED|\$HIDDEN|test用|临时文本|^\s*[*＊]?\s*(废弃\s*)?test|\btest\b)/i;
 const isNew = (hashes) => hashes.length > 0 && !hashes.some((h) => prevTM[h]);
 
 const entries = [];
 const terms = []; // [名词, 类别, 原文 id, 行号]
 const seen = new Set();
 const add = (e) => {
-  e.lines = e.lines.filter((l) => l[1] && !TEST.test(l[1]));
+  e.lines = e.lines.filter((l) => l[1] && !LINE_TEST.test(l[1]));
   if (!e.lines.length || !e.title || TEST.test(e.title)) return null;
   let id = e.id;
   while (seen.has(id)) id += 'x';
@@ -57,7 +62,11 @@ const avatarName = Object.fromEntries(avatars.map((a) => [a.id, T(a.nameTextMapH
   for (const d of X('DocumentExcelConfigData')) {
     const title = T(d.titleTextMapHash);
     const ids = Object.values(d).filter(Array.isArray).flat().filter((v) => loc[v]);
-    ids.forEach((id, i) => { if (title) titleOf[loc[id]] = ids.length > 1 ? `${title}（${i + 1}/${ids.length}）` : title; });
+    // 同一个文件可能同时挂在测试文档和正式文档下：测试文档的题名不能盖掉正式题名
+    ids.forEach((id, i) => {
+      const k = loc[id];
+      if (title && !(TEST.test(title) && titleOf[k] && !TEST.test(titleOf[k]))) titleOf[k] = ids.length > 1 ? `${title}（${i + 1}/${ids.length}）` : title;
+    });
   }
   const weaponName = Object.fromEntries(X('WeaponExcelConfigData').map((w) => [w.id, T(w.nameTextMapHash)]));
   const dir = path.join(A, 'Readable', 'CHS');
@@ -75,41 +84,62 @@ const avatarName = Object.fromEntries(avatars.map((a) => [a.id, T(a.nameTextMapH
   }
 }
 
+// ── 对白文件：每一句 [说话人, 文本哈希] ──
+// 多数文件是 dialogList / talkContentTextMapHash；邀约事件的文件字段名被混淆，loose 时
+// 按值的形状认：带 _type 的对象是说话人，落在文本表里的数值里最长的是台词，另一个短的是署名
+const dialogsOf = (d, loose = false) => {
+  const list = d.dialogList || (loose ? Object.values(d).find((v) => Array.isArray(v) && v.length && v[0] && typeof v[0] === 'object') : null) || [];
+  const out = [];
+  for (const dl of list) {
+    let hash = dl.talkContentTextMapHash, nameHash = dl.talkRoleNameTextMapHash, role = dl.talkRole;
+    if (loose && !('talkContentTextMapHash' in dl)) {
+      const vals = Object.values(dl);
+      role = vals.find((v) => v && typeof v === 'object' && !Array.isArray(v) && (v._type || v.type));
+      const hs = vals.filter((v) => (typeof v === 'number' || typeof v === 'string') && v !== '' && tm[v]).sort((a, b) => tm[b].length - tm[a].length);
+      hash = hs[0];
+      nameHash = hs[1] && tm[hs[1]].length <= 12 && !/[\n。！？，]/.test(tm[hs[1]]) ? hs[1] : undefined;
+    }
+    if (!hash || !tm[hash]) continue;
+    role ||= {};
+    const type = role.type || role._type;
+    let who = '';
+    if (nameHash && tm[nameHash]) who = T(nameHash);
+    else if (type === 'TALK_ROLE_PLAYER') who = '旅行者';
+    else if (type === 'TALK_ROLE_NPC') who = npcName[role.id ?? role._id] || '';
+    else if (type === 'TALK_ROLE_MATE_AVATAR') who = '派蒙';
+    out.push([who, hash]);
+  }
+  return out;
+};
+const dialogsIn = (file, loose = false) => {
+  const p = path.join(A, 'BinOutput', 'Talk', file);
+  return fs.existsSync(p) ? dialogsOf(JSON.parse(fs.readFileSync(p, 'utf8')), loose) : [];
+};
+
 // ── 任务：有旅行日志的用日志，没有的用对白文件拼 ──
 const usedTalk = new Set();
 {
   const chapter = Object.fromEntries(X('ChapterExcelConfigData').map((c) => [c.id, [T(c.chapterNumTextMapHash), T(c.chapterTitleTextMapHash)].filter(Boolean).join(' ')]));
   const KIND = { AQ: ['aq', '魔神任务'], LQ: ['lq', '传说任务'], WQ: ['wq', '世界任务'], EQ: ['eq', '活动任务'], IQ: ['iq', '委托任务'] };
-  const talkLines = (file, hashes) => {
-    const p = path.join(A, 'BinOutput', 'Talk', file);
-    if (!fs.existsSync(p)) return [];
-    const d = JSON.parse(fs.readFileSync(p, 'utf8'));
-    const lines = [];
-    for (const dl of d.dialogList || []) {
-      const text = tm[dl.talkContentTextMapHash];
-      if (!text) continue;
-      hashes?.push(dl.talkContentTextMapHash);
-      const role = dl.talkRole || {};
-      let who = '';
-      if (dl.talkRoleNameTextMapHash && tm[dl.talkRoleNameTextMapHash]) who = T(dl.talkRoleNameTextMapHash);
-      else if (role.type === 'TALK_ROLE_PLAYER') who = '旅行者';
-      else if (role.type === 'TALK_ROLE_NPC') who = npcName[role.id ?? role._id] || '';
-      else if (role.type === 'TALK_ROLE_MATE_AVATAR') who = '派蒙';
-      lines.push(...split(text, who));
-    }
-    return lines;
-  };
+  const talkLines = (file, hashes) => dialogsIn(file).flatMap(([who, h]) => { hashes?.push(h); return split(tm[h], who); });
   const qdir = path.join(A, 'BinOutput', 'Quest');
   for (const f of fs.readdirSync(qdir).sort((a, b) => parseInt(a) - parseInt(b))) {
     const q = JSON.parse(fs.readFileSync(path.join(qdir, f), 'utf8'));
     const [type, typeName] = KIND[q.type] || KIND.AQ;
-    const title = T(q.titleTextMapHash);
+    // 带 $HIDDEN 的是游戏里不显示题名的任务（送礼、日常对话、隐藏挑战）。其中不少内部名带 (test)，
+    // 对白却是正式上线的台词：去掉标记，题名记作“（隐藏任务）……”。带 $UNRELEASED 的是未上线内容，不收
+    const rawTitle = T(q.titleTextMapHash);
+    const hidden = /\$HIDDEN/.test(rawTitle) && !/\$UNRELEASED/.test(rawTitle);
+    let title = rawTitle.replace(/\$HIDDEN\s*/g, '').trim();
+    if (hidden && /[（(]\s*test\s*[)）]|^test/i.test(title)) title = `（隐藏任务）${title.replace(/[（(]\s*test\s*[)）]/gi, '').replace(/^test/i, '').trim().replace(/^隐藏[-－]?/, '')}`;
     const hashes = [];
     let lines = [];
     const codexPath = path.join(A, 'BinOutput', 'CodexQuest', `${q.id}.json`);
     let from = `BinOutput/Quest/${f}`;
+    let codex = null;
     if (fs.existsSync(codexPath)) {
       const d = JSON.parse(fs.readFileSync(codexPath, 'utf8'));
+      codex = d;
       from = `BinOutput/CodexQuest/${q.id}.json`;
       for (const s of d.subQuests || []) {
         const before = lines.length;
@@ -134,9 +164,34 @@ const usedTalk = new Set();
         if (ls.length) { if (lines.length) lines.push(['', '＊']); lines.push(...ls); }
       }
     }
-    if (!lines.length || !title) continue;
+    // 只有步骤说明、没有对白的任务，按步骤说明判断是不是本版本新增
+    const stepHashes = (q.subQuests || []).flatMap((s) => [s.descTextMapHash, s.stepDescTextMapHash]).filter((h) => tm[h]);
+    const isNewQuest = isNew(hashes.length ? hashes : stepHashes);
+    // 以下都接在已有内容之后，原有段落的锚点不动
+    const seenText = new Set([...lines.map((l) => l[1]), ...split(T(q.descTextMapHash)).map((l) => l[1])]);
+    const more = (head, ls) => { const fresh = ls.filter((l) => !seenText.has(l[1])); fresh.forEach((l) => seenText.add(l[1])); if (fresh.length) lines.push(['', `＊ ${head}`], ...fresh); };
+    if (codex) {
+      // 任务回顾只收了主线对白；分支、选项后的对白在对白文件里
+      const have = new Set(hashes.map(String));
+      more('任务回顾以外的对白', (q.talks || []).flatMap((t) => dialogsIn(`Quest/${t.id}.json`).filter(([, h]) => !have.has(String(h))).flatMap(([who, h]) => split(tm[h], who))));
+      const brief = T(codex.mainQuestDesp?.textId);
+      if (brief && brief !== T(q.descTextMapHash)) more('任务回顾简介', split(brief));
+    }
+    // 任务文件里直接写着的对白（多见于活动任务）
+    { const have = new Set(hashes.map(String)); more('任务中的其他对白', dialogsOf(q).filter(([, h]) => !have.has(String(h))).flatMap(([who, h]) => split(tm[h], who))); }
+    // 每一步：步骤名、详细说明、提示。详细说明和提示常在句末挂 $HIDDEN（界面上不显示的说明），去掉标记照收；
+    // 步骤名带 $HIDDEN 的是“和古田聊聊”这类内部叫法，仍由行过滤去掉
+    const unhide = (h) => split(T(h).replace(/\$HIDDEN\s*/g, '').trim());
+    more('任务步骤', [...(q.subQuests || [])].sort((a, b) => (a.order ?? 0) - (b.order ?? 0)).flatMap((s) => [...split(T(s.descTextMapHash)), ...unhide(s.stepDescTextMapHash), ...unhide(s.guideTipsTextMapHash)]));
+    if (!lines.length) continue;
+    if (!title) title = `（无题）任务 ${q.id}`;
+    if (title === '（隐藏任务）') {
+      const count = {};
+      lines.forEach(([w]) => { if (w && w !== '旅行者' && w !== '派蒙') count[w] = (count[w] || 0) + 1; });
+      title += Object.entries(count).sort((a, b) => b[1] - a[1])[0]?.[0] || q.id;
+    }
     const desc = T(q.descTextMapHash);
-    const e = add({ id: `${type}/${q.id}`, type, title, group: chapter[q.chapterId] || typeName, path: from, first: isNew(hashes) ? 'new' : 'old', lines: desc ? [['', desc], ...(lines[0][1].startsWith('＊') ? [] : [['', '＊']]), ...lines] : lines });
+    const e = add({ id: `${type}/${q.id}`, type, title, group: chapter[q.chapterId] || typeName, path: from, first: isNewQuest ? 'new' : 'old', lines: desc ? [['', desc], ...(lines[0][1].startsWith('＊') ? [] : [['', '＊']]), ...lines] : lines });
     if (e) term(title, typeName, e.id);
   }
 
@@ -172,6 +227,57 @@ const usedTalk = new Set();
       if (e && i === 0 && !/对白|旁白|物件|留言|？？？/.test(who)) term(who, '人物', e.id);
     });
   }
+
+  // 一组对白的主讲人：出现最多的、不是旅行者和派蒙的说话人
+  const mainSpeaker = (lines) => {
+    const count = {};
+    lines.forEach(([w]) => { if (w && w !== '旅行者' && w !== '派蒙') count[w] = (count[w] || 0) + 1; });
+    return Object.entries(count).sort((a, b) => b[1] - a[1])[0]?.[0] || '';
+  };
+  const numeric = (a, b) => a.localeCompare(b, 'en', { numeric: true });
+
+  // ── 邀约事件：文件名是“邀约编号_段落”，一个邀约一篇 ──
+  {
+    const dir = path.join(A, 'BinOutput', 'Talk', 'Coop');
+    const chains = new Map();
+    for (const f of fs.existsSync(dir) ? fs.readdirSync(dir).sort(numeric) : []) {
+      const hashes = [];
+      const lines = dialogsIn(`Coop/${f}`, true).flatMap(([who, h]) => { hashes.push(h); return split(tm[h], who); });
+      if (!lines.length) continue;
+      const c = chains.get(f.split('_')[0]) || chains.set(f.split('_')[0], { lines: [], hashes: [] }).get(f.split('_')[0]);
+      if (c.lines.length) c.lines.push(['', '＊']);
+      c.lines.push(...lines); c.hashes.push(...hashes);
+    }
+    const perWho = {};
+    const rows = [...chains].map(([id, c]) => ({ id, c, who: mainSpeaker(c.lines) || '邀约事件' }));
+    rows.forEach((r) => { r.n = (perWho[r.who] = (perWho[r.who] || 0) + 1); });
+    for (const r of rows) {
+      const many = perWho[r.who] > 1;
+      add({ id: `coop/${r.id}`, type: 'coop', title: `${r.who}·邀约事件${many ? `（${r.n}）` : ''}`, group: r.who, path: `BinOutput/Talk/Coop/${r.id}_*.json`, first: isNew(r.c.hashes) ? 'new' : 'old', lines: r.c.lines });
+    }
+  }
+
+  // ── 故事板、绽放事件、过场里的对白和根目录的零散对白：按主讲人归拢，各自编号 ──
+  for (const [sub, prefix, label] of [['Storyboard', 'sb', '故事板对白'], ['Blossom', 'bl', '绽放事件对白'], ['Cutscene', 'cs', '过场对白'], ['', 'rt', '零散对白']]) {
+    const dir = path.join(A, 'BinOutput', 'Talk', sub);
+    const files = fs.readdirSync(dir).filter((f) => f.endsWith('.json') && fs.statSync(path.join(dir, f)).isFile()).sort(numeric);
+    const byWho = new Map();
+    for (const f of files) {
+      const hashes = [];
+      const lines = talkLines(sub ? `${sub}/${f}` : f, hashes);
+      if (!lines.length) continue;
+      const who = mainSpeaker(lines) || label;
+      const g = byWho.get(who) || byWho.set(who, { lines: [], hashes: [] }).get(who);
+      if (g.lines.length) g.lines.push(['', '＊']);
+      g.lines.push(...lines); g.hashes.push(...hashes);
+    }
+    let n = 0;
+    for (const [who, g] of [...byWho].sort((a, b) => a[0].localeCompare(b[0], 'zh'))) {
+      const chunks = [];
+      for (let i = 0; i < g.lines.length; i += 1000) chunks.push(g.lines.slice(i, i + 1000));
+      chunks.forEach((lines, i) => add({ id: `npc/${prefix}${++n}`, type: 'npc', title: `${who === label ? label : `${who}·${label}`}${chunks.length > 1 ? `（${i + 1}/${chunks.length}）` : ''}`, group: label, path: `BinOutput/Talk/${sub ? `${sub}/` : ''}`, first: isNew(g.hashes) ? 'new' : 'old', lines }));
+    }
+  }
 }
 
 // ── 角色：故事、语音、资料 ──
@@ -182,6 +288,9 @@ const usedTalk = new Set();
     if (!name) continue;
     const h = s.storyContextTextMapHash;
     add({ id: `story/${h}`, type: 'story', title: `${name}·${T(s.storyTitleTextMapHash) || '故事'}`, group: name, path: 'ExcelBinOutput/FetterStoryExcelConfigData.json', first: isNew([h]) ? 'new' : 'old', lines: split(tm[h] || '') });
+    // 有些故事在剧情推进后会换成另一版正文
+    const h2 = s.storyContext2TextMapHash;
+    if (h2 && tm[h2] && T(h2) !== T(h)) add({ id: `story/${h2}`, type: 'story', title: `${name}·${T(s.storyTitle2TextMapHash) || T(s.storyTitleTextMapHash) || '故事'}（另一版）`, group: name, path: 'ExcelBinOutput/FetterStoryExcelConfigData.json', first: isNew([h2]) ? 'new' : 'old', lines: split(tm[h2]) });
   }
   const voices = {};
   for (const v of X('FettersExcelConfigData')) (voices[v.avatarId] ||= []).push(v);
@@ -210,7 +319,7 @@ const usedTalk = new Set();
       const e = add({ id: chunks.length > 1 ? `${id}-${ci + 1}` : id, type, title: chunks.length > 1 ? `${title}（${ci + 1}/${chunks.length}）` : title, group: '说明文字', path: 'ExcelBinOutput/', first: 'old', lines: chunk.flatMap(([n, d]) => split(d, n)) });
       if (!e) return;
       let li = 0;
-      for (const [n, d] of chunk) { const c = split(d, n).filter((l) => !TEST.test(l[1])).length; if (c) { if (kind) term(n, kind, e.id, li); li += c; } }
+      for (const [n, d] of chunk) { const c = split(d, n).filter((l) => !LINE_TEST.test(l[1])).length; if (c) { if (kind) term(n, kind, e.id, li); li += c; } }
     });
     void lines;
   };
@@ -230,6 +339,81 @@ const usedTalk = new Set();
   group('misc/viewcodex', 'misc', '地理志', '地点', X('ViewCodexExcelConfigData').map((v) => [T(v.nameTextMapHash), T(v.descTextMapHash), [v.descTextMapHash]]));
   group('misc/achievements', 'misc', '成就', '成就', X('AchievementExcelConfigData').map((v) => [T(v.titleTextMapHash), T(v.descTextMapHash), [v.titleTextMapHash]]));
   group('misc/loadingtips', 'misc', '加载提示', null, X('LoadingTipsExcelConfigData').map((v) => [T(v.tipsTitleTextMapHash), T(v.tipsDescTextMapHash), [v.tipsDescTextMapHash]]));
+}
+
+// ── 过场字幕：Subtitle/CHS 的 .srt，一个过场一篇 ──
+{
+  const dir = path.join(A, 'Subtitle', 'CHS');
+  const questTitle = Object.fromEntries(fs.readdirSync(path.join(A, 'BinOutput', 'Quest')).map((f) => { const q = JSON.parse(fs.readFileSync(path.join(A, 'BinOutput', 'Quest', f), 'utf8')); return [q.id, T(q.titleTextMapHash).replace(/\$HIDDEN\s*/g, '').trim()]; }));
+  const VARIANT = { Boy: '（男主）', Girl: '（女主）' };
+  const files = fs.existsSync(dir) ? fs.readdirSync(dir).sort() : [];
+  // 同一任务常有几段过场：同名时按出现顺序编号
+  const seenTitle = {};
+  for (const f of files) {
+    const stem = f.replace(/_CHS\.srt$/i, '').replace(/\.srt$/i, '');
+    const text = fs.readFileSync(path.join(dir, f), 'utf8').replace(/^﻿/, '');
+    // srt：序号、时间轴、字幕正文、空行
+    const lines = text.split(/\r?\n/).filter((l) => l.trim() && !/^\d+$/.test(l.trim()) && !/-->/.test(l)).flatMap((l) => split(l));
+    // 文件名里的编号（Cs_102106、Cs_Inazuma_AQ202004、Cs_Activity_4001103）是子任务或任务号：依次试原号、去掉末两位、末四位
+    const q = (stem.match(/\d{4,}/g) || []).flatMap((d) => [Number(d), Math.floor(Number(d) / 100), Math.floor(Number(d) / 10000)]).map((n) => questTitle[n]).find((t) => t && !TEST.test(t));
+    const variant = Object.entries(VARIANT).find(([k]) => new RegExp(`_${k}$`, 'i').test(stem))?.[1] || '';
+    const base = q ? `${q}·过场` : `过场·${stem.replace(/^Cs_/i, '').replace(/_(Boy|Girl)$/i, '').replace(/_/g, ' ')}`;
+    const n = (seenTitle[base + variant] = (seenTitle[base + variant] || 0) + 1);
+    add({ id: `cutscene/${stem.toLowerCase()}`, type: 'cutscene', title: `${base}${n > 1 ? ` ${n}` : ''}${variant}`, group: q ? '任务过场' : '其他过场', path: `Subtitle/CHS/${f}`, first: prevTree.has(`Subtitle/CHS/${f}`) ? 'old' : 'new', lines });
+  }
+}
+
+// ── 设定表里的叙事文字：活动简介、秘境、地脉首领、提醒语、邮件、委托、初见、逸闻…… ──
+// 每行取它引用的全部文本：短的题名/人名当署名，其余当正文。混杂表（手册、教程、牌、装扮）只收成句的文字，
+// 不收按钮、标签和带参数占位的数值说明
+{
+  const PLACEHOLDER = /\{param|%\d+%|#\d+#|\$\[|\{\d+\}|\{[A-Z_]+\}/;
+  const prose = (t) => t.length >= 8 && /[。！？…」]/.test(t) && !PLACEHOLDER.test(t);
+  const TABLES = [
+    // [文件名（去掉 ExcelConfigData）, 标题, 是否只收成句的文字]
+    ['Reminder', '提醒语', false], ['NewActivityPreviewConfigData', '活动简介', false], ['Dungeon', '秘境说明', false],
+    ['LeyLineLevelConfig', '地脉首领', false], ['NpcFirstMet', '初见介绍', false], ['Anecdote', '逸闻', false],
+    ['ReputationRequest', '声望委托', false], ['DailyTask', '每日委托', false], ['CoopPoint', '邀约事件结局', false],
+    ['Mail', '邮件', false], ['HuntingMonster', '讨伐悬赏', false], ['MaterialCodex', '物品图鉴', false],
+    ['AquariumDivingItem', '潜水图鉴', false], ['GroupLinksBundle', '游记与见闻', false], ['SLTMapContent', '地图记事', false],
+    ['AutoChessEvent', '冒险事件', false], ['QuestAbyssWarLevel', '战线记录', false], ['MonsterChessV2Card', '兵棋', false],
+    ['TeyvatDispatchTask', '派遣任务', false], ['ActivityPhotographPos', '摄影地点', false], ['AvatarVideoSheet', '角色介绍', false],
+    ['TowerSchedule', '深境螺旋题记', false], ['RoleCombatFortuneTeller', '剧诗占卜', false], ['GCGWorldLevel', '七圣召唤·牌手', false],
+    ['GCGTalkDetail', '七圣召唤·牌局对白', false], ['DungeonEntry', '秘境入口', false], ['AvatarCostume', '角色衣装', false],
+    ['SubQuestCatalog', '任务目录说明', false], ['InvestigationMonsterConfigData', '生物调查', false], ['FishPool', '钓点', false],
+    ['PersonalLineActivity', '传说任务简介', false], ['AquariumDivingTask', '潜水任务', false], ['TpsGlassesChatMessage', '观测镜讯息', false],
+    ['UgcMonster', '千星奇域·造物', true], ['BeyondMonsterTemplate', '千星奇域·魔物', true], ['BeyondHallFacility', '千星奇域·大厅物件', true],
+    ['ManualTextMapConfigData', '界面文字', true], ['TutorialDetail', '教程', true], ['GCGCard', '七圣召唤·卡牌', true],
+    ['GCGDeckCard', '七圣召唤·牌组', true], ['BeyondCostume', '千星奇域·装扮', true], ['BeyondCostumeSuit', '千星奇域·套装', true],
+    ['BeyondCostumeDrawing', '千星奇域·图样', true], ['BydMaterial', '千星奇域·物品', true],
+  ];
+  const fileOf = (n) => [`${n}ExcelConfigData.json`, `${n}.json`].find((f) => fs.existsSync(path.join(A, 'ExcelBinOutput', f)));
+  for (const [name, title, mixed] of TABLES) {
+    const f = fileOf(name);
+    if (!f) throw new Error(`找不到设定表 ${name}`);
+    const seenRow = new Set();
+    const rows = [];
+    for (const row of J(`ExcelBinOutput/${f}`)) {
+      const texts = [];
+      const walk = (o, k) => {
+        if (Array.isArray(o)) { o.forEach((v) => walk(v, k)); return; }
+        if (o && typeof o === 'object') { Object.entries(o).forEach(([kk, v]) => walk(v, kk)); return; }
+        if ((typeof o === 'number' || typeof o === 'string') && o !== '' && tm[o]) { const t = T(o); if (t && !texts.some((x) => x[1] === t)) texts.push([k, t, o]); }
+      };
+      walk(row, '');
+      const label = texts.find(([k, t]) => /name|title|speaker/i.test(k) && t.length <= 30 && !t.includes('\n'));
+      // 带参数占位的句子（“您抵达了第{0}层”）是系统模板，哪张表都不收
+      const body = texts.filter((x) => x !== label).filter(([, t]) => !PLACEHOLDER.test(t) && (!mixed || prose(t)));
+      if (!body.length) continue;
+      const key = body.map((x) => x[1]).join('\n');
+      if (seenRow.has(key)) continue; // 同一段文字挂在多行上
+      seenRow.add(key);
+      rows.push([label?.[1] || '', body.map((x) => x[1]).join('\n'), [...(label ? [label[2]] : []), ...body.map((x) => x[2])]]);
+    }
+    const chunks = [];
+    for (let i = 0; i < rows.length; i += 400) chunks.push(rows.slice(i, i + 400));
+    chunks.forEach((chunk, ci) => add({ id: `misc/t-${name.toLowerCase()}${chunks.length > 1 ? `-${ci + 1}` : ''}`, type: 'misc', title: chunks.length > 1 ? `${title}（${ci + 1}/${chunks.length}）` : title, group: '设定表', path: `ExcelBinOutput/${f}`, first: chunk.every((r) => isNew(r[2])) ? 'new' : 'old', lines: chunk.flatMap(([n, d]) => split(d, n)) }));
+  }
 }
 
 // ── 写出：按类型分片压缩 ──

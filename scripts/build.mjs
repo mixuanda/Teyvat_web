@@ -23,6 +23,15 @@ const EV = Object.fromEntries(evidenceList.map((e) => [e.id, e]));
 const chronology = readJSON('chronology.json');
 const relations = readJSON('relations.json');
 const plates = readJSON('plates.json');
+// 研究稿里只在 PDF 出现的附录（scripts/appendix.mjs 从 LaTeX 转出）
+const appendix = readJSON('appendix.json');
+const imgRow = Object.fromEntries(appendix.images.rows.map((r) => [r.id, r]));
+// 研究稿 PDF（在研究仓库用 compile.sh 编译）。文件 45 MB，不进仓库，挂在 GitHub Release 上，网站只放下载链接。
+// 换新版时：发一个新的 Release，把 PDF 作为附件上传，再改这里的标签和大小。
+// 还没有建 Release 时留空，专题页就不显示下载链接。
+const PDF_RELEASE = '';
+const PDF_URL = `https://github.com/mixuanda/Teyvat_web/releases/download/${PDF_RELEASE}/teyvat_civilization_history.pdf`;
+const pdfMB = 45;
 const partsDef = readJSON('parts.json');
 const sources = readJSON('sources.json'); // 研究引用过的原文（多语言、带引文定位）
 const citedCount = sources.length;
@@ -94,10 +103,26 @@ for (const e of evidenceList) {
 // 主线进度：按出处的任务名和地区判定（规则在 content/curated/gates.json）
 const LAST = star.stages.length - 1;
 const RULES = gateRules.rules.map(([g, pat]) => [g, new RegExp(pat)]);
+// 魔神任务各章对应的篇章（stages 的下标）
+const ACT_GATE = [[/^序章/, 0], [/^第一章/, 1], [/^第二章/, 2], [/^第三章/, 3], [/^第四章/, 4], [/^第五章/, 5], [/^空月之歌/, 6], [/^第七章/, 7]];
+// 出处是魔神任务的对白时，直接按它所在的章定篇章：对白文件号去掉末两位是任务号，
+// 且证据题名要以该任务名或幕名开头，才算对上（世界任务、传说任务的文件号会撞上）
+const archonGate = (e) => {
+  const m = /^BinOutput\/Talk\/Quest\/(\d+)\.json$/.exec(SRC[e.src]?.path || '');
+  const q = m && SRC[`aq/${m[1].slice(0, -2)}`];
+  if (!q) return null;
+  const act = (q.heading || '').replace(/^\S+\s+\S+\s+/, '');
+  const t = e.title.replace(/^《/, '');
+  if (!t.startsWith(q.title) && !(act && t.startsWith(act))) return null;
+  for (const [re, g] of ACT_GATE) if (re.test(q.heading || '')) return g;
+  return null;
+};
 const evGate = (id) => {
   const e = EV[id];
   if (!e) return null;
   if (e.isNew) return LAST; // 本版本新增的出处，剧情上算最后一篇
+  const a = archonGate(e);
+  if (a != null) return a;
   for (const [g, re] of RULES) if (re.test(e.title)) return g;
   return null;
 };
@@ -170,11 +195,14 @@ function inline(text, ctx) {
   });
 }
 const plain = (text) => text.replace(/\[@[A-Za-z0-9]+\]/g, '');
+// 附录的文本片段 [[文字, 链接?], …]
+const segsHTML = (sg) => sg.map(([t, u]) => (u ? `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>` : esc(t))).join('');
+const segsText = (sg) => sg.map(([t]) => t).join('');
 
 function panelHTML(id, i, n, base) {
   const im = plates.images[id];
   const label = n > 1 ? `(${String.fromCharCode(97 + i)}) ` : '';
-  return `<button class="panel" type="button" data-full="${base}images/${im.file}" data-title="${esc(im.scene || '')}" data-obs="${esc(im.observation || '')}" data-credit="${esc(im.credit || '')}" data-page="${esc(im.page || '')}">
+  return `<button class="panel" type="button" data-full="${base}images/${im.file}" data-title="${esc(im.scene || '')}" data-obs="${esc(im.observation || '')}" data-credit="${esc(im.credit || '')}" data-page="${esc(im.page || '')}" data-proc="${esc(segsText(imgRow[id].proc))}">
 <img loading="lazy" src="${base}images/${im.file}" width="${im.w}" height="${im.h}" alt="${esc(im.scene || id)}">
 <span class="panel-label">${label}${esc(im.scene || id)}</span></button>`;
 }
@@ -433,6 +461,7 @@ const quoteBlock = (evId, quote, base, level) => {
 };
 {
   const body = `
+<h1 class="sr-only">提瓦特考据 · 星图</h1>
 <div class="explore" id="explore">
 <aside class="qlist" aria-label="问题">
 <h2>从一个问题开始</h2>
@@ -486,6 +515,16 @@ star.questions.forEach((q, qi) => {
   const next = star.questions[(qi + 1) % star.questions.length];
   const maxGate = Math.max(q.gate, ...q.steps.map((s) => stepGate(q, s)));
   const quoteBox = (s) => quoteBlock(s.ev, s.quote, base, s.level);
+  // 答案随进度更新：answer 对应问题本身的进度，later 里是之后篇章能说出的更完整的答案；
+  // 每一版只在“到了它的进度、还没到下一版的进度”时显示
+  const ledes = [{ gate: q.gate, text: q.answer }, ...(q.later || [])];
+  ledes.forEach((a, i) => { if (i && !(a.gate > ledes[i - 1].gate)) { console.error(`问题 ${q.id} 的 later 必须按进度递增，且晚于问题本身`); process.exit(1); } });
+  const ledeHTML = ledes.map((a, i) => { const p = `<p class="lede" data-gate="${a.gate}">${esc(a.text)}</p>`; return ledes[i + 1] ? `<div data-fog="${ledes[i + 1].gate}">${p}</div>` : p; }).join('\n');
+  // 未解部分的进度：手写值，否则取所挂出处，至少等于问题本身
+  const openGate = Math.max(q.gate, q.open.gate ?? (q.open.ev ? evGate(q.open.ev) ?? q.gate : q.gate));
+  const openHTML = `<div class="open-head">${levelTag('hypothesis')}<h2>还没有答案的部分</h2></div>
+<p>${esc(q.open.text)}</p>
+${q.open.ev ? quoteBox({ ...q.open, level: 'hypothesis' }) : ''}`;
   const body = `
 <div class="answer wrap">
 <article>
@@ -494,7 +533,7 @@ star.questions.forEach((q, qi) => {
 <div data-gate="${q.gate}">
 <div class="answer-head">
 <h1>${esc(q.title)}</h1>
-<p class="lede">${esc(q.answer)}</p>
+${ledeHTML}
 <p class="meta">读完约 ${Math.max(1, Math.round((q.answer.length + q.steps.reduce((a, s) => a + s.text.length, 0)) / 250))} 分钟 · 涉及${esc(star.stages[maxGate])}篇剧情 · ${new Set(q.steps.map((s) => s.ev)).size} 条游戏原文</p>
 </div>
 <div class="stepbar" aria-hidden="true">${q.steps.map(() => '<span></span>').join('')}</div>
@@ -514,9 +553,10 @@ ${quoteBox(s)}
 </ol>
 <div class="stepnav"><button type="button" id="step-prev">上一步</button><button type="button" id="step-next" class="primary">下一步</button></div>
 <section class="open">
-<div class="open-head">${levelTag('hypothesis')}<h2>还没有答案的部分</h2></div>
-<p>${esc(q.open.text)}</p>
-${q.open.ev ? quoteBox({ ...q.open, level: 'hypothesis' }) : ''}
+${openGate > q.gate ? `<div class="fogbox" data-fog="${openGate}">${LOCK} 还没有答案的部分在迷雾里，${stageAfter(openGate)}。</div>
+<div data-gate="${openGate}">
+${openHTML}
+</div>` : openHTML}
 </section>
 <div class="answer-links">
 <a href="${base}q/${next.id}/">下一个问题：${esc(next.title)}</a>
@@ -653,7 +693,7 @@ for (const s of sources) {
     const dialog = s.langs[L].some((l) => l[0]);
     return s.langs[L].map(([who, t], i) => {
       const a = anchorOf(L, i);
-      if (t.startsWith('＊')) return `<p class="sep">${esc(t.replace(/^＊\s*/, '') || '＊')}</p>`;
+      if (t.startsWith('＊')) return `<p id="${a}" class="sep">${esc(t.replace(/^＊\s*/, '') || '＊')}</p>`;
       const c = cited[`${L}:${i}`];
       return `<p id="${a}" class="para${c ? ' cited' : ''}"><a class="pn" href="#${a}">¶${i + 1}</a>${dialog && who ? `<span class="who">${esc(who)}</span>` : ''}${c ? markFrags(t, c.qs) : esc(t)}${c ? `<span class="pnote">被 ${useCount([...c.evs])} 处论述引用 · 锚点 ${s.short}#${a}${[...c.evs].map((id) => ` <a class="cite" href="${base}evidence/#${id}" data-ev="${id}">${EV[id].n}</a>`).join('')}</span>` : ''}</p>`;
     }).join('\n');
@@ -738,6 +778,7 @@ ${topics.map((t) => `<a class="card link" href="${base}topic/${t.id}/"><h2>${esc
 <div class="toc">
 ${parts.map((p) => `<section class="card"><h3><span>${p.label}</span>${esc(p.name)}</h3><ol>${p.chapters.map((c) => `<li><a href="${base}${chapterURL(c)}"><b>${pad(c.no)}</b><span>${esc(c.title)}</span><em>${fmt(c.chars)} 字 · ${c.cites.size} 证</em></a></li>`).join('')}</ol></section>`).join('\n')}
 </div>
+${PDF_RELEASE ? `<p><a href="${PDF_URL}">下载全文 PDF（${stats.pdf_pages} 页，${pdfMB} MB）</a></p>\n` : ''}<p><a href="${base}read/appendix/">附录 · ${esc(appendix.corpus.title)} →</a>　<a href="${base}plates/#image-catalog">附录 · ${esc(appendix.images.title)} →</a></p>
 </section></div>`;
   page({ url: 'topic/', title: '专题', body, cls: 'topics-page' });
 }
@@ -805,7 +846,7 @@ ${rels.length ? `<details class="rels"><summary>${rels.length} 条时间关系</
   };
   const gTitle = (t) => { const m = t.match(/^([^、：]{1,6})、(.+)$/); return m ? [m[1].replace('（续）', '·续'), m[2]] : ['', t]; };
   const body = `<div class="wrap stack">
-<div class="pagehead"><h1>年表</h1><p>${stats.chronology_events} 项事件。文本自己写明的纪年、换算得到的年数、只知先后的次序，三者分开显示：每项事件都标着它的时间是怎么定的。</p></div>
+<div class="pagehead"><h1>年表</h1><p>${stats.chronology_events} 项事件。文本自己写明的纪年、换算得到的年数、只知先后的次序，三者分开显示：每项事件都标着它的时间是怎么定的。</p><p class="muted">${segsHTML(appendix.timeline.intro)}</p></div>
 <div class="tl-controls" id="tl-controls">
 <label class="libsearch">筛选事件、地区、年代<input type="search" id="tl-q" autocomplete="off"></label>
 <div class="seg" role="group" aria-label="时间依据">
@@ -840,8 +881,33 @@ ${g.events.map(eventHTML).join('\n')}
 <div class="pagehead"><h1>图版</h1><p>${stats.image_assets} 幅图像组成 ${stats.image_plates} 组图版，另有 ${stats.diagram_figures} 幅结构图。每幅都记录了“看到了什么”与来源；点开任一幅查看观察记录。</p></div>
 <div class="plates">
 ${figureIndex.map((f) => (f.kind === 'plate' ? plateHTML(f.ref, f.no, base, { linkChapter: f.chapter }) : diagramHTML(f.ref, f.no, base, { linkChapter: f.chapter }))).join('\n')}
-</div></div>`;
+</div>
+<section class="stack-s" id="image-catalog">
+<h2>${esc(appendix.images.title)}</h2>
+<p>${segsHTML(appendix.images.intro)}</p>
+<div class="table-wrap"><table><thead><tr><th>图像编号</th><th>出处与场景</th><th>保存及上传者</th><th>原图与版面处理</th></tr></thead><tbody>
+${appendix.images.rows.map((r) => `<tr id="img-${esc(r.id)}"><td><code>${esc(r.id)}</code></td><td>${segsHTML(r.scene)}</td><td>${segsHTML(r.keeper)}</td><td>${segsHTML(r.proc)}</td></tr>`).join('\n')}
+</tbody></table></div>
+</section></div>`;
   page({ url: 'plates/', title: '图版', body, cls: 'plates-page' });
+}
+
+// ───────────────────────── 附录：全量语料、资产清单与逐项复核记录 ─────────────────────────
+{
+  const base = '../../';
+  let h = 0;
+  const blocks = appendix.corpus.blocks.map((b) => {
+    if (b.type === 'h') return `<h2 id="a${++h}">${esc(b.text)}</h2>`;
+    if (b.type === 'p') return `<p>${segsHTML(b.segs)}</p>`;
+    return `<figure class="table-wrap"><table><thead><tr>${b.head.map((c) => `<th>${segsHTML(c)}</th>`).join('')}</tr></thead><tbody>${b.rows.map((r) => `<tr>${r.map((c) => `<td>${segsHTML(c)}</td>`).join('')}</tr>`).join('')}</tbody></table>${b.caption.length ? `<figcaption>${segsHTML(b.caption)}</figcaption>` : ''}</figure>`;
+  }).join('\n');
+  const body = `<div class="wrap stack">
+<nav class="crumbs" aria-label="位置"><a href="${base}topic/">专题</a> / <a href="${base}topic/#full">研究全文</a> / 附录</nav>
+<div class="pagehead"><h1>${esc(appendix.corpus.title)}</h1><p class="muted">研究稿的附录，说明本研究用的固定文本快照、各类文件的取得与阅读范围，以及仍待完成的部分。</p></div>
+<article class="prose">
+${blocks}
+</article></div>`;
+  page({ url: 'read/appendix/', title: appendix.corpus.title, body, cls: 'appendix-page' });
 }
 
 // ───────────────────────── 引证 ─────────────────────────
@@ -915,6 +981,9 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
     idx.push(['章', c.title, chapterURL(c), `${c.part.label} · 第 ${c.no} 章`]);
     for (const s of c.sections) idx.push(['节', s.title || c.title, `${chapterURL(c)}#${s.id}`, s.text.join(' ')]);
   }
+  // 附录：每小节一条，图像目录每幅一条
+  { let h = 0, cur = null; for (const b of appendix.corpus.blocks) { if (b.type === 'h') { cur = ['节', b.text, `read/appendix/#a${++h}`, '']; idx.push(cur); } else if (cur && b.type === 'p') cur[3] += segsText(b.segs); } }
+  for (const r of appendix.images.rows) idx.push(['节', `${r.id} · ${segsText(r.scene)}`, `plates/#img-${r.id}`, `${segsText(r.keeper)} ${segsText(r.proc)}`]);
   for (const e of chronology) if (e.event_id) idx.push(['年', `${e.date} · ${e.region}`, `timeline/#${e.event_id}`, e.event]);
   for (const e of evidenceList) idx.push(['证', e.title, `evidence/#${e.id}`, e.quotes.join(' / ')]);
   fs.writeFileSync(path.join(dist, 'data', 'search.json'), JSON.stringify(idx));
@@ -929,7 +998,8 @@ ${items.map((x) => `<section class="card claim"><div>${levelTag(x.level)}</div><
   const flush = () => { if (cur.length) { fs.writeFileSync(path.join(dir, `${n++}.json`), JSON.stringify(cur)); cur = []; size = 0; } };
   for (const s of sources) {
     if (s.pending) continue;
-    const text = (s.langs.CHS || Object.values(s.langs)[0]).map((l) => l[1]).join('\n');
+    // 一行一段：行内的换行压成空格，搜全文按行号跳到 #p<行号> 才对得上
+    const text = (s.langs.CHS || Object.values(s.langs)[0]).map((l) => l[1].replace(/\n/g, ' ')).join('\n');
     if (size + text.length > 500000) flush();
     cur.push([s.id, s.title, text]);
     size += text.length;
