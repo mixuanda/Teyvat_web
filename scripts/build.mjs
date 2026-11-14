@@ -26,9 +26,9 @@ const plates = readJSON('plates.json');
 // 研究稿里只在 PDF 出现的附录（scripts/appendix.mjs 从 LaTeX 转出）
 const appendix = readJSON('appendix.json');
 const imgRow = Object.fromEntries(appendix.images.rows.map((r) => [r.id, r]));
-// 研究稿 PDF（在研究仓库用 compile.sh 编译）。文件 45 MB，不进仓库，挂在 GitHub Release 上，网站只放下载链接。
-// 换新版时：发一个新的 Release，把 PDF 作为附件上传，再改这里的标签和大小。
-// 还没有建 Release 时留空，专题页就不显示下载链接。
+// Research PDF (compiled with compile.sh in the research repo). It is 45 MB, so it stays out of the repo and lives on a GitHub Release; the site only links to it.
+// For a new edition: publish a new Release with the PDF attached, then update the tag and size here.
+// Leave it empty until a Release exists, and the Topics page shows no download link.
 const PDF_RELEASE = '';
 const PDF_URL = `https://github.com/mixuanda/Teyvat_web/releases/download/${PDF_RELEASE}/teyvat_civilization_history.pdf`;
 const pdfMB = 45;

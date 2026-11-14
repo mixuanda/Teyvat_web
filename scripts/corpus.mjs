@@ -1,5 +1,5 @@
 // 全量导入：把固定版本里的全部简体中文文本整理成一篇篇原文，写入 content/corpus/*.json.gz。
-// 需要先有语料的本地副本（.cache/agd-work，见 README「全量语料」一节）。
+// 需要先有语料的本地副本（.cache/agd-work，见 README 的 "Full corpus" 一节）。
 // 用法：node scripts/corpus.mjs
 import fs from 'node:fs';
 import path from 'node:path';
