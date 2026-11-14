@@ -82,6 +82,10 @@ cd ../.. && node --max-old-space-size=8000 scripts/corpus.mjs
 RESEARCH_DIR=../teyvat-research node scripts/appendix.mjs
 ```
 
+## 研究全文 PDF
+
+研究稿的 PDF（约 300 页、45 MB）不进仓库，挂在 GitHub Release `research-pdf-v10` 上，网站的“专题”页只放下载链接。它在研究仓库里用 `compile.sh` 编译。出新版时发一个新的 Release，把 PDF 作为附件上传，再改 `scripts/build.mjs` 开头的 `PDF_RELEASE` 和 `pdfMB`。
+
 全文检索的数据按约 1.5 MB 一片放在 `dist/data/ft/`，只有访问者点“搜全文”时才逐片下载。
 
 ## 星图的内容是怎么来的

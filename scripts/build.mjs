@@ -26,9 +26,11 @@ const plates = readJSON('plates.json');
 // 研究稿里只在 PDF 出现的附录（scripts/appendix.mjs 从 LaTeX 转出）
 const appendix = readJSON('appendix.json');
 const imgRow = Object.fromEntries(appendix.images.rows.map((r) => [r.id, r]));
-// 研究稿 PDF（在研究仓库用 compile.sh 编译，放在 content/pdf/）
-const PDF = 'teyvat_civilization_history.pdf';
-const pdfMB = (fs.statSync(C(`pdf/${PDF}`)).size / 1e6).toFixed(0);
+// 研究稿 PDF（在研究仓库用 compile.sh 编译）。文件 45 MB，不进仓库，挂在 GitHub Release 上，网站只放下载链接。
+// 换新版时：发一个新的 Release，把 PDF 作为附件上传，再改这里的标签和大小。
+const PDF_RELEASE = 'research-pdf-v10';
+const PDF_URL = `https://github.com/mixuanda/Teyvat_web/releases/download/${PDF_RELEASE}/teyvat_civilization_history.pdf`;
+const pdfMB = 45;
 const partsDef = readJSON('parts.json');
 const sources = readJSON('sources.json'); // 研究引用过的原文（多语言、带引文定位）
 const citedCount = sources.length;
@@ -365,7 +367,6 @@ fs.rmSync(dist, { recursive: true, force: true });
 fs.mkdirSync(path.join(dist, 'assets'), { recursive: true });
 fs.mkdirSync(path.join(dist, 'data'), { recursive: true });
 fs.cpSync(C('images'), path.join(dist, 'images'), { recursive: true });
-fs.copyFileSync(C(`pdf/${PDF}`), path.join(dist, PDF));
 for (const f of fs.readdirSync(path.join(root, 'src'))) fs.copyFileSync(path.join(root, 'src', f), path.join(dist, 'assets', f));
 {
   // 自托管 Noto Serif SC（按 unicode-range 切片，浏览器只取用到的片）
@@ -776,7 +777,7 @@ ${topics.map((t) => `<a class="card link" href="${base}topic/${t.id}/"><h2>${esc
 <div class="toc">
 ${parts.map((p) => `<section class="card"><h3><span>${p.label}</span>${esc(p.name)}</h3><ol>${p.chapters.map((c) => `<li><a href="${base}${chapterURL(c)}"><b>${pad(c.no)}</b><span>${esc(c.title)}</span><em>${fmt(c.chars)} 字 · ${c.cites.size} 证</em></a></li>`).join('')}</ol></section>`).join('\n')}
 </div>
-<p><a href="${base}${PDF}" download>下载全文 PDF（${stats.pdf_pages} 页，${pdfMB} MB）</a></p>
+<p><a href="${PDF_URL}">下载全文 PDF（${stats.pdf_pages} 页，${pdfMB} MB）</a></p>
 <p><a href="${base}read/appendix/">附录 · ${esc(appendix.corpus.title)} →</a>　<a href="${base}plates/#image-catalog">附录 · ${esc(appendix.images.title)} →</a></p>
 </section></div>`;
   page({ url: 'topic/', title: '专题', body, cls: 'topics-page' });
