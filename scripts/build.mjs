@@ -28,7 +28,8 @@ const appendix = readJSON('appendix.json');
 const imgRow = Object.fromEntries(appendix.images.rows.map((r) => [r.id, r]));
 // 研究稿 PDF（在研究仓库用 compile.sh 编译）。文件 45 MB，不进仓库，挂在 GitHub Release 上，网站只放下载链接。
 // 换新版时：发一个新的 Release，把 PDF 作为附件上传，再改这里的标签和大小。
-const PDF_RELEASE = 'research-pdf-v10';
+// 还没有建 Release 时留空，专题页就不显示下载链接。
+const PDF_RELEASE = '';
 const PDF_URL = `https://github.com/mixuanda/Teyvat_web/releases/download/${PDF_RELEASE}/teyvat_civilization_history.pdf`;
 const pdfMB = 45;
 const partsDef = readJSON('parts.json');
@@ -777,8 +778,7 @@ ${topics.map((t) => `<a class="card link" href="${base}topic/${t.id}/"><h2>${esc
 <div class="toc">
 ${parts.map((p) => `<section class="card"><h3><span>${p.label}</span>${esc(p.name)}</h3><ol>${p.chapters.map((c) => `<li><a href="${base}${chapterURL(c)}"><b>${pad(c.no)}</b><span>${esc(c.title)}</span><em>${fmt(c.chars)} 字 · ${c.cites.size} 证</em></a></li>`).join('')}</ol></section>`).join('\n')}
 </div>
-<p><a href="${PDF_URL}">下载全文 PDF（${stats.pdf_pages} 页，${pdfMB} MB）</a></p>
-<p><a href="${base}read/appendix/">附录 · ${esc(appendix.corpus.title)} →</a>　<a href="${base}plates/#image-catalog">附录 · ${esc(appendix.images.title)} →</a></p>
+${PDF_RELEASE ? `<p><a href="${PDF_URL}">下载全文 PDF（${stats.pdf_pages} 页，${pdfMB} MB）</a></p>\n` : ''}<p><a href="${base}read/appendix/">附录 · ${esc(appendix.corpus.title)} →</a>　<a href="${base}plates/#image-catalog">附录 · ${esc(appendix.images.title)} →</a></p>
 </section></div>`;
   page({ url: 'topic/', title: '专题', body, cls: 'topics-page' });
 }
